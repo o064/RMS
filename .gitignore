@@ -20,7 +20,8 @@
 *.ilk
 # IDE-specific files (e.g., Visual Studio, CLion)
 vscode/
-idea/
+.idea/
+
 *.sln
 *.vcxproj*
 # CMake generated files
