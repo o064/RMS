@@ -102,6 +102,13 @@ build CMakeFiles/rms_app.dir/src/main.cpp.obj: CXX_COMPILER__rms_app_unscanned_D
   OBJECT_DIR = CMakeFiles\rms_app.dir
   OBJECT_FILE_DIR = CMakeFiles\rms_app.dir\src
 
+build CMakeFiles/rms_app.dir/src/Repo/InMemoryTrainRepository.cpp.obj: CXX_COMPILER__rms_app_unscanned_Debug D$:/coding/.Colleage/RMS/src/Repo/InMemoryTrainRepository.cpp || cmake_object_order_depends_target_rms_app
+  DEP_FILE = CMakeFiles\rms_app.dir\src\Repo\InMemoryTrainRepository.cpp.obj.d
+  FLAGS = -g -std=gnu++14 -fdiagnostics-color=always
+  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src
+  OBJECT_DIR = CMakeFiles\rms_app.dir
+  OBJECT_FILE_DIR = CMakeFiles\rms_app.dir\src\Repo
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target rms_app
@@ -110,7 +117,7 @@ build CMakeFiles/rms_app.dir/src/main.cpp.obj: CXX_COMPILER__rms_app_unscanned_D
 #############################################
 # Link the executable rms_app.exe
 
-build rms_app.exe: CXX_EXECUTABLE_LINKER__rms_app_Debug CMakeFiles/rms_app.dir/src/main.cpp.obj | librms_lib.a || librms_lib.a
+build rms_app.exe: CXX_EXECUTABLE_LINKER__rms_app_Debug CMakeFiles/rms_app.dir/src/main.cpp.obj CMakeFiles/rms_app.dir/src/Repo/InMemoryTrainRepository.cpp.obj | librms_lib.a || librms_lib.a
   FLAGS = -g
   LINK_LIBRARIES = librms_lib.a  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\rms_app.dir
@@ -143,6 +150,13 @@ build CMakeFiles/rms_tests.dir/tests/test_train.cpp.obj: CXX_COMPILER__rms_tests
   OBJECT_DIR = CMakeFiles\rms_tests.dir
   OBJECT_FILE_DIR = CMakeFiles\rms_tests.dir\tests
 
+build CMakeFiles/rms_tests.dir/tests/test_trainRepo.cpp.obj: CXX_COMPILER__rms_tests_unscanned_Debug D$:/coding/.Colleage/RMS/tests/test_trainRepo.cpp || cmake_object_order_depends_target_rms_tests
+  DEP_FILE = CMakeFiles\rms_tests.dir\tests\test_trainRepo.cpp.obj.d
+  FLAGS = -g -std=gnu++14 -fdiagnostics-color=always
+  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest
+  OBJECT_DIR = CMakeFiles\rms_tests.dir
+  OBJECT_FILE_DIR = CMakeFiles\rms_tests.dir\tests
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target rms_tests
@@ -151,7 +165,7 @@ build CMakeFiles/rms_tests.dir/tests/test_train.cpp.obj: CXX_COMPILER__rms_tests
 #############################################
 # Link the executable rms_tests.exe
 
-build rms_tests.exe rms_tests[1]_tests.cmake | ${cmake_ninja_workdir}rms_tests[1]_tests.cmake: CXX_EXECUTABLE_LINKER__rms_tests_Debug CMakeFiles/rms_tests.dir/tests/test_SeatAllocator.cpp.obj CMakeFiles/rms_tests.dir/tests/test_train.cpp.obj | lib/libgtest_main.a librms_lib.a lib/libgtest.a || lib/libgtest.a lib/libgtest_main.a librms_lib.a
+build rms_tests.exe rms_tests[1]_tests.cmake | ${cmake_ninja_workdir}rms_tests[1]_tests.cmake: CXX_EXECUTABLE_LINKER__rms_tests_Debug CMakeFiles/rms_tests.dir/tests/test_SeatAllocator.cpp.obj CMakeFiles/rms_tests.dir/tests/test_train.cpp.obj CMakeFiles/rms_tests.dir/tests/test_trainRepo.cpp.obj | lib/libgtest_main.a librms_lib.a lib/libgtest.a || lib/libgtest.a lib/libgtest_main.a librms_lib.a
   FLAGS = -g
   LINK_LIBRARIES = lib/libgtest_main.a  librms_lib.a  lib/libgtest.a  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\rms_tests.dir

@@ -19,5 +19,6 @@ public:
      Ticket save(Ticket ticket) override;
      std::vector<Ticket> getAllTickets() override;
      Ticket* getTicketById(int ticketId )override ;
+    void clear();
 };
 #endif //RMS_INMEMORYTICKETREPOSITORY_H

@@ -18,5 +18,6 @@ public:
     bool deletePassenger(int passengerId) override;
     Passenger save(Passenger passenger) override;
     std::vector<Passenger> getAllPassengers() override;
+    void clear();
 };
 #endif //RMS_INMEMORYPASSENGERREPOSITORY_H

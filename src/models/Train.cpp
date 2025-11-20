@@ -1,36 +1,35 @@
-//
-// Created by Omar on 11/20/2025.
-//
 #include "models/Train.h"
+#include <iostream>
 
-
-Train::Train(const int& id , const std::string& name , const int& totalSeats) {
-    this->id =id;
-    this->name= name;
-    // cannot have less than or eq zero seat
-    if(totalSeats <= 0 )
-        this->totalSeats = 10 ;
-    else
-        this->totalSeats = totalSeats ;
-
-    this->seatAllocator = new SeatAllocator(this->totalSeats);
-}
-Train::~Train(){
-    delete seatAllocator;
+Train::Train(int id, const std::string& name, int totalSeats)
+        : id(id), name(name), totalSeats(totalSeats),
+          seatAllocator(std::make_unique<SeatAllocator>(totalSeats)) {
 }
 
-int Train::getTrainId() const { return this->id;}
-std::string Train::getTrainName() const { return this->name;}
-
-bool Train::hasAvailbeSeats() {
-    return  seatAllocator->hasAvailableSeats();
+int Train::getTrainId() const {
+    return id;
 }
 
-SeatAllocator* Train::getSeatAllocator() const {
-    return seatAllocator;
+std::string Train::getTrainName() const {
+    return name;
 }
 
 void Train::setTrainName(const std::string& name) {
-    this->name=name;
+    this->name = name;
 }
 
+void Train::setTrainId(int trainId) {
+    this->id = trainId;
+}
+
+SeatAllocator* Train::getSeatAllocator() const {
+    return seatAllocator.get();
+}
+
+bool Train::hasAvailableSeats() const {
+    return seatAllocator->hasAvailableSeats();
+}
+
+int Train::getTotalSeats() const {
+    return totalSeats;
+}

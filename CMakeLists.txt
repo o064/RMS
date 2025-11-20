@@ -25,6 +25,8 @@ add_library(rms_lib
         src/models/Passenger.cpp
         src/models/SeatAllocator.cpp
         src/models/Train.cpp
+        src/Repo/InMemoryTrainRepository.cpp
+
 )
 
 # Include directories - adjust based on your actual header locations
@@ -48,6 +50,7 @@ target_link_libraries(rms_app PRIVATE rms_lib)
 add_executable(rms_tests
         tests/test_SeatAllocator.cpp
         tests/test_train.cpp
+        tests/test_trainRepo.cpp
 )
 
 target_link_libraries(rms_tests

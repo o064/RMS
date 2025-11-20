@@ -2,10 +2,10 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "rms_app.exe"
+			"path" : "rms_tests.exe"
 		},
 		{
-			"path" : "rms_app.pdb"
+			"path" : "rms_tests.pdb"
 		}
 	],
 	"backtrace" : 1,
@@ -14,11 +14,13 @@
 		"commands" : 
 		[
 			"add_executable",
-			"target_link_libraries"
+			"target_link_libraries",
+			"target_include_directories"
 		],
 		"files" : 
 		[
-			"CMakeLists.txt"
+			"CMakeLists.txt",
+			"cmake-build-debug/_deps/googletest-src/googletest/CMakeLists.txt"
 		],
 		"nodes" : 
 		[
@@ -28,13 +30,28 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 39,
+				"line" : 50,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 43,
+				"line" : 56,
+				"parent" : 0
+			},
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 145,
+				"parent" : 3
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 62,
 				"parent" : 0
 			}
 		]
@@ -51,12 +68,22 @@
 			"includes" : 
 			[
 				{
-					"backtrace" : 2,
+					"backtrace" : 5,
 					"path" : "D:/coding/.Colleage/RMS/include"
 				},
 				{
-					"backtrace" : 2,
+					"backtrace" : 5,
 					"path" : "D:/coding/.Colleage/RMS/src"
+				},
+				{
+					"backtrace" : 2,
+					"isSystem" : true,
+					"path" : "D:/coding/.Colleage/RMS/cmake-build-debug/_deps/googletest-src/googletest/include"
+				},
+				{
+					"backtrace" : 2,
+					"isSystem" : true,
+					"path" : "D:/coding/.Colleage/RMS/cmake-build-debug/_deps/googletest-src/googletest"
 				}
 			],
 			"language" : "CXX",
@@ -64,13 +91,15 @@
 			{
 				"backtraces" : 
 				[
-					1
+					2
 				],
 				"standard" : "14"
 			},
 			"sourceIndexes" : 
 			[
-				0
+				0,
+				1,
+				2
 			]
 		}
 	],
@@ -79,9 +108,17 @@
 		{
 			"backtrace" : 2,
 			"id" : "rms_lib::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "gtest::@1ea2dfc0605fe3ab2a3f"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "gtest_main::@1ea2dfc0605fe3ab2a3f"
 		}
 	],
-	"id" : "rms_app::@6890427a1f51a3e7e1df",
+	"id" : "rms_tests::@6890427a1f51a3e7e1df",
 	"link" : 
 	{
 		"commandFragments" : 
@@ -96,7 +133,17 @@
 			},
 			{
 				"backtrace" : 2,
+				"fragment" : "lib\\libgtest_main.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 2,
 				"fragment" : "librms_lib.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "lib\\libgtest.a",
 				"role" : "libraries"
 			},
 			{
@@ -106,8 +153,8 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "rms_app",
-	"nameOnDisk" : "rms_app.exe",
+	"name" : "rms_tests",
+	"nameOnDisk" : "rms_tests.exe",
 	"paths" : 
 	{
 		"build" : ".",
@@ -119,7 +166,9 @@
 			"name" : "Source Files",
 			"sourceIndexes" : 
 			[
-				0
+				0,
+				1,
+				2
 			]
 		}
 	],
@@ -128,7 +177,19 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/main.cpp",
+			"path" : "tests/test_SeatAllocator.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "tests/test_train.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "tests/test_trainRepo.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],

@@ -41,13 +41,13 @@ TEST_F(TrainTest, ConstructorAndSeatAllocator) {
 
 // Test hasAvailableSeats
 TEST_F(TrainTest, HasAvailableSeats) {
-    EXPECT_TRUE(train1->hasAvailbeSeats());
+    EXPECT_TRUE(train1->hasAvailableSeats());
 
     // Allocate all seats
     for (int i = 0; i < 5; ++i) {
         train1->getSeatAllocator()->allocateSeat(100 + i);
     }
-    EXPECT_FALSE(train1->hasAvailbeSeats());
+    EXPECT_FALSE(train1->hasAvailableSeats());
 }
 
 // Test get and set train name

@@ -175,6 +175,7 @@ TEST_F(SeatAllocatorTest, SingleSeatAllocator) {
 
 // ---------------------- Test that duplicate passenger IDs are not allowed ----------------------
 
+
 TEST_F(SeatAllocatorTest, DuplicatePassengerIDs) {
     SeatAllocator allocator(2);
 

@@ -15,6 +15,7 @@ public:
     virtual Ticket save(Ticket ticket) = 0;
     virtual std::vector<Ticket> getAllTickets() = 0;
     virtual  Ticket* getTicketById(int ) = 0 ;
+    virtual  void clear()   =  0;
 
     virtual ~ITicketRepository() = default;
 };

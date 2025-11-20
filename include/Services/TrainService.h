@@ -5,7 +5,7 @@
 #ifndef RMS_TRAINSERVICE_H
 #define RMS_TRAINSERVICE_H
 
-#include "../Repo/ITrainReposatory.h"
+#include "../Repo/ITrainRepository.h"
 
 class TrainService{
 private:
