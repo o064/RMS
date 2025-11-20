@@ -1,0 +1,5 @@
+if(EXISTS "D:/coding/.Colleage/RMS/cmake-build-debug/rms_tests[1]_tests.cmake")
+  include("D:/coding/.Colleage/RMS/cmake-build-debug/rms_tests[1]_tests.cmake")
+else()
+  add_test(rms_tests_NOT_BUILT rms_tests_NOT_BUILT)
+endif()

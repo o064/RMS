@@ -1,0 +1,5 @@
+if(EXISTS "D:/coding/.Colleage/RMS/cmake-build-debug/tests/test_seat_allocator[1]_tests.cmake")
+  include("D:/coding/.Colleage/RMS/cmake-build-debug/tests/test_seat_allocator[1]_tests.cmake")
+else()
+  add_test(test_seat_allocator_NOT_BUILT test_seat_allocator_NOT_BUILT)
+endif()

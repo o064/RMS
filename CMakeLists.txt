@@ -1,25 +1,64 @@
-cmake_minimum_required(VERSION 3.13) # CMake version check
-project(RMS) # Create project "simple_example"
-set(CMAKE_CXX_STANDARD 14) # Enable C++14 standard
-# Add main.cpp file of the project root directory as a source file
-set(src main.cpp)
-# Add executable target with source files listed in SOURCE_FILES variable
-add_executable(RMS ./src/main.cpp
-        include/models/Train.h
-        include/models/SeatAllocator.h
-        include/models/Ticket.h
-        include/Repo/ITrainReposatory.h
-        include/Repo/InMemoryTrainReposatory.h
-        include/Services/TrainService.h
-        include/Services/TrainService.h
-        include/models/Passenger.h
-        include/Services/PassengerService.h
-        include/Services/TicketService.h
-        "include/Repo/ITicketRepository.h"
-        "include/Repo/InMemoryTicketRepository .h"
-        include/Repo/IPassengerRepository.h
-        "include/Repo/InMemoryPassengerRepository.h"
-        include/RMSFacade.h
-        include/StartupManager.h
-        include/CLIController.h
+cmake_minimum_required(VERSION 3.13)
+
+project(RMS)
+set(CMAKE_CXX_STANDARD 14)
+
+enable_testing()
+
+# Download and setup Google Test
+include(FetchContent)
+FetchContent_Declare(
+        googletest
+        GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_TAG release-1.12.1
+        GIT_SHALLOW TRUE
 )
+
+
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+
+# -------------------------------
+# Build your project as a library
+# -------------------------------
+add_library(rms_lib
+        src/models/Passenger.cpp
+        src/models/SeatAllocator.cpp
+)
+
+# Include directories - adjust based on your actual header locations
+target_include_directories(rms_lib PUBLIC
+        ${CMAKE_SOURCE_DIR}/include
+        ${CMAKE_SOURCE_DIR}/src
+)
+
+# -------------------------------
+# Build the main executable
+# -------------------------------
+add_executable(rms_app
+        src/main.cpp
+)
+
+target_link_libraries(rms_app PRIVATE rms_lib)
+
+# -------------------------------
+# Tests
+# -------------------------------
+add_executable(rms_tests
+        tests/test_SeatAllocator.cpp
+)
+
+target_link_libraries(rms_tests
+        PRIVATE
+        gtest_main
+        rms_lib
+)
+
+target_include_directories(rms_tests PRIVATE
+        ${CMAKE_SOURCE_DIR}/include
+        ${CMAKE_SOURCE_DIR}/src
+)
+
+# Register tests with CTest
+include(GoogleTest)
+gtest_discover_tests(rms_tests)

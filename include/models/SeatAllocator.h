@@ -6,24 +6,25 @@
 #ifndef RMS_SEATALLOCATOR_H
 #define RMS_SEATALLOCATOR_H
 
-#include <map>
+#include <unordered_map>
 #include <vector>
 #include <queue>
 #include <stack>
+#include <string>
 
 class SeatAllocator{
     std::priority_queue<int, std::vector<int>, std::greater<int> > availableSeats;
     std::queue<int> waitingList;
-    std::map<int,int> allocatedSeats;
-    std::stack<int> cancelledTickets;
+    std::unordered_map<int, int> allocatedSeats;
+    std::stack<int> cancelledSeats;
     int totalSeats ;
 public:
-    SeatAllocator(int totalSeats);
-    void freeSeat(int);
-
-    int allocateSeat(int);
+    SeatAllocator(const int& totalSeats = 10);
+    void freeSeat(const int& seatNumber);
+    int allocateSeat(const int& passengerId);
     int getAvailableSeatCount() const;
-    bool hasAvailableSeat();
+    bool hasAvailableSeats() const;
+    void printStatus() const ;
 
 };
 #endif //RMS_SEATALLOCATOR_H

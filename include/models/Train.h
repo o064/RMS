@@ -20,7 +20,7 @@ public:
     Train(int id , std::string name , int totalSeats);
 
     int getTrainId() const ;
-    bool hasAvailbeSeates() ;
+    bool hasAvailbeSeats() ;
     SeatAllocator getSeatAllocator() const ;
     void setSeatAllocator(SeatAllocator);
 };

@@ -10,7 +10,6 @@ class Passenger{
     int id;
 public:
     Passenger(int id, std::string name);
-
     int getId() const;
     std::string getName() const;
 };
