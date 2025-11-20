@@ -6,7 +6,7 @@
 #include <iostream>
 
 SeatAllocator::SeatAllocator(const int& totalSeats){
-    if(totalSeats < 0 )
+    if(totalSeats <= 0 )
         this->totalSeats = 10 ;
     else
         this->totalSeats = totalSeats;

@@ -17,12 +17,14 @@ private:
     int totalSeats ;
     SeatAllocator* seatAllocator;
 public:
-    Train(int id , std::string name , int totalSeats);
-
+    Train(const int& id , const std::string& name , const int& totalSeats = 10);
+    ~Train();
     int getTrainId() const ;
+    std::string getTrainName() const ;
+    void setTrainName(const std::string& name);
     bool hasAvailbeSeats() ;
-    SeatAllocator getSeatAllocator() const ;
-    void setSeatAllocator(SeatAllocator);
+    SeatAllocator* getSeatAllocator() const ;
+//    void setSeatAllocator(SeatAllocator);
 };
 
 
