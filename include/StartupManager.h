@@ -11,18 +11,15 @@ class StartupManager {
 private:
     ITrainRepository* trainRepository;
     ITicketRepository* ticketReposatory;
-    IPassengerReposatory* passengerReposatory;
+    IPassengerRepository* passengerReposatory;
     TrainService* trainService;
     PassengerService* passengerService;
     TicketService* TicketService;
 
     RMSFacade* facade;
-
-
 public:
     RMSFacade * buildFacade() ;
-    void load_data_from_memory();
-    void save_data_from_memory();
+
 
 };
 #endif //RMS_STARTUPMANAGER_H

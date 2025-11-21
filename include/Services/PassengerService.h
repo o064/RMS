@@ -9,15 +9,17 @@
 #include "../models/Passenger.h"
 #include "../Repo/IPassengerRepository.h"
 
-class PassengerService {
+class PassengerService
+{
 private:
-    IPassengerRepository* passengerRepository;
+    IPassengerRepository *passengerRepository;
+
 public:
-    PassengerService(IPassengerRepository* repo);
-    Passenger* getPassenger(int passengerId);
-    std::vector<Passenger> getAllPassengers();
+    PassengerService(IPassengerRepository *repo);
+    std::shared_ptr<Passenger> getPassenger(int passengerId);
+    std::vector<std::shared_ptr<Passenger>> getAllPassengers();
     Passenger createPassenger(std::string name);
     Passenger deletePassenger(int passengerId);
-    Passenger* findPassenger(std::string name);
+    std::shared_ptr<Passenger> findPassenger(std::string name);
 };
-#endif //RMS_PASSENGERSERVICE_H
+#endif // RMS_PASSENGERSERVICE_H

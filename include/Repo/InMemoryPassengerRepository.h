@@ -9,15 +9,18 @@
 #include <map>
 #include "../models/Passenger.h"
 #include "IPassengerRepository.h"
+#include <memory>
 
-class InMemoryPassengerRepository : public IPassengerRepository {
+class InMemoryPassengerRepository : public IPassengerRepository
+{
 private:
-    std::map<int, Passenger> passengers;
+    std::map<int, std::shared_ptr<Passenger>> passengers;
+
 public:
-    Passenger* getPassenger(int passengerId) override;
+    std::shared_ptr<Passenger> getPassenger(int passengerId) override;
     bool deletePassenger(int passengerId) override;
     Passenger save(Passenger passenger) override;
-    std::vector<Passenger> getAllPassengers() override;
+    std::vector<std::shared_ptr<Passenger>> getAllPassengers() override;
     void clear();
 };
-#endif //RMS_INMEMORYPASSENGERREPOSITORY_H
+#endif // RMS_INMEMORYPASSENGERREPOSITORY_H

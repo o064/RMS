@@ -9,16 +9,19 @@
 #include <vector>
 #include "ITicketRepository.h"
 #include "../models/Ticket.h"
+#include <memory>
 
-class InMemoryTicketRepository : public ITicketRepository {
+class InMemoryTicketRepository : public ITicketRepository
+{
 private:
-    std::map<int, Ticket> tickets;
+    std::map<int, std::shared_ptr<Ticket>> tickets;
+
 public:
-     Ticket* getTicketByTrainAndPassenger(int trainId, int passengerId) override;
-     bool deleteTicket(int ticketId) override;
-     Ticket save(Ticket ticket) override;
-     std::vector<Ticket> getAllTickets() override;
-     Ticket* getTicketById(int ticketId )override ;
+    std::shared_ptr<Ticket> getTicketByTrainAndPassenger(int trainId, int passengerId) override;
+    bool deleteTicket(int ticketId) override;
+    Ticket save(Ticket ticket) override;
+    std::vector<std::shared_ptr<Ticket>> getAllTickets() override;
+    std::shared_ptr<Ticket> getTicketById(int ticketId) override;
     void clear();
 };
-#endif //RMS_INMEMORYTICKETREPOSITORY_H
+#endif // RMS_INMEMORYTICKETREPOSITORY_H

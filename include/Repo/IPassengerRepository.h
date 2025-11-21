@@ -7,15 +7,17 @@
 
 #include <vector>
 #include "../models/Passenger.h"
+#include <memory>
 
-class IPassengerRepository {
+class IPassengerRepository
+{
 public:
-    virtual Passenger* getPassenger(int passengerId) = 0;
+    virtual std::shared_ptr<Passenger> getPassenger(int passengerId) = 0;
     virtual bool deletePassenger(int passengerId) = 0;
     virtual Passenger save(Passenger passenger) = 0;
-    virtual std::vector<Passenger> getAllPassengers() = 0;
-    virtual  void clear()   =  0;
+    virtual std::vector<std::shared_ptr<Passenger>> getAllPassengers() = 0;
+    virtual void clear() = 0;
 
     virtual ~IPassengerRepository() = default;
 };
-#endif //RMS_IPASSENGERREPOSITORY_H
+#endif // RMS_IPASSENGERREPOSITORY_H

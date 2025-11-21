@@ -7,15 +7,17 @@
 
 #include "../Repo/ITicketRepository.h"
 
-class TicketService {
+class TicketService
+{
 private:
-    ITicketRepository* ticketRepository;
+    ITicketRepository *ticketRepository;
+
 public:
-    TicketService(ITicketRepository* repo);
-    Ticket* getTicket(int ticketId);
-    std::vector<Ticket> getAllTickets();
-    Ticket* getTicketByTrainAndPassenger(int trainId, int passengerId);
+    TicketService(ITicketRepository *repo);
+    std::shared_ptr<Ticket> getTicket(int ticketId);
+    std::vector<std::shared_ptr<Ticket>> getAllTickets();
+    std::shared_ptr<Ticket> getTicketByTrainAndPassenger(int trainId, int passengerId);
     Ticket bookTicket(int trainId, int passengerId);
     bool cancelTicket(int ticketId);
 };
-#endif //RMS_TICKETSERVICE_H
+#endif // RMS_TICKETSERVICE_H

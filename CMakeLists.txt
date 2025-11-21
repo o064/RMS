@@ -27,6 +27,7 @@ add_library(rms_lib
         src/models/Train.cpp
         src/Repo/InMemoryTrainRepository.cpp
         src/Services/TrainService.cpp
+        src/RMSFacade.cpp
 
 )
 
@@ -41,6 +42,7 @@ target_include_directories(rms_lib PUBLIC
 # -------------------------------
 add_executable(rms_app
         src/main.cpp
+        src/RMSFacade.cpp
 )
 
 target_link_libraries(rms_app PRIVATE rms_lib)
