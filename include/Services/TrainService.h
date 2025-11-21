@@ -12,11 +12,12 @@ private:
     ITrainRepository* trainRepository;
 public:
     TrainService(ITrainRepository* repo) ;
+    ~TrainService();
 
-    Train* getTrain(int);
-    std::vector<Train> getAllTrains();
-    Train createTrain(std::string name, int seats);
-    bool deleteTrain(int);
-    bool isAvailbleSeat();
+    std::shared_ptr<Train> getTrain(int);
+    std::vector<std::shared_ptr<Train>> getAllTrains();
+    std::shared_ptr<Train> createTrain(std::string name, int seats);
+    bool deleteTrain(int trainId);
+    bool isAvailbleSeat(int trainId);
 };
 #endif //RMS_TRAINSERVICE_H

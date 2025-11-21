@@ -26,6 +26,7 @@ add_library(rms_lib
         src/models/SeatAllocator.cpp
         src/models/Train.cpp
         src/Repo/InMemoryTrainRepository.cpp
+        src/Services/TrainService.cpp
 
 )
 
@@ -51,6 +52,7 @@ add_executable(rms_tests
         tests/test_SeatAllocator.cpp
         tests/test_train.cpp
         tests/test_trainRepo.cpp
+        tests/test_trainSevice.cpp
 )
 
 target_link_libraries(rms_tests
