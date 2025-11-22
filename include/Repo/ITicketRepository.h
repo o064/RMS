@@ -6,6 +6,8 @@
 #define RMS_ITICKETREPOSITORY_H
 
 #include <vector>
+#include <memory>
+
 #include "../models/Ticket.h"
 
 class ITicketRepository
