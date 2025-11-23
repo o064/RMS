@@ -20,12 +20,12 @@ private:
 public:
     RMSFacade(TrainService *ts, TicketService *tks, PassengerService *ps);
 
-    std::vector<std::shared_ptr<Train>> listTrains();
-    std::shared_ptr<Train> addTrain(const std::string &name, const int &totalSeats);
-    std::shared_ptr<Train> getTrain(const int &trainId);
-    std::shared_ptr<Passenger> getPassenger(const int &totalSeats);
-    std::shared_ptr<Passenger> addPassenger(const std::string &name);
-    std::vector<std::shared_ptr<Ticket>> listTickets();
+    std::list<Train> listTrains();
+    Train addTrain(const std::string &name, const int &totalSeats);
+    Train getTrain(const int &trainId);
+    Passenger getPassenger(const int &totalSeats);
+    Passenger addPassenger(const std::string &name);
+    std::vector<Ticket> listTickets();
     bool bookTicket(const int &totalSeats, const std::string &passengerName);
     bool cancelTicket(const int &totalSeats);
     bool getTrainAvailability(const int &totalSeats);

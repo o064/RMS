@@ -4,7 +4,7 @@
 #include "RMSFacade.h"
 
 
-std::vector<std::shared_ptr<Train>> RMSFacade::listTrains() {
+std::list<Train> RMSFacade::listTrains() {
     return trainService->getAllTrains();
 }
 
@@ -14,10 +14,10 @@ RMSFacade::RMSFacade(TrainService *ts, TicketService *tks, PassengerService *ps)
     this->passengerService=ps;
 }
 
-std::shared_ptr<Train> RMSFacade::addTrain(const std::string& name,const int& totalSeats) {
+Train RMSFacade::addTrain(const std::string& name,const int& totalSeats) {
     return trainService->createTrain(name,totalSeats);
 }
 
-std::shared_ptr<Train> RMSFacade::getTrain(const int &trainId) {
+Train RMSFacade::getTrain(const int &trainId) {
     return trainService->getTrain(trainId);
 }

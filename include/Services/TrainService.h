@@ -14,9 +14,9 @@ public:
     TrainService(ITrainRepository* repo) ;
     ~TrainService();
 
-    std::shared_ptr<Train> getTrain(int);
-    std::vector<std::shared_ptr<Train>> getAllTrains();
-    std::shared_ptr<Train> createTrain(std::string name, int seats);
+    Train getTrain(const int&);
+    std::list<Train> getAllTrains();
+    Train createTrain(const std::string& name,const int& seats);
     bool deleteTrain(int trainId);
     bool isAvailbleSeat(int trainId);
 };

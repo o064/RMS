@@ -1,27 +1,33 @@
 #include "Repo/InMemoryTrainRepository.h"
 #include <iostream>
 
-std::vector<std::shared_ptr<Train>> InMemoryTrainRepository::getAllTrains() const {
-    std::vector<std::shared_ptr<Train>> result;
+std::list<Train> InMemoryTrainRepository::getAllTrains() const {
+    std::list<Train> result;
     for (const auto& train : trains) {
         result.push_back(train.second);
     }
     return result;
 }
 
-std::shared_ptr<Train> InMemoryTrainRepository::save(std::shared_ptr<Train> newTrain) {
+Train InMemoryTrainRepository::save(Train & newTrain) {
     // assign id if needed
-    if (newTrain->getTrainId() == 0) {
-        newTrain->setTrainId(next_id++);
+    if (newTrain.getTrainId() == 0) {
+        newTrain.setTrainId(next_id++);
+    }else if(newTrain.getTrainId() >= next_id){
+        next_id = newTrain.getTrainId() + 1;
     }
 
-    int id = newTrain->getTrainId();
-    trains[id] = newTrain;
+    int trainId = newTrain.getTrainId();
 
-    if(id >= next_id) {
-        next_id = id + 1;
+    auto result = trains.emplace(trainId, newTrain);
+
+    // If trainId already existed, update it
+    if (!result.second) {
+        result.first->second = newTrain;
     }
-    return newTrain;
+
+
+    return result.first->second;
 }
 
 bool InMemoryTrainRepository::deleteTrain(int trainId) {
@@ -33,12 +39,12 @@ bool InMemoryTrainRepository::deleteTrain(int trainId) {
     return false;
 }
 
-std::shared_ptr<Train> InMemoryTrainRepository::getTrainById(int trainId) {
+Train  InMemoryTrainRepository::getTrainById(const int& trainId) const {
     auto it = trains.find(trainId);
     if (it != trains.end()) {
         return it->second;
     }
-    return nullptr;
+    throw std::runtime_error("Train not found");
 }
 
 void InMemoryTrainRepository::clear() {

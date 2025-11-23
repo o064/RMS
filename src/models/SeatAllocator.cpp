@@ -154,3 +154,25 @@ bool SeatAllocator::hasAvailableSeats() const {
     return !availableSeats.empty() || !cancelledSeats.empty();
 }
 
+std::unique_ptr<SeatAllocator> SeatAllocator::clone() const  {
+    return std::make_unique<SeatAllocator>(*this);
+}
+
+SeatAllocator::SeatAllocator(const SeatAllocator& other)
+        : totalSeats(other.totalSeats),
+          availableSeats(other.availableSeats),
+          waitingList(other.waitingList),
+          allocatedSeats(other.allocatedSeats),
+          cancelledSeats(other.cancelledSeats) {
+}
+
+SeatAllocator& SeatAllocator::operator=(const SeatAllocator& other) {
+    if (this != &other) {
+        totalSeats = other.totalSeats;
+        availableSeats = other.availableSeats;
+        waitingList = other.waitingList;
+        allocatedSeats = other.allocatedSeats;
+        cancelledSeats = other.cancelledSeats;
+    }
+    return *this;
+}
