@@ -8,17 +8,17 @@
 
 class InMemoryTrainRepository : public ITrainRepository {
 private:
-    std::map<int, std::shared_ptr<Train>> trains;
+    std::map<int, Train> trains;
     int next_id = 1;
 
 public:
     InMemoryTrainRepository() = default;
     ~InMemoryTrainRepository() override = default;
 
-    std::vector<std::shared_ptr<Train>> getAllTrains() const override;
+    std::list<Train> getAllTrains() const override;
     bool deleteTrain(int trainId) override;
-    std::shared_ptr<Train> save(std::shared_ptr<Train> newTrain) override;
-    std::shared_ptr<Train> getTrainById(int trainId) override;
+    Train  save( Train& newTrain) override;
+    Train getTrainById(const int& trainId) const  override;
     void clear() override;
 };
 

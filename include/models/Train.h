@@ -14,12 +14,13 @@ private:
 
 public:
     // Constructor
-    Train(int id, const std::string& name, int totalSeats = 10);
+    Train(const int& id, const std::string& name, const int& totalSeats = 10);
     ~Train() = default;
 
-    // Delete copy operations
-    Train(const Train&) = delete;
-    Train& operator=(const Train&) = delete;
+    //  copy operations for unique ptr
+    std::unique_ptr<Train> clone() const ;
+    Train(const Train& other);
+    Train& operator=(const Train& other);
 
     // move operations
     Train(Train&&) = default;
