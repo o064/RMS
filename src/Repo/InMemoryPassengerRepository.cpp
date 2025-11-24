@@ -2,16 +2,17 @@
 // Created by Omar on 11/24/2025.
 //
 
-#include <stdexcept>
+
 #include <iostream>
+#include <optional>
 #include "Repo/InMemoryPassengerRepository.h"
 
-Passenger InMemoryPassengerRepository::getPassenger(const int &passengerId) {
+std::optional<Passenger> InMemoryPassengerRepository::getPassenger(const int &passengerId) {
     auto  result = passengers.find(passengerId);
     if(result != passengers.end()){
         return result->second;
     }
-    throw std::runtime_error("Passenger not found");
+    return std::nullopt; // not found
 }
 
 std::list<Passenger> InMemoryPassengerRepository::getAllPassengers() {

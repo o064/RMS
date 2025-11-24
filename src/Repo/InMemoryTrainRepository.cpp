@@ -39,7 +39,7 @@ bool InMemoryTrainRepository::deleteTrain(int trainId) {
     return false;
 }
 
-Train  InMemoryTrainRepository::getTrainById(const int& trainId) const {
+std::optional<Train>   InMemoryTrainRepository::getTrainById(const int& trainId) const {
     auto it = trains.find(trainId);
     if (it != trains.end()) {
         return it->second;

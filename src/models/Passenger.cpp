@@ -6,6 +6,7 @@
 
 
 
+
 Passenger::Passenger(const int &id, const std::string &name) {
     this->id = id;
     this->name =name;
@@ -22,3 +23,6 @@ std::string Passenger::getName() const {
 void Passenger::setId(const int &passengerId) {
     this->id = passengerId;
 }
+
+
+

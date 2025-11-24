@@ -30,13 +30,13 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 57,
+				"line" : 58,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 68,
+				"line" : 72,
 				"parent" : 0
 			},
 			{
@@ -51,7 +51,7 @@
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 74,
+				"line" : 78,
 				"parent" : 0
 			}
 		]
@@ -62,7 +62,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-g -std=gnu++14 -fdiagnostics-color=always"
+					"fragment" : "-g -std=gnu++17 -fdiagnostics-color=always"
 				}
 			],
 			"includes" : 
@@ -93,7 +93,7 @@
 				[
 					2
 				],
-				"standard" : "14"
+				"standard" : "17"
 			},
 			"sourceIndexes" : 
 			[
@@ -104,7 +104,10 @@
 				4,
 				5,
 				6,
-				7
+				7,
+				8,
+				9,
+				10
 			]
 		}
 	],
@@ -116,11 +119,11 @@
 		},
 		{
 			"backtrace" : 2,
-			"id" : "gtest::@1ea2dfc0605fe3ab2a3f"
+			"id" : "gtest_main::@1ea2dfc0605fe3ab2a3f"
 		},
 		{
 			"backtrace" : 2,
-			"id" : "gtest_main::@1ea2dfc0605fe3ab2a3f"
+			"id" : "gtest::@1ea2dfc0605fe3ab2a3f"
 		}
 	],
 	"id" : "rms_tests::@6890427a1f51a3e7e1df",
@@ -178,7 +181,10 @@
 				4,
 				5,
 				6,
-				7
+				7,
+				8,
+				9,
+				10
 			]
 		}
 	],
@@ -230,6 +236,24 @@
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "tests/test_helpers.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "tests/test_ticket.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "tests/test_ticktRepo.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "tests/test_ticketService.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],

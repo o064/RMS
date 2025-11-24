@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include "models/Passenger.h"
 #include "Repo/InMemoryPassengerRepository.h"
+#include <optional>
 
 class InMemoryPassengerRepositoryTest : public ::testing::Test {
 protected:
@@ -17,9 +18,7 @@ protected:
 
 TEST_F(InMemoryPassengerRepositoryTest, SavePassengerWithZeroIdGeneratesNewId) {
     Passenger p(0, "Alice");
-
     repo.save(p);
-
     EXPECT_GT(p.getId(), 0);
 }
 
@@ -36,9 +35,7 @@ TEST_F(InMemoryPassengerRepositoryTest, SaveGeneratesSequentialIds) {
 
 TEST_F(InMemoryPassengerRepositoryTest, SavePassengerWithExistingIdPreservesId) {
     Passenger p(42, "Charlie");
-
     repo.save(p);
-
     EXPECT_EQ(42, p.getId());
 }
 
@@ -50,9 +47,10 @@ TEST_F(InMemoryPassengerRepositoryTest, SaveUpdatesExistingPassenger) {
     Passenger updated(originalId, "David Updated");
     repo.save(updated);
 
-    Passenger retrieved = repo.getPassenger(originalId);
-    EXPECT_EQ(originalId, retrieved.getId());
-    EXPECT_EQ("David Updated", retrieved.getName());
+    auto retrieved = repo.getPassenger(originalId);
+    ASSERT_TRUE(retrieved.has_value());
+    EXPECT_EQ(originalId, retrieved->getId());
+    EXPECT_EQ("David Updated", retrieved->getName());
 }
 
 TEST_F(InMemoryPassengerRepositoryTest, SaveMultipleTimesWithSameId) {
@@ -62,8 +60,9 @@ TEST_F(InMemoryPassengerRepositoryTest, SaveMultipleTimesWithSameId) {
     Passenger p2(5, "Eve Updated");
     repo.save(p2);
 
-    Passenger retrieved = repo.getPassenger(5);
-    EXPECT_EQ("Eve Updated", retrieved.getName());
+    auto retrieved = repo.getPassenger(5);
+    ASSERT_TRUE(retrieved.has_value());
+    EXPECT_EQ("Eve Updated", retrieved->getName());
 
     std::list<Passenger> all = repo.getAllPassengers();
     EXPECT_EQ(1, all.size());
@@ -73,14 +72,17 @@ TEST_F(InMemoryPassengerRepositoryTest, GetPassengerReturnsCorrectPassenger) {
     Passenger p(0, "Frank");
     repo.save(p);
 
-    Passenger retrieved = repo.getPassenger(p.getId());
+    auto retrieved = repo.getPassenger(p.getId());
 
-    EXPECT_EQ(p.getId(), retrieved.getId());
-    EXPECT_EQ("Frank", retrieved.getName());
+    ASSERT_TRUE(retrieved.has_value());
+    EXPECT_EQ(p.getId(), retrieved->getId());
+    EXPECT_EQ("Frank", retrieved->getName());
 }
 
-TEST_F(InMemoryPassengerRepositoryTest, GetPassengerThrowsExceptionWhenNotFound) {
-    EXPECT_THROW(repo.getPassenger(999), std::runtime_error);
+TEST_F(InMemoryPassengerRepositoryTest, GetPassengerReturnsNulloptWhenNotFound) {
+    // Implementation returns nullopt, does not throw
+    auto result = repo.getPassenger(999);
+    EXPECT_FALSE(result.has_value());
 }
 
 TEST_F(InMemoryPassengerRepositoryTest, GetPassengerAfterMultipleSaves) {
@@ -92,13 +94,13 @@ TEST_F(InMemoryPassengerRepositoryTest, GetPassengerAfterMultipleSaves) {
     repo.save(p2);
     repo.save(p3);
 
-    Passenger retrieved = repo.getPassenger(p2.getId());
-    EXPECT_EQ("Henry", retrieved.getName());
+    auto retrieved = repo.getPassenger(p2.getId());
+    ASSERT_TRUE(retrieved.has_value());
+    EXPECT_EQ("Henry", retrieved->getName());
 }
 
 TEST_F(InMemoryPassengerRepositoryTest, GetAllPassengersReturnsEmptyListWhenEmpty) {
     std::list<Passenger> passengers = repo.getAllPassengers();
-
     EXPECT_TRUE(passengers.empty());
 }
 
@@ -112,7 +114,6 @@ TEST_F(InMemoryPassengerRepositoryTest, GetAllPassengersReturnsAllSavedPassenger
     repo.save(p3);
 
     std::list<Passenger> passengers = repo.getAllPassengers();
-
     EXPECT_EQ(3, passengers.size());
 }
 
@@ -145,12 +146,13 @@ TEST_F(InMemoryPassengerRepositoryTest, DeletePassengerRemovesPassenger) {
     bool deleted = repo.deletePassenger(id);
 
     EXPECT_TRUE(deleted);
-    EXPECT_THROW(repo.getPassenger(id), std::runtime_error);
+
+    auto result = repo.getPassenger(id);
+    EXPECT_FALSE(result.has_value());
 }
 
 TEST_F(InMemoryPassengerRepositoryTest, DeletePassengerReturnsFalseWhenNotFound) {
     bool deleted = repo.deletePassenger(999);
-
     EXPECT_FALSE(deleted);
 }
 
@@ -210,7 +212,6 @@ TEST_F(InMemoryPassengerRepositoryTest, ClearResetsNextId) {
 TEST_F(InMemoryPassengerRepositoryTest, ClearCanBeCalledMultipleTimes) {
     repo.clear();
     repo.clear();
-
     EXPECT_TRUE(repo.getAllPassengers().empty());
 }
 
@@ -250,4 +251,3 @@ TEST_F(InMemoryPassengerRepositoryTest, SaveAfterDeleteMaintainsNextId) {
 
     EXPECT_EQ(3, p3.getId());
 }
-

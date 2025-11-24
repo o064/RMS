@@ -7,6 +7,8 @@
 
 #include <list>
 #include <map>
+#include <optional>
+
 #include "../models/Passenger.h"
 #include "IPassengerRepository.h"
 
@@ -16,7 +18,7 @@ private:
     std::map<int, Passenger> passengers;
     int next_id = 1;
 public:
-    Passenger getPassenger(const int& passengerId) override;
+    std::optional<Passenger> getPassenger(const int& passengerId) override;
     bool deletePassenger(const int& passengerId) override;
     void save( Passenger& passenger) override;
     std::list<Passenger> getAllPassengers() override;

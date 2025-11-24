@@ -6,22 +6,26 @@
 #define RMS_INMEMORYTICKETREPOSITORY_H
 
 #include <map>
-#include <vector>
+#include <list>
+#include <optional>
+
 #include "ITicketRepository.h"
 #include "../models/Ticket.h"
-#include <memory>
 
 class InMemoryTicketRepository : public ITicketRepository
 {
 private:
-    std::map<int, std::shared_ptr<Ticket>> tickets;
+    std::map<int, Ticket> tickets;
+    int next_id = 1;
 
 public:
-    std::shared_ptr<Ticket> getTicketByTrainAndPassenger(int trainId, int passengerId) override;
+    InMemoryTicketRepository() = default;
+    ~InMemoryTicketRepository() override = default;
+    std::optional<Ticket> getTicketByTrainAndPassenger(int trainId, int passengerId) override;
     bool deleteTicket(int ticketId) override;
-    Ticket save(Ticket ticket) override;
-    std::vector<std::shared_ptr<Ticket>> getAllTickets() override;
-    std::shared_ptr<Ticket> getTicketById(int ticketId) override;
-    void clear();
+    void save(Ticket& ticket) override;
+    std::list<Ticket> getAllTickets() override;
+    std::optional<Ticket> getTicketById(int ticketId) override;
+    void clear() override;
 };
 #endif // RMS_INMEMORYTICKETREPOSITORY_H

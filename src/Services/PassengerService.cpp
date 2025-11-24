@@ -7,7 +7,7 @@ PassengerService::PassengerService(IPassengerRepository *repo) {
     this->passengerRepository =repo;
 }
 
-Passenger PassengerService::getPassenger(const int &passengerId) {
+std::optional<Passenger> PassengerService::getPassenger(const int &passengerId) {
     return passengerRepository->getPassenger(passengerId);
 }
 
@@ -25,7 +25,7 @@ Passenger PassengerService::createPassenger(const std::string& name) {
     return p;
 }
 
-Passenger PassengerService::find_or_create_passenger(const std::string &name) {
+std::optional<Passenger> PassengerService::find_or_create_passenger(const std::string &name) {
     const std::list<Passenger> passengers = passengerRepository->getAllPassengers();
 
     for(const auto & p : passengers)

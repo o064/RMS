@@ -7,21 +7,27 @@
 
 #include "Passenger.h"
 
-enum Status {
+enum Status
+{
     booked,
     cancelled
 };
-class Ticket {
+class Ticket
+{
     int id;
     int ticketSeat;
     int trainId;
     Passenger passenger;
     Status status;
+
 public:
-    Ticket(int id, int seat, int trainId, Passenger p);
+    Ticket(const int& id,const int& seat, const int& trainId,const Passenger& p);
     int getId() const;
     int getSeat() const;
     Status getStatus() const;
-    void setStatus(Status s);
+    void setStatus(const Status& s);
+    int getTrainId() const;
+    Passenger getPassenger() const;
+    void setId(const int& newId);
 };
-#endif //RMS_TICKET_H
+#endif // RMS_TICKET_H

@@ -6,18 +6,23 @@
 #define RMS_TICKETSERVICE_H
 
 #include "../Repo/ITicketRepository.h"
+#include "TrainService.h"
+#include "PassengerService.h"
 
 class TicketService
 {
 private:
     ITicketRepository *ticketRepository;
+    TrainService *trainService;
+    PassengerService *passengerService;
+
 
 public:
-    TicketService(ITicketRepository *repo);
-    std::shared_ptr<Ticket> getTicket(int ticketId);
-    std::vector<std::shared_ptr<Ticket>> getAllTickets();
-    std::shared_ptr<Ticket> getTicketByTrainAndPassenger(int trainId, int passengerId);
-    Ticket bookTicket(int trainId, int passengerId);
-    bool cancelTicket(int ticketId);
+    TicketService(ITicketRepository *repo , TrainService* ts,PassengerService* ps);
+    std::optional<Ticket> getTicket(const int& ticketId);
+    std::list<Ticket> getAllTickets();
+    std::optional<Ticket> getTicketByTrainAndPassenger(const int& trainId, const int& passengerId);
+    Ticket bookTicket(const int& trainId, const int& passengerId);
+    void cancelTicket(const int& ticketId);
 };
 #endif // RMS_TICKETSERVICE_H

@@ -34,7 +34,7 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 52,
+				"line" : 53,
 				"parent" : 0
 			}
 		]
@@ -45,7 +45,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-g -std=gnu++14 -fdiagnostics-color=always"
+					"fragment" : "-g -std=gnu++17 -fdiagnostics-color=always"
 				}
 			],
 			"includes" : 
@@ -66,7 +66,7 @@
 				[
 					1
 				],
-				"standard" : "14"
+				"standard" : "17"
 			},
 			"sourceIndexes" : 
 			[

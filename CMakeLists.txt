@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 
 project(RMS)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 enable_testing()
 
@@ -25,15 +25,15 @@ add_library(rms_lib
         src/models/Passenger.cpp
         src/models/SeatAllocator.cpp
         src/models/Train.cpp
+        src/models/Ticket.cpp
         src/Repo/InMemoryTrainRepository.cpp
+        src/Repo/InMemoryPassengerRepository.cpp
+        src/Repo/InMemoryTicketRepository.cpp
+        src/Services/PassengerService.cpp
+        src/Services/TicketService.cpp
         src/Services/TrainService.cpp
         src/RMSFacade.cpp
-        src/Repo/InMemoryPassengerRepository.cpp
-        src/Services/PassengerService.cpp
         src/utils/helpers.cpp
-
-
-
 )
 
 # Include directories - adjust based on your actual header locations
@@ -47,6 +47,7 @@ target_include_directories(rms_lib PUBLIC
 # -------------------------------
 add_executable(rms_app
         src/main.cpp
+
 )
 
 target_link_libraries(rms_app PRIVATE rms_lib)
@@ -63,6 +64,9 @@ add_executable(rms_tests
         tests/test_passengerRepoMemo.cpp
         tests/test_passengerService.cpp
         tests/test_helpers.cpp
+        tests/test_ticket.cpp
+        tests/test_ticktRepo.cpp
+        tests/test_ticketService.cpp
 )
 
 target_link_libraries(rms_tests

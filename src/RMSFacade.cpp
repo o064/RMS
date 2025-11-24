@@ -18,6 +18,3 @@ Train RMSFacade::addTrain(const std::string& name,const int& totalSeats) {
     return trainService->createTrain(name,totalSeats);
 }
 
-Train RMSFacade::getTrain(const int &trainId) {
-    return trainService->getTrain(trainId);
-}

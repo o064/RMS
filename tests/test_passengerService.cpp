@@ -1,12 +1,9 @@
-//
-// Created by Omar on 11/24/2025.
-//
-
 #include <gtest/gtest.h>
 #include "models/Passenger.h"
 #include "Repo/InMemoryPassengerRepository.h"
 #include "Services/PassengerService.h"
 #include "utils/helpers.h"
+#include <optional>
 
 class PassengerServiceTest : public ::testing::Test {
 protected:
@@ -37,20 +34,22 @@ TEST_F(PassengerServiceTest, CreatePassenger_AssignsUniqueIds) {
 
 TEST_F(PassengerServiceTest, CreatePassenger_TrimsName) {
     Passenger p = service->createPassenger("  Omar  ");
-
-    EXPECT_EQ("  Omar  ", p.getName());  // service does not trim, ensure repo returns exact name
+    // Note: Assuming logic doesn't trim based on provided source, asserting exact match
+    EXPECT_EQ("  Omar  ", p.getName());
 }
 
 TEST_F(PassengerServiceTest, CreatePassenger_DoesNotModifyRepositoryObjectDirectly) {
     Passenger p = service->createPassenger("Test");
-    Passenger retrieved = service->getPassenger(p.getId());
+    auto retrievedOpt = service->getPassenger(p.getId());
 
-    EXPECT_NE(&p, &retrieved); // ensure copies not references
+    ASSERT_TRUE(retrievedOpt.has_value());
+    // Ensure they are distinct objects in memory (copy) if that's the intent,
+    // but value equality should match
+    EXPECT_EQ(p.getId(), retrievedOpt->getId());
 }
 
 TEST_F(PassengerServiceTest, CreatePassenger_AllowsSpecialCharacters) {
     Passenger p = service->createPassenger("###");
-
     EXPECT_EQ("###", p.getName());
 }
 
@@ -58,21 +57,23 @@ TEST_F(PassengerServiceTest, CreatePassenger_AllowsSpecialCharacters) {
 /// GET PASSENGER TESTS
 /// ------------------------------------------------------------
 
-TEST_F(PassengerServiceTest, GetPassenger_ThrowsForNegativeId) {
-    EXPECT_THROW(service->getPassenger(-1), std::runtime_error);
+TEST_F(PassengerServiceTest, GetPassenger_ReturnsNulloptForNegativeId) {
+    // Repo returns nullopt, service returns nullopt
+    EXPECT_FALSE(service->getPassenger(-1).has_value());
 }
 
-TEST_F(PassengerServiceTest, GetPassenger_ThrowsForZeroId) {
-    EXPECT_THROW(service->getPassenger(0), std::runtime_error);
+TEST_F(PassengerServiceTest, GetPassenger_ReturnsNulloptForZeroId) {
+    EXPECT_FALSE(service->getPassenger(0).has_value());
 }
 
 TEST_F(PassengerServiceTest, GetPassenger_AfterMultipleCreates) {
     Passenger a = service->createPassenger("A");
     Passenger b = service->createPassenger("B");
 
-    Passenger retrieved = service->getPassenger(b.getId());
+    auto retrieved = service->getPassenger(b.getId());
 
-    EXPECT_EQ("B", retrieved.getName());
+    ASSERT_TRUE(retrieved.has_value());
+    EXPECT_EQ("B", retrieved->getName());
 }
 
 /// ------------------------------------------------------------
@@ -80,9 +81,9 @@ TEST_F(PassengerServiceTest, GetPassenger_AfterMultipleCreates) {
 /// ------------------------------------------------------------
 
 TEST_F(PassengerServiceTest, GetAllPassengers_OrderIsConsistent) {
-    Passenger p1 = service->createPassenger("A");
-    Passenger p2 = service->createPassenger("B");
-    Passenger p3 = service->createPassenger("C");
+    service->createPassenger("A");
+    service->createPassenger("B");
+    service->createPassenger("C");
 
     std::list<Passenger> all = service->getAllPassengers();
     auto it = all.begin();
@@ -126,50 +127,56 @@ TEST_F(PassengerServiceTest, DeletePassenger_DoesNotThrow) {
 
 TEST_F(PassengerServiceTest, FindOrCreate_CaseInsensitiveComparison) {
     service->createPassenger("Omar");
-    Passenger found = service->find_or_create_passenger("oMaR");
+    auto found = service->find_or_create_passenger("oMaR");
 
-    EXPECT_EQ("Omar", found.getName());
+    ASSERT_TRUE(found.has_value());
+    EXPECT_EQ("Omar", found->getName());
     EXPECT_EQ(1, service->getAllPassengers().size());
 }
 
 TEST_F(PassengerServiceTest, FindOrCreate_ReturnsExistingEvenIfExactNameDifferentCase) {
     Passenger p = service->createPassenger("HELLO");
 
-    Passenger found = service->find_or_create_passenger("hello");
+    auto found = service->find_or_create_passenger("hello");
 
-    EXPECT_EQ(p.getId(), found.getId());
+    ASSERT_TRUE(found.has_value());
+    EXPECT_EQ(p.getId(), found->getId());
 }
 
 TEST_F(PassengerServiceTest, FindOrCreate_DoesNotMatchSimilarNames) {
     service->createPassenger("John");
-    Passenger p = service->find_or_create_passenger("Johnny");
+    auto p = service->find_or_create_passenger("Johnny");
 
-    EXPECT_EQ("Johnny", p.getName());
+    ASSERT_TRUE(p.has_value());
+    EXPECT_EQ("Johnny", p->getName());
     EXPECT_EQ(2, service->getAllPassengers().size());
 }
 
 TEST_F(PassengerServiceTest, FindOrCreate_DifferentSpecialCharactersNotEqual) {
     service->createPassenger("Omar!");
-    Passenger p = service->find_or_create_passenger("Omar");
+    auto p = service->find_or_create_passenger("Omar");
 
-    EXPECT_NE("Omar!", p.getName());
+    ASSERT_TRUE(p.has_value());
+    EXPECT_NE("Omar!", p->getName());
 }
 
 TEST_F(PassengerServiceTest, FindOrCreate_SameSpecialCharactersAreEqual) {
     Passenger original = service->createPassenger("O'Brien");
 
-    Passenger found = service->find_or_create_passenger("o'brien");
+    auto found = service->find_or_create_passenger("o'brien");
 
-    EXPECT_EQ(original.getId(), found.getId());
+    ASSERT_TRUE(found.has_value());
+    EXPECT_EQ(original.getId(), found->getId());
 }
 
 TEST_F(PassengerServiceTest, FindOrCreate_AfterDeletionCreatesNewId) {
     Passenger p1 = service->createPassenger("Adam");
     service->deletePassenger(p1.getId());
 
-    Passenger p2 = service->find_or_create_passenger("Adam");
+    auto p2 = service->find_or_create_passenger("Adam");
 
-    EXPECT_NE(p1.getId(), p2.getId());
+    ASSERT_TRUE(p2.has_value());
+    EXPECT_NE(p1.getId(), p2->getId());
 }
 
 /// ------------------------------------------------------------
@@ -191,8 +198,9 @@ TEST_F(PassengerServiceTest, FindOrCreate_Stress100Lookups) {
     service->createPassenger("David");
 
     for (int i = 0; i < 100; i++) {
-        Passenger p = service->find_or_create_passenger("DAVID");
-        EXPECT_EQ("David", p.getName());
+        auto p = service->find_or_create_passenger("DAVID");
+        ASSERT_TRUE(p.has_value());
+        EXPECT_EQ("David", p->getName());
     }
 
     EXPECT_EQ(1, service->getAllPassengers().size());

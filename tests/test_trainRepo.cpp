@@ -3,6 +3,7 @@
 #include <memory>
 #include <algorithm>
 #include <stdexcept>
+#include <optional>
 
 class InMemoryTrainRepositoryTest : public ::testing::Test {
 protected:
@@ -27,9 +28,10 @@ TEST_F(InMemoryTrainRepositoryTest, SaveAndGetTrainById) {
     EXPECT_EQ(t1.getTotalSeats(), 20);
     EXPECT_GT(t1.getTrainId(), 0);
 
-    Train fetched = repo.getTrainById(t1.getTrainId());
-    EXPECT_EQ(fetched.getTrainName(), "Express");
-    EXPECT_EQ(fetched.getTrainId(), t1.getTrainId());
+    auto fetched = repo.getTrainById(t1.getTrainId());
+    ASSERT_TRUE(fetched.has_value());
+    EXPECT_EQ(fetched->getTrainName(), "Express");
+    EXPECT_EQ(fetched->getTrainId(), t1.getTrainId());
 }
 
 TEST_F(InMemoryTrainRepositoryTest, SaveModifiesOriginalTrainId) {
@@ -98,35 +100,29 @@ TEST_F(InMemoryTrainRepositoryTest, SaveWithExplicitId) {
 }
 
 TEST_F(InMemoryTrainRepositoryTest, ExplicitIdDoesNotChangeNextId_IfLower) {
-    // Save train with explicit ID lower than next_id
     Train t1(0, "Auto1", 10);
     repo.save(t1); // Gets ID 1, next_id becomes 2
 
     Train t2(0, "Auto2", 10);
     repo.save(t2); // Gets ID 2, next_id becomes 3
 
-    // Now save with explicit ID 1 (lower than next_id which is 3)
     Train t3(1, "Explicit", 10);
     repo.save(t3); // Should update train with ID 1
 
-    // Next auto-generated should still be 3
     Train t4(0, "Auto3", 10);
     repo.save(t4);
     EXPECT_EQ(t4.getTrainId(), 3);
 }
 
 TEST_F(InMemoryTrainRepositoryTest, ExplicitIdUpdatesNextId_IfHigher) {
-    // Save train with ID 1
     Train t1(0, "Auto", 10);
     repo.save(t1);
     EXPECT_EQ(t1.getTrainId(), 1);
 
-    // Save train with explicit high ID
     Train t2(100, "High", 10);
     repo.save(t2);
     EXPECT_EQ(t2.getTrainId(), 100);
 
-    // Next auto-generated should be 101
     Train t3(0, "Auto2", 10);
     repo.save(t3);
     EXPECT_EQ(t3.getTrainId(), 101);
@@ -136,12 +132,10 @@ TEST_F(InMemoryTrainRepositoryTest, ExplicitIdEqualToNextId) {
     Train t1(0, "Auto", 10);
     repo.save(t1); // ID 1, next_id = 2
 
-    // Save with explicit ID equal to next_id
     Train t2(2, "Explicit", 10);
     repo.save(t2);
     EXPECT_EQ(t2.getTrainId(), 2);
 
-    // Next auto should be 3
     Train t3(0, "Auto2", 10);
     repo.save(t3);
     EXPECT_EQ(t3.getTrainId(), 3);
@@ -149,13 +143,13 @@ TEST_F(InMemoryTrainRepositoryTest, ExplicitIdEqualToNextId) {
 
 TEST_F(InMemoryTrainRepositoryTest, MultipleExplicitHighIds) {
     Train t1(50, "Train50", 10);
-    repo.save(t1); // next_id becomes 51
+    repo.save(t1);
 
     Train t2(100, "Train100", 10);
-    repo.save(t2); // next_id becomes 101
+    repo.save(t2);
 
     Train t3(75, "Train75", 10);
-    repo.save(t3); // next_id stays 101 (75 < 101)
+    repo.save(t3);
 
     Train t4(0, "Auto", 10);
     repo.save(t4);
@@ -168,7 +162,6 @@ TEST_F(InMemoryTrainRepositoryTest, NegativeExplicitId) {
 
     EXPECT_EQ(t.getTrainId(), -5);
 
-    // Next auto-increment should start from 1
     Train t2(0, "Auto", 10);
     repo.save(t2);
     EXPECT_EQ(t2.getTrainId(), 1);
@@ -192,7 +185,6 @@ TEST_F(InMemoryTrainRepositoryTest, UpdateExistingTrain) {
     repo.save(t1);
     int originalId = t1.getTrainId();
 
-    // Create updated train with same ID
     Train updatedTrain(originalId, "Super Express", 30);
     repo.save(updatedTrain);
 
@@ -200,7 +192,6 @@ TEST_F(InMemoryTrainRepositoryTest, UpdateExistingTrain) {
     EXPECT_EQ(updatedTrain.getTrainName(), "Super Express");
     EXPECT_EQ(updatedTrain.getTotalSeats(), 30);
 
-    // Verify only one train exists
     auto all = repo.getAllTrains();
     EXPECT_EQ(all.size(), 1);
 }
@@ -210,7 +201,6 @@ TEST_F(InMemoryTrainRepositoryTest, UpdatePreservesId) {
     repo.save(t1);
     int originalId = t1.getTrainId();
 
-    // Modify and save again with same ID
     Train updated(originalId, "Updated", 20);
     repo.save(updated);
 
@@ -221,16 +211,14 @@ TEST_F(InMemoryTrainRepositoryTest, UpdatePreservesId) {
 
 TEST_F(InMemoryTrainRepositoryTest, UpdateDoesNotChangeNextId) {
     Train t1(0, "Train1", 10);
-    repo.save(t1); // ID 1, next_id = 2
+    repo.save(t1); // ID 1
 
     Train t2(0, "Train2", 10);
-    repo.save(t2); // ID 2, next_id = 3
+    repo.save(t2); // ID 2
 
-    // Update first train
     Train updated(t1.getTrainId(), "Updated", 20);
     repo.save(updated);
 
-    // Next auto-generated should still be 3
     Train t3(0, "Train3", 10);
     repo.save(t3);
     EXPECT_EQ(t3.getTrainId(), 3);
@@ -245,18 +233,18 @@ TEST_F(InMemoryTrainRepositoryTest, UpdateWithSeatAllocatorState) {
     repo.save(t);
     int trainId = t.getTrainId();
 
-    // Verify state
     EXPECT_EQ(t.getSeatAllocator()->getAvailableSeatCount(), 3);
 
-    // Create updated train with more allocations
-    Train fetched = repo.getTrainById(trainId);
+    auto fetchedOpt = repo.getTrainById(trainId);
+    ASSERT_TRUE(fetchedOpt.has_value());
+    Train fetched = fetchedOpt.value();
     fetched.getSeatAllocator()->allocateSeat(103);
 
     repo.save(fetched);
 
-    // Verify updated state
-    Train updated = repo.getTrainById(trainId);
-    EXPECT_EQ(updated.getSeatAllocator()->getAvailableSeatCount(), 2);
+    auto updatedOpt = repo.getTrainById(trainId);
+    ASSERT_TRUE(updatedOpt.has_value());
+    EXPECT_EQ(updatedOpt->getSeatAllocator()->getAvailableSeatCount(), 2);
 }
 
 TEST_F(InMemoryTrainRepositoryTest, UpdateMultipleTimes) {
@@ -264,18 +252,16 @@ TEST_F(InMemoryTrainRepositoryTest, UpdateMultipleTimes) {
     repo.save(t);
     int id = t.getTrainId();
 
-    // Update 5 times
     for (int i = 1; i <= 5; ++i) {
         Train update(id, "Version" + std::to_string(i), 10 + i);
         repo.save(update);
     }
 
-    // Verify final state
-    Train final = repo.getTrainById(id);
-    EXPECT_EQ(final.getTrainName(), "Version5");
-    EXPECT_EQ(final.getTotalSeats(), 15);
+    auto finalOpt = repo.getTrainById(id);
+    ASSERT_TRUE(finalOpt.has_value());
+    EXPECT_EQ(finalOpt->getTrainName(), "Version5");
+    EXPECT_EQ(finalOpt->getTotalSeats(), 15);
 
-    // Only one train should exist
     auto all = repo.getAllTrains();
     EXPECT_EQ(all.size(), 1);
 }
@@ -290,6 +276,7 @@ TEST_F(InMemoryTrainRepositoryTest, DeleteTrain) {
     bool deleted = repo.deleteTrain(id);
     EXPECT_TRUE(deleted);
 
+    // Repo implementation throws std::runtime_error if ID not found
     EXPECT_THROW(repo.getTrainById(id), std::runtime_error);
 }
 
@@ -321,7 +308,7 @@ TEST_F(InMemoryTrainRepositoryTest, DeleteSameTrainTwice) {
     int id = t.getTrainId();
 
     EXPECT_TRUE(repo.deleteTrain(id));
-    EXPECT_FALSE(repo.deleteTrain(id)); // Second delete should return false
+    EXPECT_FALSE(repo.deleteTrain(id));
 }
 
 TEST_F(InMemoryTrainRepositoryTest, DeleteWithExplicitId) {
@@ -347,9 +334,10 @@ TEST_F(InMemoryTrainRepositoryTest, GetTrainByIdReturnsCorrectTrain) {
     repo.save(t2);
     repo.save(t3);
 
-    Train fetched2 = repo.getTrainById(t2.getTrainId());
-    EXPECT_EQ(fetched2.getTrainName(), "Train2");
-    EXPECT_EQ(fetched2.getTotalSeats(), 20);
+    auto fetched2 = repo.getTrainById(t2.getTrainId());
+    ASSERT_TRUE(fetched2.has_value());
+    EXPECT_EQ(fetched2->getTrainName(), "Train2");
+    EXPECT_EQ(fetched2->getTotalSeats(), 20);
 }
 
 TEST_F(InMemoryTrainRepositoryTest, GetTrainByIdReturnsCopy) {
@@ -357,25 +345,27 @@ TEST_F(InMemoryTrainRepositoryTest, GetTrainByIdReturnsCopy) {
     repo.save(t);
     int id = t.getTrainId();
 
-    Train fetched = repo.getTrainById(id);
+    auto fetchedOpt = repo.getTrainById(id);
+    ASSERT_TRUE(fetchedOpt.has_value());
+    Train fetched = fetchedOpt.value();
     fetched.setTrainName("Modified");
 
-    // Original in repo should be unchanged
-    Train original = repo.getTrainById(id);
-    EXPECT_EQ(original.getTrainName(), "Original");
+    auto original = repo.getTrainById(id);
+    ASSERT_TRUE(original.has_value());
+    EXPECT_EQ(original->getTrainName(), "Original");
 }
 
 TEST_F(InMemoryTrainRepositoryTest, GetTrainWithNegativeId) {
     Train t(-10, "Negative", 10);
     repo.save(t);
 
-    Train fetched = repo.getTrainById(-10);
-    EXPECT_EQ(fetched.getTrainId(), -10);
-    EXPECT_EQ(fetched.getTrainName(), "Negative");
+    auto fetched = repo.getTrainById(-10);
+    ASSERT_TRUE(fetched.has_value());
+    EXPECT_EQ(fetched->getTrainId(), -10);
+    EXPECT_EQ(fetched->getTrainName(), "Negative");
 }
 
 TEST_F(InMemoryTrainRepositoryTest, GetTrainByZeroId) {
-    // Note: ID 0 should never exist as it's auto-incremented
     EXPECT_THROW(repo.getTrainById(0), std::runtime_error);
 }
 
@@ -447,7 +437,6 @@ TEST_F(InMemoryTrainRepositoryTest, ClearResetsNextId) {
 
     repo.clear();
 
-    // After clear, next_id should reset to 1
     Train t2(0, "Train2", 15);
     repo.save(t2);
     EXPECT_EQ(t2.getTrainId(), 1);
@@ -486,12 +475,11 @@ TEST_F(InMemoryTrainRepositoryTest, SeatAllocationAndFreeing) {
 
     EXPECT_EQ(seatAllocator->getAvailableSeatCount(), 1);
 
-    // Save back to repository
     repo.save(t);
 
-    // Fetch and verify persistence
-    Train fetched = repo.getTrainById(trainId);
-    EXPECT_EQ(fetched.getSeatAllocator()->getAvailableSeatCount(), 1);
+    auto fetched = repo.getTrainById(trainId);
+    ASSERT_TRUE(fetched.has_value());
+    EXPECT_EQ(fetched->getSeatAllocator()->getAvailableSeatCount(), 1);
 }
 
 TEST_F(InMemoryTrainRepositoryTest, PreservesSeatAllocatorState) {
@@ -504,8 +492,9 @@ TEST_F(InMemoryTrainRepositoryTest, PreservesSeatAllocatorState) {
 
     EXPECT_EQ(t.getSeatAllocator()->getAvailableSeatCount(), 1);
 
-    Train fetched = repo.getTrainById(t.getTrainId());
-    EXPECT_EQ(fetched.getSeatAllocator()->getAvailableSeatCount(), 1);
+    auto fetched = repo.getTrainById(t.getTrainId());
+    ASSERT_TRUE(fetched.has_value());
+    EXPECT_EQ(fetched->getSeatAllocator()->getAvailableSeatCount(), 1);
 }
 
 // ===================== Edge Cases and Boundary Tests =====================
@@ -530,11 +519,9 @@ TEST_F(InMemoryTrainRepositoryTest, SaveAndUpdateAlternating) {
     Train t2(0, "Train2", 20);
     repo.save(t2);
 
-    // Update first
     Train update1(t1.getTrainId(), "Updated1", 15);
     repo.save(update1);
 
-    // Update second
     Train update2(t2.getTrainId(), "Updated2", 25);
     repo.save(update2);
 
@@ -582,7 +569,6 @@ TEST_F(InMemoryTrainRepositoryTest, SaveManyTrains) {
     auto all = repo.getAllTrains();
     EXPECT_EQ(all.size(), COUNT);
 
-    // All IDs should be sequential
     for (int i = 0; i < COUNT; ++i) {
         EXPECT_EQ(ids[i], i + 1);
     }
@@ -594,14 +580,14 @@ TEST_F(InMemoryTrainRepositoryTest, MixedExplicitAndAutoIds) {
     EXPECT_EQ(t1.getTrainId(), 1);
 
     Train t2(50, "Explicit50", 10);
-    repo.save(t2); // ID 50, next_id = 51
+    repo.save(t2); // ID 50
 
     Train t3(0, "Auto2", 10);
     repo.save(t3); // ID 51
     EXPECT_EQ(t3.getTrainId(), 51);
 
     Train t4(25, "Explicit25", 10);
-    repo.save(t4); // ID 25, next_id stays 52
+    repo.save(t4); // ID 25
 
     Train t5(0, "Auto3", 10);
     repo.save(t5); // ID 52
@@ -616,7 +602,6 @@ TEST_F(InMemoryTrainRepositoryTest, SaveWithZeroSeats) {
     repo.save(t);
 
     EXPECT_EQ(t.getTotalSeats(), 0);
-    // Allocator should default to 10
     EXPECT_EQ(t.getSeatAllocator()->getAvailableSeatCount(), 10);
 }
 
@@ -625,7 +610,6 @@ TEST_F(InMemoryTrainRepositoryTest, SaveWithNegativeSeats) {
     repo.save(t);
 
     EXPECT_EQ(t.getTotalSeats(), -5);
-    // Allocator should default to 10
     EXPECT_EQ(t.getSeatAllocator()->getAvailableSeatCount(), 10);
 }
 
@@ -634,6 +618,7 @@ TEST_F(InMemoryTrainRepositoryTest, SaveEmptyNameTrain) {
     repo.save(t);
 
     EXPECT_EQ(t.getTrainName(), "");
-    Train fetched = repo.getTrainById(t.getTrainId());
-    EXPECT_EQ(fetched.getTrainName(), "");
+    auto fetched = repo.getTrainById(t.getTrainId());
+    ASSERT_TRUE(fetched.has_value());
+    EXPECT_EQ(fetched->getTrainName(), "");
 }

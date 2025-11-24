@@ -7,11 +7,12 @@
 
 #include <list>
 #include "../models/Passenger.h"
+#include <optional>
 
 class IPassengerRepository
 {
 public:
-    virtual Passenger getPassenger(const int& passengerId) = 0;
+    virtual std::optional<Passenger> getPassenger(const int& passengerId) = 0;
     virtual bool deletePassenger(const int& passengerId) = 0;
     virtual void save( Passenger& passenger) = 0;
     virtual std::list<Passenger> getAllPassengers() = 0;

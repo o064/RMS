@@ -3,7 +3,8 @@
 #include "Repo/InMemoryTrainRepository.h"
 #include "models/Train.h"
 #include <stdexcept>
-#include<algorithm>
+#include <algorithm>
+#include <optional>
 
 class TrainServiceTest : public ::testing::Test {
 protected:
@@ -44,14 +45,16 @@ TEST_F(TrainServiceTest, GetTrainById) {
     Train train = service->createTrain("Local", 10);
     int id = train.getTrainId();
 
-    Train fetched = service->getTrain(id);
-    EXPECT_EQ(fetched.getTrainId(), id);
-    EXPECT_EQ(fetched.getTrainName(), "Local");
-    EXPECT_EQ(fetched.getTotalSeats(), 10);
+    auto fetchedOpt = service->getTrain(id);
+    ASSERT_TRUE(fetchedOpt.has_value());
+    EXPECT_EQ(fetchedOpt->getTrainId(), id);
+    EXPECT_EQ(fetchedOpt->getTrainName(), "Local");
+    EXPECT_EQ(fetchedOpt->getTotalSeats(), 10);
 }
 
 // Test getting non-existent train
 TEST_F(TrainServiceTest, GetNonExistentTrain) {
+    // Service propagates repo behavior, which throws runtime_error for not found
     EXPECT_THROW(service->getTrain(999), std::runtime_error);
 }
 
@@ -101,7 +104,10 @@ TEST_F(TrainServiceTest, SeatAvailabilityWithAllocation) {
     int id = train.getTrainId();
 
     // Allocate all seats directly through the repository
-    Train trainRef = repo->getTrainById(id);
+    auto trainRefOpt = repo->getTrainById(id);
+    ASSERT_TRUE(trainRefOpt.has_value());
+    Train trainRef = trainRefOpt.value();
+
     auto allocator = trainRef.getSeatAllocator();
     allocator->allocateSeat(101);
     allocator->allocateSeat(102);
@@ -121,23 +127,18 @@ TEST_F(TrainServiceTest, SeatAvailabilityNonExistentTrain) {
 
 // Test multiple service operations
 TEST_F(TrainServiceTest, MultipleOperations) {
-    // Create multiple trains
     Train t1 = service->createTrain("Train A", 10);
     Train t2 = service->createTrain("Train B", 15);
 
-    // Verify creation
     auto allTrains = service->getAllTrains();
     EXPECT_EQ(allTrains.size(), 2);
 
-    // Delete one
     bool deleted = service->deleteTrain(t1.getTrainId());
     EXPECT_TRUE(deleted);
 
-    // Verify deletion
     allTrains = service->getAllTrains();
     EXPECT_EQ(allTrains.size(), 1);
 
-    // Verify remaining train
     EXPECT_EQ(allTrains.front().getTrainName(), "Train B");
 }
 
@@ -146,7 +147,6 @@ TEST_F(TrainServiceTest, CreateTrainWithZeroSeats) {
     Train train = service->createTrain("Zero Seats", 0);
 
     EXPECT_EQ(train.getTotalSeats(), 0);
-    // Allocator should default to 10 seats
     EXPECT_EQ(train.getSeatAllocator()->getAvailableSeatCount(), 10);
 }
 
@@ -155,7 +155,6 @@ TEST_F(TrainServiceTest, CreateTrainWithNegativeSeats) {
     Train train = service->createTrain("Negative", -5);
 
     EXPECT_EQ(train.getTotalSeats(), -5);
-    // Allocator should default to 10 seats
     EXPECT_EQ(train.getSeatAllocator()->getAvailableSeatCount(), 10);
 }
 
@@ -171,13 +170,10 @@ TEST_F(TrainServiceTest, CreateTrainEmptyName) {
 TEST_F(TrainServiceTest, ServiceDoesNotOwnRepository) {
     InMemoryTrainRepository* rawRepo = repo.get();
 
-    // Create train through service
     service->createTrain("Test", 5);
 
-    // Destroy service
     service.reset();
 
-    // Repository should still be valid
     auto trains = rawRepo->getAllTrains();
     EXPECT_EQ(trains.size(), 1);
 }
@@ -189,13 +185,12 @@ TEST_F(TrainServiceTest, GetAllTrainsReturnsCopies) {
     auto allTrains = service->getAllTrains();
     EXPECT_EQ(allTrains.size(), 1);
 
-    // Modify the returned train
     Train& modifiedTrain = allTrains.front();
     modifiedTrain.setTrainName("Modified");
 
-    // Original should be unchanged
-    Train original = service->getTrain(t1.getTrainId());
-    EXPECT_EQ(original.getTrainName(), "Train1");
+    auto originalOpt = service->getTrain(t1.getTrainId());
+    ASSERT_TRUE(originalOpt.has_value());
+    EXPECT_EQ(originalOpt->getTrainName(), "Train1");
 }
 
 // Test sequential train creation
@@ -207,12 +202,10 @@ TEST_F(TrainServiceTest, SequentialTrainCreation) {
         ids.push_back(t.getTrainId());
     }
 
-    // All IDs should be unique
     std::sort(ids.begin(), ids.end());
     auto it = std::unique(ids.begin(), ids.end());
     EXPECT_EQ(it, ids.end());
 
-    // Should have 5 trains
     auto all = service->getAllTrains();
     EXPECT_EQ(all.size(), 5);
 }
@@ -227,10 +220,8 @@ TEST_F(TrainServiceTest, DeleteAndRecreate) {
     Train t2 = service->createTrain("Second", 15);
     int id2 = t2.getTrainId();
 
-    // New train should have different ID
     EXPECT_NE(id1, id2);
 
-    // Only second train should exist
     auto all = service->getAllTrains();
     EXPECT_EQ(all.size(), 1);
     EXPECT_EQ(all.front().getTrainName(), "Second");
@@ -243,16 +234,15 @@ TEST_F(TrainServiceTest, IsAvailbleSeatReturnsFreshData) {
 
     EXPECT_TRUE(service->isAvailbleSeat(id));
 
-    // Get train reference and allocate all seats
-    Train fetched = service->getTrain(id);
+    auto fetchedOpt = service->getTrain(id);
+    ASSERT_TRUE(fetchedOpt.has_value());
+    Train fetched = fetchedOpt.value();
     auto allocator = fetched.getSeatAllocator();
     allocator->allocateSeat(101);
     allocator->allocateSeat(102);
 
-    // Need to save changes back to repository
     repo->save(fetched);
 
-    // Now check availability
     EXPECT_FALSE(service->isAvailbleSeat(id));
 }
 
@@ -280,13 +270,12 @@ TEST_F(TrainServiceTest, TrainWithLargeSeatCount) {
 TEST_F(TrainServiceTest, CreateTrainReturnsTrainWithId) {
     Train train = service->createTrain("Test", 10);
 
-    // The returned train should have an ID assigned
     EXPECT_GT(train.getTrainId(), 0);
 
-    // The train should exist in the repository
-    Train fetched = service->getTrain(train.getTrainId());
-    EXPECT_EQ(fetched.getTrainName(), "Test");
-    EXPECT_EQ(fetched.getTotalSeats(), 10);
+    auto fetchedOpt = service->getTrain(train.getTrainId());
+    ASSERT_TRUE(fetchedOpt.has_value());
+    EXPECT_EQ(fetchedOpt->getTrainName(), "Test");
+    EXPECT_EQ(fetchedOpt->getTotalSeats(), 10);
 }
 
 // Test that createTrain properly saves to repository
@@ -294,10 +283,10 @@ TEST_F(TrainServiceTest, CreateTrainSavesToRepository) {
     Train train = service->createTrain("Saved", 20);
     int id = train.getTrainId();
 
-    // Should be able to retrieve directly from repository
-    Train fromRepo = repo->getTrainById(id);
-    EXPECT_EQ(fromRepo.getTrainName(), "Saved");
-    EXPECT_EQ(fromRepo.getTotalSeats(), 20);
+    auto fromRepoOpt = repo->getTrainById(id);
+    ASSERT_TRUE(fromRepoOpt.has_value());
+    EXPECT_EQ(fromRepoOpt->getTrainName(), "Saved");
+    EXPECT_EQ(fromRepoOpt->getTotalSeats(), 20);
 }
 
 // Test concurrent train creation
@@ -308,14 +297,12 @@ TEST_F(TrainServiceTest, ConcurrentTrainCreation) {
         trains.push_back(service->createTrain("Train" + std::to_string(i), i * 5));
     }
 
-    // All trains should have unique IDs
     std::set<int> uniqueIds;
     for (const auto& train : trains) {
         uniqueIds.insert(train.getTrainId());
     }
     EXPECT_EQ(uniqueIds.size(), 10);
 
-    // All trains should be in repository
     auto allTrains = service->getAllTrains();
     EXPECT_EQ(allTrains.size(), 10);
 }
@@ -327,9 +314,8 @@ TEST_F(TrainServiceTest, CreateTrainAfterClear) {
 
     repo->clear();
 
-    // After clear, should be able to create trains again
     Train train = service->createTrain("New", 20);
-    EXPECT_EQ(train.getTrainId(), 1); // Should restart from 1
+    EXPECT_EQ(train.getTrainId(), 1);
 
     auto all = service->getAllTrains();
     EXPECT_EQ(all.size(), 1);
