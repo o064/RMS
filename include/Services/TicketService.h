@@ -14,9 +14,9 @@ private:
 
 public:
     TicketService(ITicketRepository *repo);
-    std::shared_ptr<Ticket> getTicket(int ticketId);
-    std::vector<std::shared_ptr<Ticket>> getAllTickets();
-    std::shared_ptr<Ticket> getTicketByTrainAndPassenger(int trainId, int passengerId);
+    Ticket getTicket(int ticketId);
+    std::vector<Ticket> getAllTickets();
+    Ticket getTicketByTrainAndPassenger(int trainId, int passengerId);
     Ticket bookTicket(int trainId, int passengerId);
     bool cancelTicket(int ticketId);
 };
