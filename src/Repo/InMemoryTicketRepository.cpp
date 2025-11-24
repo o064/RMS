@@ -1,7 +1,8 @@
 #include "Repo/InMemoryTicketRepository .h"
 #include <stdexcept>
+#include <iostream>
 
-Ticket InMemoryTicketRepository::getTicketByTrainAndPassenger(int trainId, int passengerId)
+std::optional<Ticket> InMemoryTicketRepository::getTicketByTrainAndPassenger(int trainId, int passengerId)
 {
     for (const auto &p : tickets)
     {
@@ -11,7 +12,7 @@ Ticket InMemoryTicketRepository::getTicketByTrainAndPassenger(int trainId, int p
             return t;
         }
     }
-    throw std::runtime_error("Ticket not found");
+    return std::nullopt;//not found
 }
 
 bool InMemoryTicketRepository::deleteTicket(int ticketId)
@@ -25,7 +26,7 @@ bool InMemoryTicketRepository::deleteTicket(int ticketId)
     return false;
 }
 
-Ticket InMemoryTicketRepository::save(Ticket ticket)
+void InMemoryTicketRepository::save( Ticket& ticket)
 {
     // later
     if (ticket.getId() == 0)
@@ -43,20 +44,20 @@ Ticket InMemoryTicketRepository::save(Ticket ticket)
     {
         result.first->second = ticket; // update existing
     }
-    return result.first->second;
+
 }
 
-std::vector<Ticket> InMemoryTicketRepository::getAllTickets()
+std::list<Ticket> InMemoryTicketRepository::getAllTickets()
 {
-    std::vector<Ticket> out;
+    std::list<Ticket> results;
     for (const auto &p : tickets)
     {
-        out.push_back(p.second);
+        results.push_back(p.second);
     }
-    return out;
+    return results;
 }
 
-Ticket InMemoryTicketRepository::getTicketById(int ticketId)
+std::optional<Ticket> InMemoryTicketRepository::getTicketById(int ticketId)
 {
     auto it = tickets.find(ticketId);
     if (it != tickets.end())
@@ -69,4 +70,7 @@ Ticket InMemoryTicketRepository::getTicketById(int ticketId)
 void InMemoryTicketRepository::clear()
 {
     tickets.clear();
+    next_id= 1;
+    std::cout << "All tickets destroyed\n";
+
 }

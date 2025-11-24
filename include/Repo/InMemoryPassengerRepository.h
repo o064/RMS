@@ -5,22 +5,23 @@
 #ifndef RMS_INMEMORYPASSENGERREPOSITORY_H
 #define RMS_INMEMORYPASSENGERREPOSITORY_H
 
-#include <vector>
+#include <list>
 #include <map>
+#include <optional>
+
 #include "../models/Passenger.h"
 #include "IPassengerRepository.h"
-#include <memory>
 
 class InMemoryPassengerRepository : public IPassengerRepository
 {
 private:
-    std::map<int, std::shared_ptr<Passenger>> passengers;
-
+    std::map<int, Passenger> passengers;
+    int next_id = 1;
 public:
-    std::shared_ptr<Passenger> getPassenger(int passengerId) override;
-    bool deletePassenger(int passengerId) override;
-    Passenger save(Passenger passenger) override;
-    std::vector<std::shared_ptr<Passenger>> getAllPassengers() override;
-    void clear();
+    std::optional<Passenger> getPassenger(const int& passengerId) override;
+    bool deletePassenger(const int& passengerId) override;
+    void save( Passenger& passenger) override;
+    std::list<Passenger> getAllPassengers() override;
+    void clear() override;
 };
 #endif // RMS_INMEMORYPASSENGERREPOSITORY_H

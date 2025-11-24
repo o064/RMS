@@ -4,7 +4,8 @@
 #include "../models/Train.h"
 #include "ITrainRepository.h"
 #include <map>
-#include <memory>
+#include <optional>
+
 
 class InMemoryTrainRepository : public ITrainRepository {
 private:
@@ -17,8 +18,8 @@ public:
 
     std::list<Train> getAllTrains() const override;
     bool deleteTrain(int trainId) override;
-    Train  save( Train& newTrain) override;
-    Train getTrainById(const int& trainId) const  override;
+    void  save( Train& newTrain) override;
+    std::optional<Train> getTrainById(const int& trainId) const  override;
     void clear() override;
 };
 

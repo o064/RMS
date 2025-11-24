@@ -1,14 +1,12 @@
 #include "models/Ticket.h"
 
-Ticket::Ticket(int id, int seat, int trainId, Passenger p)
-{
-    this->id = id;
-    this->ticketSeat = seat;
-    this->trainId = trainId;
-    this->passenger = p;
-    this->status = booked;
-}
-
+Ticket::Ticket(const int& id,const int& seat,
+               const int& trainId,const Passenger& p)
+        : id(id),
+          ticketSeat(seat),
+          trainId(trainId),
+          passenger(p),
+          status(booked){}
 int Ticket::getId() const
 {
     return id;
@@ -16,7 +14,7 @@ int Ticket::getId() const
 
 int Ticket::getSeat() const
 {
-    return ticketSeat;
+    return this->ticketSeat;
 }
 
 Status Ticket::getStatus() const
@@ -24,7 +22,7 @@ Status Ticket::getStatus() const
     return status;
 }
 
-void Ticket::setStatus(Status s)
+void Ticket::setStatus(const Status& s)
 {
     this->status = s;
 }
@@ -39,7 +37,9 @@ Passenger Ticket::getPassenger() const
     return passenger;
 }
 
-void Ticket::setId(int newId)
+void Ticket::setId(const int& newId)
 {
     this->id = newId;
 }
+
+

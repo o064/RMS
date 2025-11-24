@@ -3,8 +3,9 @@
 //
 
 #include "Services/TrainService.h"
+#include <stdexcept> //for run time exception
 
-Train TrainService::getTrain(const int& trainId) {
+std::optional<Train> TrainService::getTrain(const int& trainId) {
     return trainRepository->getTrainById(trainId);
 }
 
@@ -22,7 +23,8 @@ std::list<Train> TrainService::getAllTrains() {
 
 Train TrainService::createTrain(const std::string& name,const int& seats) {
     Train t(0,name ,seats);
-    return trainRepository->save(t);
+    trainRepository->save(t); // save the train  and give id by the repo
+    return t;
 }
 
 bool TrainService::deleteTrain(int trainId) {
@@ -30,5 +32,13 @@ bool TrainService::deleteTrain(int trainId) {
 }
 
 bool TrainService::isAvailbleSeat(int trainId) {
-    return  trainRepository->getTrainById(trainId).hasAvailableSeats();
+    auto train = trainRepository->getTrainById(trainId);
+    if(!train.has_value()){
+        throw std::runtime_error("train with id : " +  std::to_string(trainId) + "does not exit");
+    }
+    return train->hasAvailableSeats() ;
+}
+
+void TrainService::save(Train &train) {
+    trainRepository->save(train);
 }

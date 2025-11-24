@@ -1,5 +1,6 @@
 #include "Repo/InMemoryTrainRepository.h"
 #include <iostream>
+#include <stdexcept>
 
 std::list<Train> InMemoryTrainRepository::getAllTrains() const {
     std::list<Train> result;
@@ -9,7 +10,7 @@ std::list<Train> InMemoryTrainRepository::getAllTrains() const {
     return result;
 }
 
-Train InMemoryTrainRepository::save(Train & newTrain) {
+void InMemoryTrainRepository::save(Train & newTrain) {
     // assign id if needed
     if (newTrain.getTrainId() == 0) {
         newTrain.setTrainId(next_id++);
@@ -26,8 +27,7 @@ Train InMemoryTrainRepository::save(Train & newTrain) {
         result.first->second = newTrain;
     }
 
-
-    return result.first->second;
+    std::cout << "Train save successfully\n";
 }
 
 bool InMemoryTrainRepository::deleteTrain(int trainId) {
@@ -39,7 +39,7 @@ bool InMemoryTrainRepository::deleteTrain(int trainId) {
     return false;
 }
 
-Train  InMemoryTrainRepository::getTrainById(const int& trainId) const {
+std::optional<Train>   InMemoryTrainRepository::getTrainById(const int& trainId) const {
     auto it = trains.find(trainId);
     if (it != trains.end()) {
         return it->second;
@@ -49,5 +49,6 @@ Train  InMemoryTrainRepository::getTrainById(const int& trainId) const {
 
 void InMemoryTrainRepository::clear() {
     trains.clear();
+    next_id= 1;
     std::cout << "All trains destroyed\n";
 }

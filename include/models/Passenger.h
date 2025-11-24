@@ -9,8 +9,10 @@ class Passenger{
     std::string name;
     int id;
 public:
-    Passenger(int id, std::string name);
+    Passenger(const int& id, const std::string& name);
     int getId() const;
     std::string getName() const;
+    void setId(const int & passengerId) ;
+
 };
 #endif //RMS_PASSENGER_H
