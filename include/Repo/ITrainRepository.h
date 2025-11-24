@@ -9,7 +9,7 @@ class ITrainRepository {
 public:
     virtual std::list<Train> getAllTrains() const = 0;
     virtual bool deleteTrain(int) = 0;
-    virtual Train save(Train&) = 0;
+    virtual void save(Train&) = 0;
     virtual Train getTrainById(const int& trainId) const   = 0;
     virtual void clear() = 0;
     virtual ~ITrainRepository() = default;

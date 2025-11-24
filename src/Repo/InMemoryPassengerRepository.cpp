@@ -22,7 +22,7 @@ std::list<Passenger> InMemoryPassengerRepository::getAllPassengers() {
     return results;
 }
 
-Passenger InMemoryPassengerRepository::save(Passenger &passenger) {
+void InMemoryPassengerRepository::save(Passenger &passenger) {
     if(passenger.getId() == 0 ){
         passenger.setId(next_id++);
     }else if(passenger.getId() >= next_id){

@@ -17,7 +17,7 @@ public:
 
     std::list<Train> getAllTrains() const override;
     bool deleteTrain(int trainId) override;
-    Train  save( Train& newTrain) override;
+    void  save( Train& newTrain) override;
     Train getTrainById(const int& trainId) const  override;
     void clear() override;
 };

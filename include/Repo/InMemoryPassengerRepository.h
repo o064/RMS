@@ -18,7 +18,7 @@ private:
 public:
     Passenger getPassenger(const int& passengerId) override;
     bool deletePassenger(const int& passengerId) override;
-    Passenger save( Passenger& passenger) override;
+    void save( Passenger& passenger) override;
     std::list<Passenger> getAllPassengers() override;
     void clear() override;
 };

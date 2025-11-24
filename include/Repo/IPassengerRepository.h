@@ -13,7 +13,7 @@ class IPassengerRepository
 public:
     virtual Passenger getPassenger(const int& passengerId) = 0;
     virtual bool deletePassenger(const int& passengerId) = 0;
-    virtual Passenger save( Passenger& passenger) = 0;
+    virtual void save( Passenger& passenger) = 0;
     virtual std::list<Passenger> getAllPassengers() = 0;
     virtual void clear() = 0;
 

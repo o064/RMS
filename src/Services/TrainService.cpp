@@ -22,7 +22,8 @@ std::list<Train> TrainService::getAllTrains() {
 
 Train TrainService::createTrain(const std::string& name,const int& seats) {
     Train t(0,name ,seats);
-    return trainRepository->save(t);
+    trainRepository->save(t); // save the train  and give id by the repo
+    return t;
 }
 
 bool TrainService::deleteTrain(int trainId) {

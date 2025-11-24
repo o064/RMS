@@ -29,6 +29,8 @@ add_library(rms_lib
         src/Services/TrainService.cpp
         src/RMSFacade.cpp
         src/Repo/InMemoryPassengerRepository.cpp
+        src/Services/PassengerService.cpp
+
 
 )
 
@@ -43,7 +45,7 @@ target_include_directories(rms_lib PUBLIC
 # -------------------------------
 add_executable(rms_app
         src/main.cpp
-        src/RMSFacade.cpp
+        src/utils/helpers.cpp
 )
 
 target_link_libraries(rms_app PRIVATE rms_lib)
