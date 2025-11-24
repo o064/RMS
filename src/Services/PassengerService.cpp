@@ -27,8 +27,9 @@ Passenger PassengerService::createPassenger(const std::string& name) {
 
 Passenger PassengerService::find_or_create_passenger(const std::string &name) {
     const std::list<Passenger> passengers = passengerRepository->getAllPassengers();
+
     for(const auto & p : passengers)
-        if(toLowerCase(p.getName()) == name)
+        if(toLowerCase(p.getName()) == toLowerCase(name))
             return passengerRepository->getPassenger(p.getId());
     Passenger p(0,name);
     passengerRepository->save(p);

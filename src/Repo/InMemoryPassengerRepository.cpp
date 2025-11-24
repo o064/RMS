@@ -33,7 +33,6 @@ void InMemoryPassengerRepository::save(Passenger &passenger) {
     if(!res.second){ //update
         res.first->second = passenger;
     }
-    return passenger;
 
 
 }

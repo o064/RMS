@@ -30,6 +30,8 @@ add_library(rms_lib
         src/RMSFacade.cpp
         src/Repo/InMemoryPassengerRepository.cpp
         src/Services/PassengerService.cpp
+        src/utils/helpers.cpp
+
 
 
 )
@@ -45,7 +47,6 @@ target_include_directories(rms_lib PUBLIC
 # -------------------------------
 add_executable(rms_app
         src/main.cpp
-        src/utils/helpers.cpp
 )
 
 target_link_libraries(rms_app PRIVATE rms_lib)
@@ -58,6 +59,10 @@ add_executable(rms_tests
         tests/test_train.cpp
         tests/test_trainRepo.cpp
         tests/test_trainSevice.cpp
+        tests/test_passenger.cpp
+        tests/test_passengerRepoMemo.cpp
+        tests/test_passengerService.cpp
+        tests/test_helpers.cpp
 )
 
 target_link_libraries(rms_tests

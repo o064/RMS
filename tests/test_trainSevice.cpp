@@ -107,11 +107,11 @@ TEST_F(TrainServiceTest, SeatAvailabilityWithAllocation) {
     allocator->allocateSeat(102);
     allocator->allocateSeat(103);
 
-    // Now check - but note: the service fetches a NEW copy from repo
-    // So the changes won't reflect unless we save back
-    // This is actually a design issue - the service should work with references
-    // For now, let's test what the current implementation does
-    EXPECT_FALSE(allocator->hasAvailableSeats());
+    // Save the changes back to the repository
+    repo->save(trainRef);
+
+    // Now check - the service fetches a fresh copy from repo
+    EXPECT_FALSE(service->isAvailbleSeat(id));
 }
 
 // Test seat availability for non-existent train
@@ -274,4 +274,63 @@ TEST_F(TrainServiceTest, TrainWithLargeSeatCount) {
 
     EXPECT_EQ(train.getTotalSeats(), 1000);
     EXPECT_EQ(train.getSeatAllocator()->getAvailableSeatCount(), 1000);
+}
+
+// Test createTrain returns updated train with ID
+TEST_F(TrainServiceTest, CreateTrainReturnsTrainWithId) {
+    Train train = service->createTrain("Test", 10);
+
+    // The returned train should have an ID assigned
+    EXPECT_GT(train.getTrainId(), 0);
+
+    // The train should exist in the repository
+    Train fetched = service->getTrain(train.getTrainId());
+    EXPECT_EQ(fetched.getTrainName(), "Test");
+    EXPECT_EQ(fetched.getTotalSeats(), 10);
+}
+
+// Test that createTrain properly saves to repository
+TEST_F(TrainServiceTest, CreateTrainSavesToRepository) {
+    Train train = service->createTrain("Saved", 20);
+    int id = train.getTrainId();
+
+    // Should be able to retrieve directly from repository
+    Train fromRepo = repo->getTrainById(id);
+    EXPECT_EQ(fromRepo.getTrainName(), "Saved");
+    EXPECT_EQ(fromRepo.getTotalSeats(), 20);
+}
+
+// Test concurrent train creation
+TEST_F(TrainServiceTest, ConcurrentTrainCreation) {
+    std::vector<Train> trains;
+
+    for (int i = 0; i < 10; ++i) {
+        trains.push_back(service->createTrain("Train" + std::to_string(i), i * 5));
+    }
+
+    // All trains should have unique IDs
+    std::set<int> uniqueIds;
+    for (const auto& train : trains) {
+        uniqueIds.insert(train.getTrainId());
+    }
+    EXPECT_EQ(uniqueIds.size(), 10);
+
+    // All trains should be in repository
+    auto allTrains = service->getAllTrains();
+    EXPECT_EQ(allTrains.size(), 10);
+}
+
+// Test train creation after repository clear
+TEST_F(TrainServiceTest, CreateTrainAfterClear) {
+    service->createTrain("First", 10);
+    service->createTrain("Second", 15);
+
+    repo->clear();
+
+    // After clear, should be able to create trains again
+    Train train = service->createTrain("New", 20);
+    EXPECT_EQ(train.getTrainId(), 1); // Should restart from 1
+
+    auto all = service->getAllTrains();
+    EXPECT_EQ(all.size(), 1);
 }
