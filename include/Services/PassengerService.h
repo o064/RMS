@@ -16,10 +16,10 @@ private:
 
 public:
     PassengerService(IPassengerRepository *repo);
-    std::shared_ptr<Passenger> getPassenger(int passengerId);
-    std::vector<std::shared_ptr<Passenger>> getAllPassengers();
+    Passenger getPassenger(const int& passengerId);
+    std::list<Passenger> getAllPassengers();
     Passenger createPassenger(std::string name);
-    Passenger deletePassenger(int passengerId);
-    std::shared_ptr<Passenger> findPassenger(std::string name);
+    Passenger deletePassenger(const int& passengerId);
+    Passenger findPassenger(const std::string& name);
 };
 #endif // RMS_PASSENGERSERVICE_H

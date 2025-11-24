@@ -28,6 +28,7 @@ add_library(rms_lib
         src/Repo/InMemoryTrainRepository.cpp
         src/Services/TrainService.cpp
         src/RMSFacade.cpp
+        src/Repo/InMemoryPassengerRepository.cpp
 
 )
 

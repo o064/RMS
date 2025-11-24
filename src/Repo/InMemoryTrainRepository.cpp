@@ -1,5 +1,6 @@
 #include "Repo/InMemoryTrainRepository.h"
 #include <iostream>
+#include <stdexcept>
 
 std::list<Train> InMemoryTrainRepository::getAllTrains() const {
     std::list<Train> result;
@@ -49,5 +50,6 @@ Train  InMemoryTrainRepository::getTrainById(const int& trainId) const {
 
 void InMemoryTrainRepository::clear() {
     trains.clear();
+    next_id= 1;
     std::cout << "All trains destroyed\n";
 }
