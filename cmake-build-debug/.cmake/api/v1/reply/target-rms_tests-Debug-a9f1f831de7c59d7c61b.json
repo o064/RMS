@@ -20,7 +20,7 @@
 		"files" : 
 		[
 			"CMakeLists.txt",
-			"cmake-build-debug-event-trace/_deps/googletest-src/googletest/CMakeLists.txt"
+			"cmake-build-debug/_deps/googletest-src/googletest/CMakeLists.txt"
 		],
 		"nodes" : 
 		[
@@ -30,13 +30,13 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 58,
+				"line" : 53,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 72,
+				"line" : 60,
 				"parent" : 0
 			},
 			{
@@ -51,7 +51,7 @@
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 78,
+				"line" : 66,
 				"parent" : 0
 			}
 		]
@@ -62,7 +62,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-g -std=gnu++17 -fdiagnostics-color=always"
+					"fragment" : "-g -std=gnu++14 -fdiagnostics-color=always"
 				}
 			],
 			"includes" : 
@@ -78,12 +78,12 @@
 				{
 					"backtrace" : 2,
 					"isSystem" : true,
-					"path" : "D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include"
+					"path" : "D:/coding/.Colleage/RMS/cmake-build-debug/_deps/googletest-src/googletest/include"
 				},
 				{
 					"backtrace" : 2,
 					"isSystem" : true,
-					"path" : "D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest"
+					"path" : "D:/coding/.Colleage/RMS/cmake-build-debug/_deps/googletest-src/googletest"
 				}
 			],
 			"language" : "CXX",
@@ -93,21 +93,14 @@
 				[
 					2
 				],
-				"standard" : "17"
+				"standard" : "14"
 			},
 			"sourceIndexes" : 
 			[
 				0,
 				1,
 				2,
-				3,
-				4,
-				5,
-				6,
-				7,
-				8,
-				9,
-				10
+				3
 			]
 		}
 	],
@@ -119,11 +112,11 @@
 		},
 		{
 			"backtrace" : 2,
-			"id" : "gtest::@1ea2dfc0605fe3ab2a3f"
+			"id" : "gtest_main::@1ea2dfc0605fe3ab2a3f"
 		},
 		{
 			"backtrace" : 2,
-			"id" : "gtest_main::@1ea2dfc0605fe3ab2a3f"
+			"id" : "gtest::@1ea2dfc0605fe3ab2a3f"
 		}
 	],
 	"id" : "rms_tests::@6890427a1f51a3e7e1df",
@@ -177,14 +170,7 @@
 				0,
 				1,
 				2,
-				3,
-				4,
-				5,
-				6,
-				7,
-				8,
-				9,
-				10
+				3
 			]
 		}
 	],
@@ -212,48 +198,6 @@
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "tests/test_trainSevice.cpp",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"compileGroupIndex" : 0,
-			"path" : "tests/test_passenger.cpp",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"compileGroupIndex" : 0,
-			"path" : "tests/test_passengerRepoMemo.cpp",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"compileGroupIndex" : 0,
-			"path" : "tests/test_passengerService.cpp",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"compileGroupIndex" : 0,
-			"path" : "tests/test_helpers.cpp",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"compileGroupIndex" : 0,
-			"path" : "tests/test_ticket.cpp",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"compileGroupIndex" : 0,
-			"path" : "tests/test_ticktRepo.cpp",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"compileGroupIndex" : 0,
-			"path" : "tests/test_ticketService.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],
