@@ -20,6 +20,5 @@ private:
 public:
     RMSFacade * buildFacade() ;
 
-
 };
 #endif //RMS_STARTUPMANAGER_H
