@@ -20,7 +20,7 @@
 		"files" : 
 		[
 			"CMakeLists.txt",
-			"cmake-build-debug-event-trace/_deps/googletest-src/googletest/CMakeLists.txt"
+			"cmake-build-debug/_deps/googletest-src/googletest/CMakeLists.txt"
 		],
 		"nodes" : 
 		[
@@ -30,13 +30,13 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 58,
+				"line" : 61,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 72,
+				"line" : 77,
 				"parent" : 0
 			},
 			{
@@ -51,7 +51,7 @@
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 78,
+				"line" : 83,
 				"parent" : 0
 			}
 		]
@@ -78,12 +78,12 @@
 				{
 					"backtrace" : 2,
 					"isSystem" : true,
-					"path" : "D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include"
+					"path" : "D:/coding/.Colleage/RMS/cmake-build-debug/_deps/googletest-src/googletest/include"
 				},
 				{
 					"backtrace" : 2,
 					"isSystem" : true,
-					"path" : "D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest"
+					"path" : "D:/coding/.Colleage/RMS/cmake-build-debug/_deps/googletest-src/googletest"
 				}
 			],
 			"language" : "CXX",
@@ -107,7 +107,9 @@
 				7,
 				8,
 				9,
-				10
+				10,
+				11,
+				12
 			]
 		}
 	],
@@ -184,7 +186,9 @@
 				7,
 				8,
 				9,
-				10
+				10,
+				11,
+				12
 			]
 		}
 	],
@@ -254,6 +258,18 @@
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "tests/test_ticketService.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "tests/test_facade.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "tests/test_startUpManager.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],

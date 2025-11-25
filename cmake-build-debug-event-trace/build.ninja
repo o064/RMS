@@ -70,12 +70,47 @@ build CMakeFiles/rms_lib.dir/src/models/Train.cpp.obj: CXX_COMPILER__rms_lib_uns
   OBJECT_DIR = CMakeFiles\rms_lib.dir
   OBJECT_FILE_DIR = CMakeFiles\rms_lib.dir\src\models
 
+build CMakeFiles/rms_lib.dir/src/models/Ticket.cpp.obj: CXX_COMPILER__rms_lib_unscanned_Debug D$:/coding/.Colleage/RMS/src/models/Ticket.cpp || cmake_object_order_depends_target_rms_lib
+  DEP_FILE = CMakeFiles\rms_lib.dir\src\models\Ticket.cpp.obj.d
+  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
+  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src
+  OBJECT_DIR = CMakeFiles\rms_lib.dir
+  OBJECT_FILE_DIR = CMakeFiles\rms_lib.dir\src\models
+
 build CMakeFiles/rms_lib.dir/src/Repo/InMemoryTrainRepository.cpp.obj: CXX_COMPILER__rms_lib_unscanned_Debug D$:/coding/.Colleage/RMS/src/Repo/InMemoryTrainRepository.cpp || cmake_object_order_depends_target_rms_lib
   DEP_FILE = CMakeFiles\rms_lib.dir\src\Repo\InMemoryTrainRepository.cpp.obj.d
   FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
   INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src
   OBJECT_DIR = CMakeFiles\rms_lib.dir
   OBJECT_FILE_DIR = CMakeFiles\rms_lib.dir\src\Repo
+
+build CMakeFiles/rms_lib.dir/src/Repo/InMemoryPassengerRepository.cpp.obj: CXX_COMPILER__rms_lib_unscanned_Debug D$:/coding/.Colleage/RMS/src/Repo/InMemoryPassengerRepository.cpp || cmake_object_order_depends_target_rms_lib
+  DEP_FILE = CMakeFiles\rms_lib.dir\src\Repo\InMemoryPassengerRepository.cpp.obj.d
+  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
+  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src
+  OBJECT_DIR = CMakeFiles\rms_lib.dir
+  OBJECT_FILE_DIR = CMakeFiles\rms_lib.dir\src\Repo
+
+build CMakeFiles/rms_lib.dir/src/Repo/InMemoryTicketRepository.cpp.obj: CXX_COMPILER__rms_lib_unscanned_Debug D$:/coding/.Colleage/RMS/src/Repo/InMemoryTicketRepository.cpp || cmake_object_order_depends_target_rms_lib
+  DEP_FILE = CMakeFiles\rms_lib.dir\src\Repo\InMemoryTicketRepository.cpp.obj.d
+  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
+  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src
+  OBJECT_DIR = CMakeFiles\rms_lib.dir
+  OBJECT_FILE_DIR = CMakeFiles\rms_lib.dir\src\Repo
+
+build CMakeFiles/rms_lib.dir/src/Services/PassengerService.cpp.obj: CXX_COMPILER__rms_lib_unscanned_Debug D$:/coding/.Colleage/RMS/src/Services/PassengerService.cpp || cmake_object_order_depends_target_rms_lib
+  DEP_FILE = CMakeFiles\rms_lib.dir\src\Services\PassengerService.cpp.obj.d
+  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
+  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src
+  OBJECT_DIR = CMakeFiles\rms_lib.dir
+  OBJECT_FILE_DIR = CMakeFiles\rms_lib.dir\src\Services
+
+build CMakeFiles/rms_lib.dir/src/Services/TicketService.cpp.obj: CXX_COMPILER__rms_lib_unscanned_Debug D$:/coding/.Colleage/RMS/src/Services/TicketService.cpp || cmake_object_order_depends_target_rms_lib
+  DEP_FILE = CMakeFiles\rms_lib.dir\src\Services\TicketService.cpp.obj.d
+  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
+  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src
+  OBJECT_DIR = CMakeFiles\rms_lib.dir
+  OBJECT_FILE_DIR = CMakeFiles\rms_lib.dir\src\Services
 
 build CMakeFiles/rms_lib.dir/src/Services/TrainService.cpp.obj: CXX_COMPILER__rms_lib_unscanned_Debug D$:/coding/.Colleage/RMS/src/Services/TrainService.cpp || cmake_object_order_depends_target_rms_lib
   DEP_FILE = CMakeFiles\rms_lib.dir\src\Services\TrainService.cpp.obj.d
@@ -90,20 +125,6 @@ build CMakeFiles/rms_lib.dir/src/RMSFacade.cpp.obj: CXX_COMPILER__rms_lib_unscan
   INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src
   OBJECT_DIR = CMakeFiles\rms_lib.dir
   OBJECT_FILE_DIR = CMakeFiles\rms_lib.dir\src
-
-build CMakeFiles/rms_lib.dir/src/Repo/InMemoryPassengerRepository.cpp.obj: CXX_COMPILER__rms_lib_unscanned_Debug D$:/coding/.Colleage/RMS/src/Repo/InMemoryPassengerRepository.cpp || cmake_object_order_depends_target_rms_lib
-  DEP_FILE = CMakeFiles\rms_lib.dir\src\Repo\InMemoryPassengerRepository.cpp.obj.d
-  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
-  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src
-  OBJECT_DIR = CMakeFiles\rms_lib.dir
-  OBJECT_FILE_DIR = CMakeFiles\rms_lib.dir\src\Repo
-
-build CMakeFiles/rms_lib.dir/src/Services/PassengerService.cpp.obj: CXX_COMPILER__rms_lib_unscanned_Debug D$:/coding/.Colleage/RMS/src/Services/PassengerService.cpp || cmake_object_order_depends_target_rms_lib
-  DEP_FILE = CMakeFiles\rms_lib.dir\src\Services\PassengerService.cpp.obj.d
-  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
-  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src
-  OBJECT_DIR = CMakeFiles\rms_lib.dir
-  OBJECT_FILE_DIR = CMakeFiles\rms_lib.dir\src\Services
 
 build CMakeFiles/rms_lib.dir/src/utils/helpers.cpp.obj: CXX_COMPILER__rms_lib_unscanned_Debug D$:/coding/.Colleage/RMS/src/utils/helpers.cpp || cmake_object_order_depends_target_rms_lib
   DEP_FILE = CMakeFiles\rms_lib.dir\src\utils\helpers.cpp.obj.d
@@ -120,7 +141,7 @@ build CMakeFiles/rms_lib.dir/src/utils/helpers.cpp.obj: CXX_COMPILER__rms_lib_un
 #############################################
 # Link the static library librms_lib.a
 
-build librms_lib.a: CXX_STATIC_LIBRARY_LINKER__rms_lib_Debug CMakeFiles/rms_lib.dir/src/models/Passenger.cpp.obj CMakeFiles/rms_lib.dir/src/models/SeatAllocator.cpp.obj CMakeFiles/rms_lib.dir/src/models/Train.cpp.obj CMakeFiles/rms_lib.dir/src/Repo/InMemoryTrainRepository.cpp.obj CMakeFiles/rms_lib.dir/src/Services/TrainService.cpp.obj CMakeFiles/rms_lib.dir/src/RMSFacade.cpp.obj CMakeFiles/rms_lib.dir/src/Repo/InMemoryPassengerRepository.cpp.obj CMakeFiles/rms_lib.dir/src/Services/PassengerService.cpp.obj CMakeFiles/rms_lib.dir/src/utils/helpers.cpp.obj
+build librms_lib.a: CXX_STATIC_LIBRARY_LINKER__rms_lib_Debug CMakeFiles/rms_lib.dir/src/models/Passenger.cpp.obj CMakeFiles/rms_lib.dir/src/models/SeatAllocator.cpp.obj CMakeFiles/rms_lib.dir/src/models/Train.cpp.obj CMakeFiles/rms_lib.dir/src/models/Ticket.cpp.obj CMakeFiles/rms_lib.dir/src/Repo/InMemoryTrainRepository.cpp.obj CMakeFiles/rms_lib.dir/src/Repo/InMemoryPassengerRepository.cpp.obj CMakeFiles/rms_lib.dir/src/Repo/InMemoryTicketRepository.cpp.obj CMakeFiles/rms_lib.dir/src/Services/PassengerService.cpp.obj CMakeFiles/rms_lib.dir/src/Services/TicketService.cpp.obj CMakeFiles/rms_lib.dir/src/Services/TrainService.cpp.obj CMakeFiles/rms_lib.dir/src/RMSFacade.cpp.obj CMakeFiles/rms_lib.dir/src/utils/helpers.cpp.obj
   LANGUAGE_COMPILE_FLAGS = -g
   OBJECT_DIR = CMakeFiles\rms_lib.dir
   POST_BUILD = cd .
@@ -144,6 +165,13 @@ build CMakeFiles/rms_app.dir/src/main.cpp.obj: CXX_COMPILER__rms_app_unscanned_D
   OBJECT_DIR = CMakeFiles\rms_app.dir
   OBJECT_FILE_DIR = CMakeFiles\rms_app.dir\src
 
+build CMakeFiles/rms_app.dir/src/StartupManager.cpp.obj: CXX_COMPILER__rms_app_unscanned_Debug D$:/coding/.Colleage/RMS/src/StartupManager.cpp || cmake_object_order_depends_target_rms_app
+  DEP_FILE = CMakeFiles\rms_app.dir\src\StartupManager.cpp.obj.d
+  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
+  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src
+  OBJECT_DIR = CMakeFiles\rms_app.dir
+  OBJECT_FILE_DIR = CMakeFiles\rms_app.dir\src
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target rms_app
@@ -152,7 +180,7 @@ build CMakeFiles/rms_app.dir/src/main.cpp.obj: CXX_COMPILER__rms_app_unscanned_D
 #############################################
 # Link the executable rms_app.exe
 
-build rms_app.exe: CXX_EXECUTABLE_LINKER__rms_app_Debug CMakeFiles/rms_app.dir/src/main.cpp.obj | librms_lib.a || librms_lib.a
+build rms_app.exe: CXX_EXECUTABLE_LINKER__rms_app_Debug CMakeFiles/rms_app.dir/src/main.cpp.obj CMakeFiles/rms_app.dir/src/StartupManager.cpp.obj | librms_lib.a || librms_lib.a
   FLAGS = -g
   LINK_LIBRARIES = librms_lib.a  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\rms_app.dir
@@ -248,6 +276,20 @@ build CMakeFiles/rms_tests.dir/tests/test_ticketService.cpp.obj: CXX_COMPILER__r
   OBJECT_DIR = CMakeFiles\rms_tests.dir
   OBJECT_FILE_DIR = CMakeFiles\rms_tests.dir\tests
 
+build CMakeFiles/rms_tests.dir/tests/test_facade.cpp.obj: CXX_COMPILER__rms_tests_unscanned_Debug D$:/coding/.Colleage/RMS/tests/test_facade.cpp || cmake_object_order_depends_target_rms_tests
+  DEP_FILE = CMakeFiles\rms_tests.dir\tests\test_facade.cpp.obj.d
+  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
+  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest
+  OBJECT_DIR = CMakeFiles\rms_tests.dir
+  OBJECT_FILE_DIR = CMakeFiles\rms_tests.dir\tests
+
+build CMakeFiles/rms_tests.dir/tests/test_startUpManager.cpp.obj: CXX_COMPILER__rms_tests_unscanned_Debug D$:/coding/.Colleage/RMS/tests/test_startUpManager.cpp || cmake_object_order_depends_target_rms_tests
+  DEP_FILE = CMakeFiles\rms_tests.dir\tests\test_startUpManager.cpp.obj.d
+  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
+  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest
+  OBJECT_DIR = CMakeFiles\rms_tests.dir
+  OBJECT_FILE_DIR = CMakeFiles\rms_tests.dir\tests
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target rms_tests
@@ -256,7 +298,7 @@ build CMakeFiles/rms_tests.dir/tests/test_ticketService.cpp.obj: CXX_COMPILER__r
 #############################################
 # Link the executable rms_tests.exe
 
-build rms_tests.exe rms_tests[1]_tests.cmake | ${cmake_ninja_workdir}rms_tests[1]_tests.cmake: CXX_EXECUTABLE_LINKER__rms_tests_Debug CMakeFiles/rms_tests.dir/tests/test_SeatAllocator.cpp.obj CMakeFiles/rms_tests.dir/tests/test_train.cpp.obj CMakeFiles/rms_tests.dir/tests/test_trainRepo.cpp.obj CMakeFiles/rms_tests.dir/tests/test_trainSevice.cpp.obj CMakeFiles/rms_tests.dir/tests/test_passenger.cpp.obj CMakeFiles/rms_tests.dir/tests/test_passengerRepoMemo.cpp.obj CMakeFiles/rms_tests.dir/tests/test_passengerService.cpp.obj CMakeFiles/rms_tests.dir/tests/test_helpers.cpp.obj CMakeFiles/rms_tests.dir/tests/test_ticket.cpp.obj CMakeFiles/rms_tests.dir/tests/test_ticktRepo.cpp.obj CMakeFiles/rms_tests.dir/tests/test_ticketService.cpp.obj | lib/libgtest_main.a librms_lib.a lib/libgtest.a || lib/libgtest.a lib/libgtest_main.a librms_lib.a
+build rms_tests.exe rms_tests[1]_tests.cmake | ${cmake_ninja_workdir}rms_tests[1]_tests.cmake: CXX_EXECUTABLE_LINKER__rms_tests_Debug CMakeFiles/rms_tests.dir/tests/test_SeatAllocator.cpp.obj CMakeFiles/rms_tests.dir/tests/test_train.cpp.obj CMakeFiles/rms_tests.dir/tests/test_trainRepo.cpp.obj CMakeFiles/rms_tests.dir/tests/test_trainSevice.cpp.obj CMakeFiles/rms_tests.dir/tests/test_passenger.cpp.obj CMakeFiles/rms_tests.dir/tests/test_passengerRepoMemo.cpp.obj CMakeFiles/rms_tests.dir/tests/test_passengerService.cpp.obj CMakeFiles/rms_tests.dir/tests/test_helpers.cpp.obj CMakeFiles/rms_tests.dir/tests/test_ticket.cpp.obj CMakeFiles/rms_tests.dir/tests/test_ticktRepo.cpp.obj CMakeFiles/rms_tests.dir/tests/test_ticketService.cpp.obj CMakeFiles/rms_tests.dir/tests/test_facade.cpp.obj CMakeFiles/rms_tests.dir/tests/test_startUpManager.cpp.obj | lib/libgtest_main.a librms_lib.a lib/libgtest.a || lib/libgtest.a lib/libgtest_main.a librms_lib.a
   FLAGS = -g
   LINK_LIBRARIES = lib/libgtest_main.a  librms_lib.a  lib/libgtest.a  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\rms_tests.dir
