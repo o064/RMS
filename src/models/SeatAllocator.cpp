@@ -131,7 +131,7 @@ void SeatAllocator::printStatus() const {
         std::cout << std::endl;
 
         // Print cancelled seats
-        std::stack<int> cancelledCopy = cancelledSeats;
+        stack<int> cancelledCopy = cancelledSeats;
         std::cout << "Cancelled Seats Stack: ";
         if (cancelledCopy.empty()) {
             std::cout << "None";

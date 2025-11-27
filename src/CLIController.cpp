@@ -210,8 +210,9 @@ void CLIController::add_passenger(const vector<string> &args) {
         cout << "Usage: add passenger <name>\n";
         return;
     }
-    const string& name = args[2];
-    try {
+     string name;
+    try{
+        name = combineString(args,2);
         auto p = facade->addPassenger(name);
         cout << "--- Passenger Added Successfully ---\n";
         cout << "ID: " << p.getId() << "\n";
@@ -246,12 +247,15 @@ void CLIController::get_train_availability(const vector<string> &args) {
 
 void CLIController::add_train(const vector<string> &args) {
     if(args.size() < 4) {
-        cout << "Usage: add train <name> <seats>\n";
+        cout << "Usage: add train <seats> <name>\n";
         return;
     }
-    const string& name = args[2];
+    const string& seatArgs = args[2];
+    string name;
     try {
-        const int &seats = parseInt(args[3],"seats");
+        const int &seats = parseInt(seatArgs,"seats");
+        name = combineString(args,3);
+
         auto t = facade->addTrain(name,seats);
         cout << "--- Train Added Successfully ---\n";
         cout << "Name: " << t.getTrainName() << "\n";
@@ -269,10 +273,11 @@ void CLIController::book_ticket(const vector<string> &args) {
     }
 
     const string& trainIdArg = args[2];
-    const string& passengerName = args[3];
+     string passengerName ;
 
     try {
         int trainId = parseInt(trainIdArg, "train ID");
+        passengerName = combineString(args,3);
 
         auto t = facade->bookTicket(trainId, passengerName);
 

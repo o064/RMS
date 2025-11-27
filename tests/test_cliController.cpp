@@ -229,18 +229,28 @@ TEST_F(CLIControllerTest, ListTickets_WithTickets) {
 // ==================== Add Passenger Tests ====================
 
 TEST_F(CLIControllerTest, AddPassenger_Success) {
-    vector<string> args = {"add", "passenger", "John"};
+    vector<string> args = {"add", "passenger", "John", "Doe"};
 
     controller->add_passenger(args);
 
     string output = getOutput();
     EXPECT_TRUE(output.find("Passenger Added Successfully") != string::npos);
-    EXPECT_TRUE(output.find("John") != string::npos);
+    EXPECT_TRUE(output.find("John Doe") != string::npos);
 
     // Verify passenger was actually added
     auto passengers = facade->listPassengers();
     EXPECT_EQ(1, passengers.size());
-    EXPECT_EQ("John", passengers[0].getName());
+    EXPECT_EQ("John Doe", passengers[0].getName());
+}
+
+TEST_F(CLIControllerTest, AddPassenger_SingleName) {
+    vector<string> args = {"add", "passenger", "Alice"};
+
+    controller->add_passenger(args);
+
+    string output = getOutput();
+    EXPECT_TRUE(output.find("Passenger Added Successfully") != string::npos);
+    EXPECT_TRUE(output.find("Alice") != string::npos);
 }
 
 TEST_F(CLIControllerTest, AddPassenger_InvalidArgs) {
@@ -258,18 +268,22 @@ TEST_F(CLIControllerTest, AddPassenger_MultipleName) {
     controller->add_passenger(args);
     clearOutput();
 
-    // Try to add another passenger
-    vector<string> args2 = {"add", "passenger", "Jane"};
+    // Try to add another passenger with multi-word name
+    vector<string> args2 = {"add", "passenger", "Jane", "Smith", "Doe"};
     controller->add_passenger(args2);
 
     auto passengers = facade->listPassengers();
     EXPECT_EQ(2, passengers.size());
+
+    // Check second passenger has combined name
+    string output = getOutput();
+    EXPECT_TRUE(output.find("Jane Smith Doe") != string::npos);
 }
 
 // ==================== Add Train Tests ====================
 
 TEST_F(CLIControllerTest, AddTrain_Success) {
-    vector<string> args = {"add", "train", "Express", "100"};
+    vector<string> args = {"add", "train", "100", "Express"};
 
     controller->add_train(args);
 
@@ -286,7 +300,7 @@ TEST_F(CLIControllerTest, AddTrain_Success) {
 }
 
 TEST_F(CLIControllerTest, AddTrain_InvalidArgs) {
-    vector<string> args = {"add", "train", "Express"};
+    vector<string> args = {"add", "train", "100"};
 
     controller->add_train(args);
 
@@ -295,7 +309,7 @@ TEST_F(CLIControllerTest, AddTrain_InvalidArgs) {
 }
 
 TEST_F(CLIControllerTest, AddTrain_InvalidSeats) {
-    vector<string> args = {"add", "train", "Express", "invalid"};
+    vector<string> args = {"add", "train", "invalid", "Express"};
 
     controller->add_train(args);
 
@@ -311,13 +325,13 @@ TEST_F(CLIControllerTest, BookTicket_Success) {
     clearOutput();
 
     vector<string> args = {"book", "ticket",
-                           std::to_string(train.getTrainId()), "John"};
+                           std::to_string(train.getTrainId()), "John", "Smith"};
 
     controller->book_ticket(args);
 
     string output = getOutput();
     EXPECT_TRUE(output.find("Ticket Booked Successfully") != string::npos);
-    EXPECT_TRUE(output.find("John") != string::npos);
+    EXPECT_TRUE(output.find("John Smith") != string::npos);
 
     // Verify ticket and passenger were created
     auto tickets = facade->listTickets();
@@ -325,7 +339,7 @@ TEST_F(CLIControllerTest, BookTicket_Success) {
 
     auto passengers = facade->listPassengers();
     EXPECT_EQ(1, passengers.size());
-    EXPECT_EQ("John", passengers[0].getName());
+    EXPECT_EQ("John Smith", passengers[0].getName());
 }
 
 TEST_F(CLIControllerTest, BookTicket_InvalidArgs) {
@@ -417,6 +431,8 @@ TEST_F(CLIControllerTest, GetTrainAvailability_Available) {
     controller->get_train_availability(args);
 
     string output = getOutput();
+    // Note: getTrainAvailability returns true if has seats (available)
+    // The controller logic is: if(!isAvailable) "full" else "available"
     EXPECT_TRUE(output.find("This train is available") != string::npos);
 }
 
@@ -432,6 +448,7 @@ TEST_F(CLIControllerTest, GetTrainAvailability_Full) {
     controller->get_train_availability(args);
 
     string output = getOutput();
+    // When no seats available, should show "full"
     EXPECT_TRUE(output.find("This train is full") != string::npos);
 }
 
@@ -469,36 +486,36 @@ TEST_F(CLIControllerTest, ShowHelp) {
 // ==================== Integration Tests ====================
 
 TEST_F(CLIControllerTest, Integration_CompleteWorkflow) {
-    // 1. Add train
-    vector<string> addTrainArgs = {"add", "train", "Express", "50"};
+    // 1. Add train with correct order: seats then name
+    vector<string> addTrainArgs = {"add", "train", "50", "Cairo", "Express"};
     controller->add_train(addTrainArgs);
     clearOutput();
 
     // 2. List trains
     controller->list_trains();
     string output = getOutput();
-    EXPECT_TRUE(output.find("Express") != string::npos);
+    EXPECT_TRUE(output.find("Cairo Express") != string::npos);
     clearOutput();
 
-    // 3. Book tickets
+    // 3. Book tickets with multi-word names
     auto trains = facade->listTrains();
     ASSERT_EQ(1, trains.size());
     int trainId = trains[0].getTrainId();
 
     vector<string> bookArgs = {"book", "ticket",
-                               std::to_string(trainId), "Alice"};
+                               std::to_string(trainId), "Alice", "Johnson"};
     controller->book_ticket(bookArgs);
     clearOutput();
 
     // 4. List tickets
     controller->list_tickets();
     output = getOutput();
-    EXPECT_TRUE(output.find("Alice") != string::npos);
+    EXPECT_TRUE(output.find("Alice Johnson") != string::npos);
     clearOutput();
 
     // 5. List passengers
     controller->list_passengers();
     output = getOutput();
-    EXPECT_TRUE(output.find("Alice") != string::npos);
+    EXPECT_TRUE(output.find("Alice Johnson") != string::npos);
 }
 
