@@ -1,5 +1,0 @@
-if(EXISTS "D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/tests/test_SeatAllocator[1]_tests.cmake")
-  include("D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/tests/test_SeatAllocator[1]_tests.cmake")
-else()
-  add_test(test_SeatAllocator_NOT_BUILT test_SeatAllocator_NOT_BUILT)
-endif()
