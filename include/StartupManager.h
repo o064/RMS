@@ -6,17 +6,18 @@
 #define RMS_STARTUPMANAGER_H
 
 #include "RMSFacade.h"
+#include <memory>
 
 class StartupManager {
 private:
-    ITrainRepository* trainRepository;
-    ITicketRepository* ticketReposatory;
-    IPassengerRepository* passengerReposatory;
-    TrainService* trainService;
-    PassengerService* passengerService;
-    TicketService* TicketService;
+    std::unique_ptr<ITrainRepository> trainRepository;
+    std::unique_ptr<ITicketRepository> ticketRepository;
+    std::unique_ptr<IPassengerRepository> passengerRepository;
+    std::unique_ptr<TrainService> trainService;
+    std::unique_ptr<PassengerService> passengerService;
+    std::unique_ptr<TicketService> ticketService;
 
-    RMSFacade* facade;
+    std::unique_ptr<RMSFacade> facade;
 public:
     RMSFacade * buildFacade() ;
 

@@ -64,7 +64,7 @@ TEST_F(InMemoryPassengerRepositoryTest, SaveMultipleTimesWithSameId) {
     ASSERT_TRUE(retrieved.has_value());
     EXPECT_EQ("Eve Updated", retrieved->getName());
 
-    std::list<Passenger> all = repo.getAllPassengers();
+    std::vector<Passenger> all = repo.getAllPassengers();
     EXPECT_EQ(1, all.size());
 }
 
@@ -99,8 +99,8 @@ TEST_F(InMemoryPassengerRepositoryTest, GetPassengerAfterMultipleSaves) {
     EXPECT_EQ("Henry", retrieved->getName());
 }
 
-TEST_F(InMemoryPassengerRepositoryTest, GetAllPassengersReturnsEmptyListWhenEmpty) {
-    std::list<Passenger> passengers = repo.getAllPassengers();
+TEST_F(InMemoryPassengerRepositoryTest, GetAllPassengersReturnsEmptyvectorWhenEmpty) {
+    std::vector<Passenger> passengers = repo.getAllPassengers();
     EXPECT_TRUE(passengers.empty());
 }
 
@@ -113,7 +113,7 @@ TEST_F(InMemoryPassengerRepositoryTest, GetAllPassengersReturnsAllSavedPassenger
     repo.save(p2);
     repo.save(p3);
 
-    std::list<Passenger> passengers = repo.getAllPassengers();
+    std::vector<Passenger> passengers = repo.getAllPassengers();
     EXPECT_EQ(3, passengers.size());
 }
 
@@ -124,7 +124,7 @@ TEST_F(InMemoryPassengerRepositoryTest, GetAllPassengersContainsCorrectData) {
     repo.save(p1);
     repo.save(p2);
 
-    std::list<Passenger> passengers = repo.getAllPassengers();
+    std::vector<Passenger> passengers = repo.getAllPassengers();
 
     bool foundMia = false;
     bool foundNoah = false;
@@ -194,7 +194,7 @@ TEST_F(InMemoryPassengerRepositoryTest, ClearRemovesAllPassengers) {
 
     repo.clear();
 
-    std::list<Passenger> passengers = repo.getAllPassengers();
+    std::vector<Passenger> passengers = repo.getAllPassengers();
     EXPECT_TRUE(passengers.empty());
 }
 

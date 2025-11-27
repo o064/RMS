@@ -6,7 +6,7 @@
 #define RMS_INMEMORYTICKETREPOSITORY_H
 
 #include <map>
-#include <list>
+#include <vector>
 #include <optional>
 
 #include "ITicketRepository.h"
@@ -24,7 +24,7 @@ public:
     std::optional<Ticket> getTicketByTrainAndPassenger(int trainId, int passengerId) override;
     bool deleteTicket(int ticketId) override;
     void save(Ticket& ticket) override;
-    std::list<Ticket> getAllTickets() override;
+    std::vector<Ticket> getAllTickets() override;
     std::optional<Ticket> getTicketById(int ticketId) override;
     void clear() override;
 };

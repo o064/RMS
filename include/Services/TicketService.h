@@ -20,7 +20,7 @@ private:
 public:
     TicketService(ITicketRepository *repo , TrainService* ts,PassengerService* ps);
     std::optional<Ticket> getTicket(const int& ticketId);
-    std::list<Ticket> getAllTickets();
+    std::vector<Ticket> getAllTickets();
     std::optional<Ticket> getTicketByTrainAndPassenger(const int& trainId, const int& passengerId);
     Ticket bookTicket(const int& trainId, const int& passengerId);
     void cancelTicket(const int& ticketId);

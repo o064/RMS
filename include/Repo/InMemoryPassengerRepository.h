@@ -5,7 +5,7 @@
 #ifndef RMS_INMEMORYPASSENGERREPOSITORY_H
 #define RMS_INMEMORYPASSENGERREPOSITORY_H
 
-#include <list>
+#include <vector>
 #include <map>
 #include <optional>
 
@@ -21,7 +21,7 @@ public:
     std::optional<Passenger> getPassenger(const int& passengerId) override;
     bool deletePassenger(const int& passengerId) override;
     void save( Passenger& passenger) override;
-    std::list<Passenger> getAllPassengers() override;
+    std::vector<Passenger> getAllPassengers() override;
     void clear() override;
 };
 #endif // RMS_INMEMORYPASSENGERREPOSITORY_H

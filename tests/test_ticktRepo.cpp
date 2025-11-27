@@ -2,7 +2,7 @@
 // Created by Omar on 11/24/2025.
 //
 #include <gtest/gtest.h>
-#include "Repo/InMemoryTicketRepository .h"
+#include "Repo/InMemoryTicketRepository.h"
 #include "models/Ticket.h"
 #include "models/Passenger.h"
 

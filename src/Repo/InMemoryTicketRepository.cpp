@@ -1,4 +1,4 @@
-#include "Repo/InMemoryTicketRepository .h"
+#include "Repo/InMemoryTicketRepository.h"
 #include <stdexcept>
 #include <iostream>
 
@@ -47,9 +47,9 @@ void InMemoryTicketRepository::save( Ticket& ticket)
 
 }
 
-std::list<Ticket> InMemoryTicketRepository::getAllTickets()
+std::vector<Ticket> InMemoryTicketRepository::getAllTickets()
 {
-    std::list<Ticket> results;
+    std::vector<Ticket> results;
     for (const auto &p : tickets)
     {
         results.push_back(p.second);

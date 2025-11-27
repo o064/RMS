@@ -1,6 +1,7 @@
 //
 // Created by Omar on 11/24/2025.
 //
+#include <stdexcept>
 #include "Services/PassengerService.h"
 #include "utils/helpers.h"
 PassengerService::PassengerService(IPassengerRepository *repo) {
@@ -11,7 +12,7 @@ std::optional<Passenger> PassengerService::getPassenger(const int &passengerId) 
     return passengerRepository->getPassenger(passengerId);
 }
 
-std::list<Passenger> PassengerService::getAllPassengers() {
+std::vector<Passenger> PassengerService::getAllPassengers() {
     return passengerRepository->getAllPassengers();
 }
 
@@ -25,12 +26,13 @@ Passenger PassengerService::createPassenger(const std::string& name) {
     return p;
 }
 
-std::optional<Passenger> PassengerService::find_or_create_passenger(const std::string &name) {
-    const std::list<Passenger> passengers = passengerRepository->getAllPassengers();
+Passenger PassengerService::find_or_create_passenger(const std::string &name) {
+    const std::vector<Passenger> passengers = passengerRepository->getAllPassengers();
 
     for(const auto & p : passengers)
-        if(toLowerCase(p.getName()) == toLowerCase(name))
-            return passengerRepository->getPassenger(p.getId());
+        if(toLowerCase(p.getName()) == toLowerCase(name)){
+            return   passengerRepository->getPassenger(p.getId()).value();
+        }
     Passenger p(0,name);
     passengerRepository->save(p);
     return p;

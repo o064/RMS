@@ -85,7 +85,7 @@ TEST_F(PassengerServiceTest, GetAllPassengers_OrderIsConsistent) {
     service->createPassenger("B");
     service->createPassenger("C");
 
-    std::list<Passenger> all = service->getAllPassengers();
+    std::vector<Passenger> all = service->getAllPassengers();
     auto it = all.begin();
 
     EXPECT_EQ("A", it->getName()); ++it;
@@ -95,7 +95,7 @@ TEST_F(PassengerServiceTest, GetAllPassengers_OrderIsConsistent) {
 
 TEST_F(PassengerServiceTest, GetAllPassengers_NotAffectedByExternalModification) {
     service->createPassenger("A");
-    std::list<Passenger> all = service->getAllPassengers();
+    std::vector<Passenger> all = service->getAllPassengers();
 
     // modifying list should NOT modify repo
     all.clear();
@@ -120,63 +120,59 @@ TEST_F(PassengerServiceTest, DeletePassenger_DoesNotAffectOtherPassengers) {
 TEST_F(PassengerServiceTest, DeletePassenger_DoesNotThrow) {
     EXPECT_NO_THROW(service->deletePassenger(999));
 }
-
 /// ------------------------------------------------------------
 /// FIND OR CREATE TESTS (CORE LOGIC)
 /// ------------------------------------------------------------
 
 TEST_F(PassengerServiceTest, FindOrCreate_CaseInsensitiveComparison) {
     service->createPassenger("Omar");
-    auto found = service->find_or_create_passenger("oMaR");
 
-    ASSERT_TRUE(found.has_value());
-    EXPECT_EQ("Omar", found->getName());
+    Passenger found = service->find_or_create_passenger("oMaR");
+
+    EXPECT_EQ("Omar", found.getName());
     EXPECT_EQ(1, service->getAllPassengers().size());
 }
 
 TEST_F(PassengerServiceTest, FindOrCreate_ReturnsExistingEvenIfExactNameDifferentCase) {
     Passenger p = service->createPassenger("HELLO");
 
-    auto found = service->find_or_create_passenger("hello");
+    Passenger found = service->find_or_create_passenger("hello");
 
-    ASSERT_TRUE(found.has_value());
-    EXPECT_EQ(p.getId(), found->getId());
+    EXPECT_EQ(p.getId(), found.getId());
 }
 
 TEST_F(PassengerServiceTest, FindOrCreate_DoesNotMatchSimilarNames) {
     service->createPassenger("John");
-    auto p = service->find_or_create_passenger("Johnny");
 
-    ASSERT_TRUE(p.has_value());
-    EXPECT_EQ("Johnny", p->getName());
+    Passenger p = service->find_or_create_passenger("Johnny");
+
+    EXPECT_EQ("Johnny", p.getName());
     EXPECT_EQ(2, service->getAllPassengers().size());
 }
 
 TEST_F(PassengerServiceTest, FindOrCreate_DifferentSpecialCharactersNotEqual) {
     service->createPassenger("Omar!");
-    auto p = service->find_or_create_passenger("Omar");
 
-    ASSERT_TRUE(p.has_value());
-    EXPECT_NE("Omar!", p->getName());
+    Passenger p = service->find_or_create_passenger("Omar");
+
+    EXPECT_NE("Omar!", p.getName());   // Should create new passenger
 }
 
 TEST_F(PassengerServiceTest, FindOrCreate_SameSpecialCharactersAreEqual) {
     Passenger original = service->createPassenger("O'Brien");
 
-    auto found = service->find_or_create_passenger("o'brien");
+    Passenger found = service->find_or_create_passenger("o'brien");
 
-    ASSERT_TRUE(found.has_value());
-    EXPECT_EQ(original.getId(), found->getId());
+    EXPECT_EQ(original.getId(), found.getId());
 }
 
 TEST_F(PassengerServiceTest, FindOrCreate_AfterDeletionCreatesNewId) {
     Passenger p1 = service->createPassenger("Adam");
     service->deletePassenger(p1.getId());
 
-    auto p2 = service->find_or_create_passenger("Adam");
+    Passenger p2 = service->find_or_create_passenger("Adam");
 
-    ASSERT_TRUE(p2.has_value());
-    EXPECT_NE(p1.getId(), p2->getId());
+    EXPECT_NE(p1.getId(), p2.getId());
 }
 
 /// ------------------------------------------------------------
@@ -198,9 +194,8 @@ TEST_F(PassengerServiceTest, FindOrCreate_Stress100Lookups) {
     service->createPassenger("David");
 
     for (int i = 0; i < 100; i++) {
-        auto p = service->find_or_create_passenger("DAVID");
-        ASSERT_TRUE(p.has_value());
-        EXPECT_EQ("David", p->getName());
+        Passenger p = service->find_or_create_passenger("DAVID");
+        EXPECT_EQ("David", p.getName());
     }
 
     EXPECT_EQ(1, service->getAllPassengers().size());

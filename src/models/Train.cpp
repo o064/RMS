@@ -1,9 +1,15 @@
 #include "models/Train.h"
 #include <iostream>
 
-Train::Train(const int& id, const std::string& name, const int& totalSeats )
-        : id(id), name(name), totalSeats(totalSeats),
-          seatAllocator(std::make_unique<SeatAllocator>(totalSeats)) {
+Train::Train(const int id, const std::string& name, const int totalSeats ){
+    if(id <0 ) throw std::runtime_error("Invalid id");
+    if(name.empty()) throw std::runtime_error("Invalid input name");
+    if(totalSeats < 0) throw std::runtime_error("total seat must be greater than 0");
+    this->id = id;
+    this->name = name;
+    this->totalSeats = totalSeats;
+    this->seatAllocator = std::make_unique<SeatAllocator>(totalSeats);
+
 }
 
 int Train::getTrainId() const {
@@ -59,3 +65,4 @@ Train &Train::operator=(const Train &other) {
         return *this;
 
 }
+

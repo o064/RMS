@@ -152,18 +152,13 @@ TEST_F(TrainServiceTest, CreateTrainWithZeroSeats) {
 
 // Test create train with negative seats
 TEST_F(TrainServiceTest, CreateTrainWithNegativeSeats) {
-    Train train = service->createTrain("Negative", -5);
+    EXPECT_THROW(service->createTrain("Negative", -5), std::runtime_error);
 
-    EXPECT_EQ(train.getTotalSeats(), -5);
-    EXPECT_EQ(train.getSeatAllocator()->getAvailableSeatCount(), 10);
 }
 
 // Test create train with empty name
 TEST_F(TrainServiceTest, CreateTrainEmptyName) {
-    Train train = service->createTrain("", 10);
-
-    EXPECT_EQ(train.getTrainName(), "");
-    EXPECT_EQ(train.getTotalSeats(), 10);
+    EXPECT_THROW(service->createTrain("", 10), std::runtime_error);
 }
 
 // Test service doesn't own repository
