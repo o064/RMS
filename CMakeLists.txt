@@ -36,6 +36,7 @@ add_library(rms_lib
         src/StartupManager.cpp
         src/CLIController.cpp
         src/utils/helpers.cpp
+
 )
 
 # Include directories - adjust based on your actual header locations
@@ -49,7 +50,6 @@ target_include_directories(rms_lib PUBLIC
 # -------------------------------
 add_executable(rms_app
         src/main.cpp
-
 )
 
 target_link_libraries(rms_app PRIVATE rms_lib)
@@ -71,11 +71,14 @@ add_executable(rms_tests
         tests/test_ticketService.cpp
         tests/test_facade.cpp
         tests/test_startUpManager.cpp
+        tests/test_cliController.cpp
+        tests/structures/test_stack.cpp
 )
-
 target_link_libraries(rms_tests
         PRIVATE
         gtest_main
+        gmock
+        gmock_main
         rms_lib
 )
 

@@ -204,98 +204,112 @@ build rms_app.exe: CXX_EXECUTABLE_LINKER__rms_app_Debug CMakeFiles/rms_app.dir/s
 #############################################
 # Order-only phony target for rms_tests
 
-build cmake_object_order_depends_target_rms_tests: phony || cmake_object_order_depends_target_gtest cmake_object_order_depends_target_gtest_main cmake_object_order_depends_target_rms_lib
+build cmake_object_order_depends_target_rms_tests: phony || cmake_object_order_depends_target_gmock cmake_object_order_depends_target_gmock_main cmake_object_order_depends_target_gtest cmake_object_order_depends_target_gtest_main cmake_object_order_depends_target_rms_lib
 
 build CMakeFiles/rms_tests.dir/tests/test_SeatAllocator.cpp.obj: CXX_COMPILER__rms_tests_unscanned_Debug D$:/coding/.Colleage/RMS/tests/test_SeatAllocator.cpp || cmake_object_order_depends_target_rms_tests
   DEP_FILE = CMakeFiles\rms_tests.dir\tests\test_SeatAllocator.cpp.obj.d
   FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
-  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest
+  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock
   OBJECT_DIR = CMakeFiles\rms_tests.dir
   OBJECT_FILE_DIR = CMakeFiles\rms_tests.dir\tests
 
 build CMakeFiles/rms_tests.dir/tests/test_train.cpp.obj: CXX_COMPILER__rms_tests_unscanned_Debug D$:/coding/.Colleage/RMS/tests/test_train.cpp || cmake_object_order_depends_target_rms_tests
   DEP_FILE = CMakeFiles\rms_tests.dir\tests\test_train.cpp.obj.d
   FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
-  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest
+  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock
   OBJECT_DIR = CMakeFiles\rms_tests.dir
   OBJECT_FILE_DIR = CMakeFiles\rms_tests.dir\tests
 
 build CMakeFiles/rms_tests.dir/tests/test_trainRepo.cpp.obj: CXX_COMPILER__rms_tests_unscanned_Debug D$:/coding/.Colleage/RMS/tests/test_trainRepo.cpp || cmake_object_order_depends_target_rms_tests
   DEP_FILE = CMakeFiles\rms_tests.dir\tests\test_trainRepo.cpp.obj.d
   FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
-  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest
+  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock
   OBJECT_DIR = CMakeFiles\rms_tests.dir
   OBJECT_FILE_DIR = CMakeFiles\rms_tests.dir\tests
 
 build CMakeFiles/rms_tests.dir/tests/test_trainSevice.cpp.obj: CXX_COMPILER__rms_tests_unscanned_Debug D$:/coding/.Colleage/RMS/tests/test_trainSevice.cpp || cmake_object_order_depends_target_rms_tests
   DEP_FILE = CMakeFiles\rms_tests.dir\tests\test_trainSevice.cpp.obj.d
   FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
-  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest
+  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock
   OBJECT_DIR = CMakeFiles\rms_tests.dir
   OBJECT_FILE_DIR = CMakeFiles\rms_tests.dir\tests
 
 build CMakeFiles/rms_tests.dir/tests/test_passenger.cpp.obj: CXX_COMPILER__rms_tests_unscanned_Debug D$:/coding/.Colleage/RMS/tests/test_passenger.cpp || cmake_object_order_depends_target_rms_tests
   DEP_FILE = CMakeFiles\rms_tests.dir\tests\test_passenger.cpp.obj.d
   FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
-  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest
+  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock
   OBJECT_DIR = CMakeFiles\rms_tests.dir
   OBJECT_FILE_DIR = CMakeFiles\rms_tests.dir\tests
 
 build CMakeFiles/rms_tests.dir/tests/test_passengerRepoMemo.cpp.obj: CXX_COMPILER__rms_tests_unscanned_Debug D$:/coding/.Colleage/RMS/tests/test_passengerRepoMemo.cpp || cmake_object_order_depends_target_rms_tests
   DEP_FILE = CMakeFiles\rms_tests.dir\tests\test_passengerRepoMemo.cpp.obj.d
   FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
-  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest
+  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock
   OBJECT_DIR = CMakeFiles\rms_tests.dir
   OBJECT_FILE_DIR = CMakeFiles\rms_tests.dir\tests
 
 build CMakeFiles/rms_tests.dir/tests/test_passengerService.cpp.obj: CXX_COMPILER__rms_tests_unscanned_Debug D$:/coding/.Colleage/RMS/tests/test_passengerService.cpp || cmake_object_order_depends_target_rms_tests
   DEP_FILE = CMakeFiles\rms_tests.dir\tests\test_passengerService.cpp.obj.d
   FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
-  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest
+  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock
   OBJECT_DIR = CMakeFiles\rms_tests.dir
   OBJECT_FILE_DIR = CMakeFiles\rms_tests.dir\tests
 
 build CMakeFiles/rms_tests.dir/tests/test_helpers.cpp.obj: CXX_COMPILER__rms_tests_unscanned_Debug D$:/coding/.Colleage/RMS/tests/test_helpers.cpp || cmake_object_order_depends_target_rms_tests
   DEP_FILE = CMakeFiles\rms_tests.dir\tests\test_helpers.cpp.obj.d
   FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
-  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest
+  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock
   OBJECT_DIR = CMakeFiles\rms_tests.dir
   OBJECT_FILE_DIR = CMakeFiles\rms_tests.dir\tests
 
 build CMakeFiles/rms_tests.dir/tests/test_ticket.cpp.obj: CXX_COMPILER__rms_tests_unscanned_Debug D$:/coding/.Colleage/RMS/tests/test_ticket.cpp || cmake_object_order_depends_target_rms_tests
   DEP_FILE = CMakeFiles\rms_tests.dir\tests\test_ticket.cpp.obj.d
   FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
-  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest
+  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock
   OBJECT_DIR = CMakeFiles\rms_tests.dir
   OBJECT_FILE_DIR = CMakeFiles\rms_tests.dir\tests
 
 build CMakeFiles/rms_tests.dir/tests/test_ticktRepo.cpp.obj: CXX_COMPILER__rms_tests_unscanned_Debug D$:/coding/.Colleage/RMS/tests/test_ticktRepo.cpp || cmake_object_order_depends_target_rms_tests
   DEP_FILE = CMakeFiles\rms_tests.dir\tests\test_ticktRepo.cpp.obj.d
   FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
-  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest
+  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock
   OBJECT_DIR = CMakeFiles\rms_tests.dir
   OBJECT_FILE_DIR = CMakeFiles\rms_tests.dir\tests
 
 build CMakeFiles/rms_tests.dir/tests/test_ticketService.cpp.obj: CXX_COMPILER__rms_tests_unscanned_Debug D$:/coding/.Colleage/RMS/tests/test_ticketService.cpp || cmake_object_order_depends_target_rms_tests
   DEP_FILE = CMakeFiles\rms_tests.dir\tests\test_ticketService.cpp.obj.d
   FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
-  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest
+  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock
   OBJECT_DIR = CMakeFiles\rms_tests.dir
   OBJECT_FILE_DIR = CMakeFiles\rms_tests.dir\tests
 
 build CMakeFiles/rms_tests.dir/tests/test_facade.cpp.obj: CXX_COMPILER__rms_tests_unscanned_Debug D$:/coding/.Colleage/RMS/tests/test_facade.cpp || cmake_object_order_depends_target_rms_tests
   DEP_FILE = CMakeFiles\rms_tests.dir\tests\test_facade.cpp.obj.d
   FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
-  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest
+  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock
   OBJECT_DIR = CMakeFiles\rms_tests.dir
   OBJECT_FILE_DIR = CMakeFiles\rms_tests.dir\tests
 
 build CMakeFiles/rms_tests.dir/tests/test_startUpManager.cpp.obj: CXX_COMPILER__rms_tests_unscanned_Debug D$:/coding/.Colleage/RMS/tests/test_startUpManager.cpp || cmake_object_order_depends_target_rms_tests
   DEP_FILE = CMakeFiles\rms_tests.dir\tests\test_startUpManager.cpp.obj.d
   FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
-  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest
+  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock
   OBJECT_DIR = CMakeFiles\rms_tests.dir
   OBJECT_FILE_DIR = CMakeFiles\rms_tests.dir\tests
+
+build CMakeFiles/rms_tests.dir/tests/test_cliController.cpp.obj: CXX_COMPILER__rms_tests_unscanned_Debug D$:/coding/.Colleage/RMS/tests/test_cliController.cpp || cmake_object_order_depends_target_rms_tests
+  DEP_FILE = CMakeFiles\rms_tests.dir\tests\test_cliController.cpp.obj.d
+  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
+  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock
+  OBJECT_DIR = CMakeFiles\rms_tests.dir
+  OBJECT_FILE_DIR = CMakeFiles\rms_tests.dir\tests
+
+build CMakeFiles/rms_tests.dir/tests/structures/test_stack.cpp.obj: CXX_COMPILER__rms_tests_unscanned_Debug D$:/coding/.Colleage/RMS/tests/structures/test_stack.cpp || cmake_object_order_depends_target_rms_tests
+  DEP_FILE = CMakeFiles\rms_tests.dir\tests\structures\test_stack.cpp.obj.d
+  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
+  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googletest -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock/include -isystem D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/_deps/googletest-src/googlemock
+  OBJECT_DIR = CMakeFiles\rms_tests.dir
+  OBJECT_FILE_DIR = CMakeFiles\rms_tests.dir\tests\structures
 
 
 # =============================================================================
@@ -305,9 +319,9 @@ build CMakeFiles/rms_tests.dir/tests/test_startUpManager.cpp.obj: CXX_COMPILER__
 #############################################
 # Link the executable rms_tests.exe
 
-build rms_tests.exe rms_tests[1]_tests.cmake | ${cmake_ninja_workdir}rms_tests[1]_tests.cmake: CXX_EXECUTABLE_LINKER__rms_tests_Debug CMakeFiles/rms_tests.dir/tests/test_SeatAllocator.cpp.obj CMakeFiles/rms_tests.dir/tests/test_train.cpp.obj CMakeFiles/rms_tests.dir/tests/test_trainRepo.cpp.obj CMakeFiles/rms_tests.dir/tests/test_trainSevice.cpp.obj CMakeFiles/rms_tests.dir/tests/test_passenger.cpp.obj CMakeFiles/rms_tests.dir/tests/test_passengerRepoMemo.cpp.obj CMakeFiles/rms_tests.dir/tests/test_passengerService.cpp.obj CMakeFiles/rms_tests.dir/tests/test_helpers.cpp.obj CMakeFiles/rms_tests.dir/tests/test_ticket.cpp.obj CMakeFiles/rms_tests.dir/tests/test_ticktRepo.cpp.obj CMakeFiles/rms_tests.dir/tests/test_ticketService.cpp.obj CMakeFiles/rms_tests.dir/tests/test_facade.cpp.obj CMakeFiles/rms_tests.dir/tests/test_startUpManager.cpp.obj | lib/libgtest_main.a librms_lib.a lib/libgtest.a || lib/libgtest.a lib/libgtest_main.a librms_lib.a
+build rms_tests.exe rms_tests[1]_tests.cmake | ${cmake_ninja_workdir}rms_tests[1]_tests.cmake: CXX_EXECUTABLE_LINKER__rms_tests_Debug CMakeFiles/rms_tests.dir/tests/test_SeatAllocator.cpp.obj CMakeFiles/rms_tests.dir/tests/test_train.cpp.obj CMakeFiles/rms_tests.dir/tests/test_trainRepo.cpp.obj CMakeFiles/rms_tests.dir/tests/test_trainSevice.cpp.obj CMakeFiles/rms_tests.dir/tests/test_passenger.cpp.obj CMakeFiles/rms_tests.dir/tests/test_passengerRepoMemo.cpp.obj CMakeFiles/rms_tests.dir/tests/test_passengerService.cpp.obj CMakeFiles/rms_tests.dir/tests/test_helpers.cpp.obj CMakeFiles/rms_tests.dir/tests/test_ticket.cpp.obj CMakeFiles/rms_tests.dir/tests/test_ticktRepo.cpp.obj CMakeFiles/rms_tests.dir/tests/test_ticketService.cpp.obj CMakeFiles/rms_tests.dir/tests/test_facade.cpp.obj CMakeFiles/rms_tests.dir/tests/test_startUpManager.cpp.obj CMakeFiles/rms_tests.dir/tests/test_cliController.cpp.obj CMakeFiles/rms_tests.dir/tests/structures/test_stack.cpp.obj | lib/libgtest_main.a lib/libgmock.a lib/libgmock_main.a librms_lib.a lib/libgmock.a lib/libgtest.a || lib/libgmock.a lib/libgmock_main.a lib/libgtest.a lib/libgtest_main.a librms_lib.a
   FLAGS = -g
-  LINK_LIBRARIES = lib/libgtest_main.a  librms_lib.a  lib/libgtest.a  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
+  LINK_LIBRARIES = lib/libgtest_main.a  lib/libgmock.a  lib/libgmock_main.a  librms_lib.a  lib/libgmock.a  lib/libgtest.a  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\rms_tests.dir
   POST_BUILD = cmd.exe /C "cd /D D:\coding\.Colleage\RMS\cmake-build-debug-event-trace && "G:\programs\CLion 2023.2.2\bin\cmake\win\x64\bin\cmake.exe" -D TEST_TARGET=rms_tests -D TEST_EXECUTABLE=D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/rms_tests.exe -D TEST_EXECUTOR= -D TEST_WORKING_DIR=D:/coding/.Colleage/RMS/cmake-build-debug-event-trace -D TEST_EXTRA_ARGS= -D TEST_PROPERTIES= -D TEST_PREFIX= -D TEST_SUFFIX= -D TEST_FILTER= -D NO_PRETTY_TYPES=FALSE -D NO_PRETTY_VALUES=FALSE -D TEST_LIST=rms_tests_TESTS -D CTEST_FILE=D:/coding/.Colleage/RMS/cmake-build-debug-event-trace/rms_tests[1]_tests.cmake -D TEST_DISCOVERY_TIMEOUT=5 -D TEST_XML_OUTPUT_DIR= -P "G:/programs/CLion 2023.2.2/bin/cmake/win/x64/share/cmake-3.26/Modules/GoogleTestAddTests.cmake""
   PRE_LINK = cd .

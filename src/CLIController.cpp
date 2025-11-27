@@ -236,8 +236,8 @@ void CLIController::get_train_availability(const vector<string> &args) {
         return;
     }
 
-    bool isFull = facade->getTrainAvailability(id);
-    if(isFull)
+    bool isAvailable = facade->getTrainAvailability(id);
+    if(!isAvailable)
         cout << "This train is full \n";
     else
         cout << "This train is available \n";
