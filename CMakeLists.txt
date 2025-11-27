@@ -34,7 +34,7 @@ add_library(rms_lib
         src/Services/TrainService.cpp
         src/RMSFacade.cpp
         src/StartupManager.cpp
-
+        src/CLIController.cpp
         src/utils/helpers.cpp
 )
 
@@ -49,7 +49,6 @@ target_include_directories(rms_lib PUBLIC
 # -------------------------------
 add_executable(rms_app
         src/main.cpp
-        src/StartupManager.cpp
 
 )
 

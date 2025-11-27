@@ -179,24 +179,42 @@ TEST_F(TrainTest, MoveAssignment) {
     EXPECT_EQ(movedTrain.getTotalSeats(), 8);
     EXPECT_EQ(movedTrain.getSeatAllocator()->getAvailableSeatCount(), 7);
 }
-
 // Test empty train name
 TEST_F(TrainTest, EmptyTrainName) {
-    Train emptyNameTrain(5, "", 10);
-    EXPECT_EQ(emptyNameTrain.getTrainName(), "");
+    // Should throw because name is empty
+    EXPECT_THROW(Train emptyNameTrain(5, "", 10), std::runtime_error);
 
-    emptyNameTrain.setTrainName("New Name");
-    EXPECT_EQ(emptyNameTrain.getTrainName(), "New Name");
+    // Valid train
+    Train validTrain(5, "Valid Name", 10);
+    EXPECT_EQ(validTrain.getTrainName(), "Valid Name");
+
+    validTrain.setTrainName("New Name");
+    EXPECT_EQ(validTrain.getTrainName(), "New Name");
 }
 
 // Test negative train ID
 TEST_F(TrainTest, NegativeTrainId) {
-    Train negativeTrain(-1, "Negative", 10);
-    EXPECT_EQ(negativeTrain.getTrainId(), -1);
+    // Should throw because ID is negative
+    EXPECT_THROW(Train negativeTrain(-1, "Negative", 10), std::runtime_error);
 
-    negativeTrain.setTrainId(100);
-    EXPECT_EQ(negativeTrain.getTrainId(), 100);
+    // Valid train
+    Train validTrain(1, "Positive", 10);
+    EXPECT_EQ(validTrain.getTrainId(), 1);
+
+    validTrain.setTrainId(100);
+    EXPECT_EQ(validTrain.getTrainId(), 100);
 }
+
+// Test zero seats
+TEST_F(TrainTest, ZeroSeats) {
+    // Should throw if you later uncomment the seat validation
+    // EXPECT_THROW(Train zeroSeatsTrain(1, "ZeroSeats", 0), std::runtime_error);
+
+    // Valid train
+    Train validTrain(1, "SeatsTest", 5);
+    EXPECT_EQ(validTrain.getTotalSeats(), 5);
+}
+
 
 // Test seat allocator persistence
 TEST_F(TrainTest, SeatAllocatorPersistence) {

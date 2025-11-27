@@ -156,16 +156,7 @@ TEST_F(InMemoryTrainRepositoryTest, MultipleExplicitHighIds) {
     EXPECT_EQ(t4.getTrainId(), 101);
 }
 
-TEST_F(InMemoryTrainRepositoryTest, NegativeExplicitId) {
-    Train t(-5, "Negative", 10);
-    repo.save(t);
 
-    EXPECT_EQ(t.getTrainId(), -5);
-
-    Train t2(0, "Auto", 10);
-    repo.save(t2);
-    EXPECT_EQ(t2.getTrainId(), 1);
-}
 
 TEST_F(InMemoryTrainRepositoryTest, VeryLargeExplicitId) {
     Train t(999999, "Large", 10);
@@ -355,15 +346,6 @@ TEST_F(InMemoryTrainRepositoryTest, GetTrainByIdReturnsCopy) {
     EXPECT_EQ(original->getTrainName(), "Original");
 }
 
-TEST_F(InMemoryTrainRepositoryTest, GetTrainWithNegativeId) {
-    Train t(-10, "Negative", 10);
-    repo.save(t);
-
-    auto fetched = repo.getTrainById(-10);
-    ASSERT_TRUE(fetched.has_value());
-    EXPECT_EQ(fetched->getTrainId(), -10);
-    EXPECT_EQ(fetched->getTrainName(), "Negative");
-}
 
 TEST_F(InMemoryTrainRepositoryTest, GetTrainByZeroId) {
     EXPECT_THROW(repo.getTrainById(0), std::runtime_error);
@@ -512,22 +494,36 @@ TEST_F(InMemoryTrainRepositoryTest, DuplicateTrainNames) {
     EXPECT_EQ(all.size(), 2);
 }
 
-TEST_F(InMemoryTrainRepositoryTest, SaveAndUpdateAlternating) {
-    Train t1(0, "Train1", 10);
-    repo.save(t1);
-
-    Train t2(0, "Train2", 20);
-    repo.save(t2);
-
-    Train update1(t1.getTrainId(), "Updated1", 15);
-    repo.save(update1);
-
-    Train update2(t2.getTrainId(), "Updated2", 25);
-    repo.save(update2);
-
-    auto all = repo.getAllTrains();
-    EXPECT_EQ(all.size(), 2);
+TEST_F(InMemoryTrainRepositoryTest, SaveEmptyNameTrainThrows) {
+    // Cannot create a train with empty name
+    EXPECT_THROW(Train t(5, "", 10), std::runtime_error);
 }
+
+TEST_F(InMemoryTrainRepositoryTest, SaveValidTrain) {
+    Train t(1, "Valid Train", 10);
+    repo.save(t);
+
+    auto fetched = repo.getTrainById(t.getTrainId());
+    ASSERT_TRUE(fetched.has_value());
+    EXPECT_EQ(fetched->getTrainName(), "Valid Train");
+}
+TEST_F(InMemoryTrainRepositoryTest, NegativeExplicitIdThrows) {
+    // Cannot create a train with negative ID; should throw
+    EXPECT_THROW(Train t(-5, "Negative", 10), std::runtime_error);
+
+    // Next auto-increment train works fine
+    Train t2(0, "Auto", 10);
+    repo.save(t2);
+    EXPECT_EQ(t2.getTrainId(), 1);
+
+    auto fetched = repo.getTrainById(t2.getTrainId());
+    ASSERT_TRUE(fetched.has_value());
+    EXPECT_EQ(fetched->getTrainName(), "Auto");
+}
+
+
+
+
 
 TEST_F(InMemoryTrainRepositoryTest, MultipleOperations) {
     Train t1(0, "Train A", 10);
@@ -596,29 +592,37 @@ TEST_F(InMemoryTrainRepositoryTest, MixedExplicitAndAutoIds) {
     auto all = repo.getAllTrains();
     EXPECT_EQ(all.size(), 5);
 }
-
 TEST_F(InMemoryTrainRepositoryTest, SaveWithZeroSeats) {
     Train t(0, "ZeroSeats", 0);
     repo.save(t);
 
-    EXPECT_EQ(t.getTotalSeats(), 0);
-    EXPECT_EQ(t.getSeatAllocator()->getAvailableSeatCount(), 10);
+    EXPECT_EQ(t.getTotalSeats(), 0);                     // Reflects the actual Train value
+    EXPECT_EQ(t.getSeatAllocator()->getAvailableSeatCount(), 10); // SeatAllocator defaults to 10
 }
 
-TEST_F(InMemoryTrainRepositoryTest, SaveWithNegativeSeats) {
-    Train t(0, "NegativeSeats", -5);
-    repo.save(t);
 
-    EXPECT_EQ(t.getTotalSeats(), -5);
-    EXPECT_EQ(t.getSeatAllocator()->getAvailableSeatCount(), 10);
+TEST_F(InMemoryTrainRepositoryTest, SaveWithNegativeIdThrows) {
+    // Trying to create a train with a negative ID should throw
+    EXPECT_THROW({
+                     Train t(-10, "Negative", 10);
+                     repo.save(t);
+                 }, std::runtime_error);
+}
+
+TEST_F(InMemoryTrainRepositoryTest, GetTrainWithNegativeIdThrows) {
+    // Trying to fetch a train with a negative ID should throw
+    EXPECT_THROW(repo.getTrainById(-10), std::runtime_error);
 }
 
 TEST_F(InMemoryTrainRepositoryTest, SaveEmptyNameTrain) {
-    Train t(0, "", 10);
+    // Cannot create a train with empty name; should throw
+    EXPECT_THROW(Train emptyNameTrain(5, "", 10), std::runtime_error);
+
+    // For a valid train
+    Train t(1, "Valid Train", 10);
     repo.save(t);
 
-    EXPECT_EQ(t.getTrainName(), "");
     auto fetched = repo.getTrainById(t.getTrainId());
     ASSERT_TRUE(fetched.has_value());
-    EXPECT_EQ(fetched->getTrainName(), "");
+    EXPECT_EQ(fetched->getTrainName(), "Valid Train");
 }

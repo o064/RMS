@@ -21,13 +21,14 @@ class Ticket
     Status status;
 
 public:
-    Ticket(const int& id,const int& seat, const int& trainId,const Passenger& p);
+public:
+    Ticket(const int id,const int seat, const int trainId,const Passenger& p);
     int getId() const;
     int getSeat() const;
     Status getStatus() const;
     void setStatus(const Status& s);
     int getTrainId() const;
     Passenger getPassenger() const;
-    void setId(const int& newId);
+    void setId(const int newId);
 };
 #endif // RMS_TICKET_H

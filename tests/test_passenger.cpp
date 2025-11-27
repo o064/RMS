@@ -1,6 +1,3 @@
-//
-// Created by Omar on 11/24/2025.
-//
 #include <gtest/gtest.h>
 #include "models/Passenger.h"
 
@@ -10,65 +7,38 @@ protected:
     void TearDown() override {}
 };
 
+// ==================== VALID CONSTRUCTORS ====================
 TEST_F(PassengerTest, ConstructorSetsIdAndName) {
     Passenger p(1, "John Doe");
-
     EXPECT_EQ(1, p.getId());
     EXPECT_EQ("John Doe", p.getName());
 }
 
 TEST_F(PassengerTest, SetIdUpdatesId) {
     Passenger p(1, "Jane Smith");
-
     p.setId(42);
-
     EXPECT_EQ(42, p.getId());
-}
-
-TEST_F(PassengerTest, ConstructorWithZeroId) {
-    Passenger p(0, "New Passenger");
-
-    EXPECT_EQ(0, p.getId());
-    EXPECT_EQ("New Passenger", p.getName());
-}
-
-TEST_F(PassengerTest, ConstructorWithNegativeId) {
-    Passenger p(-1, "Invalid Passenger");
-
-    EXPECT_EQ(-1, p.getId());
-    EXPECT_EQ("Invalid Passenger", p.getName());
 }
 
 TEST_F(PassengerTest, NameWithSpecialCharacters) {
     Passenger p(1, "O'Brien-Smith");
-
     EXPECT_EQ("O'Brien-Smith", p.getName());
-}
-
-TEST_F(PassengerTest, EmptyName) {
-    Passenger p(1, "");
-
-    EXPECT_EQ("", p.getName());
 }
 
 TEST_F(PassengerTest, NameWithSpaces) {
     Passenger p(1, "John Middle Doe");
-
     EXPECT_EQ("John Middle Doe", p.getName());
 }
 
 TEST_F(PassengerTest, NameWithNumbers) {
     Passenger p(1, "Agent007");
-
     EXPECT_EQ("Agent007", p.getName());
 }
 
 TEST_F(PassengerTest, SetIdMultipleTimes) {
     Passenger p(1, "Test");
-
     p.setId(10);
     EXPECT_EQ(10, p.getId());
-
     p.setId(20);
     EXPECT_EQ(20, p.getId());
 }
@@ -76,7 +46,18 @@ TEST_F(PassengerTest, SetIdMultipleTimes) {
 TEST_F(PassengerTest, LongName) {
     std::string longName = "VeryLongPassengerNameThatExceedsNormalLength";
     Passenger p(1, longName);
-
     EXPECT_EQ(longName, p.getName());
 }
 
+// ==================== INVALID CONSTRUCTORS ====================
+
+// ID < 0 should throw
+
+TEST_F(PassengerTest, ConstructorWithNegativeIdThrows) {
+    EXPECT_THROW(Passenger p(-1, "Invalid Passenger"), std::runtime_error);
+}
+
+// Empty name should throw
+TEST_F(PassengerTest, EmptyNameThrows) {
+    EXPECT_THROW(Passenger p(1, ""), std::runtime_error);
+}

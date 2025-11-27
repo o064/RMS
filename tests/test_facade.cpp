@@ -5,7 +5,7 @@
 #include "Services/TicketService.h"
 #include "Repo/InMemoryTrainRepository.h"
 #include "Repo/InMemoryPassengerRepository.h"
-#include "Repo/InMemoryTicketRepository .h"
+#include "Repo/InMemoryTicketRepository.h"
 
 class RMSFacadeTest : public ::testing::Test {
 protected:
@@ -51,7 +51,7 @@ TEST_F(RMSFacadeTest, AddAndListTrains) {
     rms->addTrain("Express A", 100);
     rms->addTrain("Local B", 50);
 
-    std::list<Train> trains = rms->listTrains();
+    std::vector<Train> trains = rms->listTrains();
 
     EXPECT_EQ(trains.size(), 2);
     EXPECT_EQ(trains.front().getTrainName(), "Express A");
@@ -78,7 +78,7 @@ TEST_F(RMSFacadeTest, AddAndListPassengers) {
     rms->addPassenger("Alice");
     rms->addPassenger("Bob");
 
-    auto passengers = rms->listPassenger();
+    auto passengers = rms->listPassengers();
 
     EXPECT_EQ(passengers.size(), 2);
 }
@@ -97,18 +97,19 @@ TEST_F(RMSFacadeTest, GetPassenger_FoundAndNotFound) {
 }
 
 // ================= BOOKING FLOW TESTS (INTEGRATION) =================
-
 TEST_F(RMSFacadeTest, BookTicket_HappyPath) {
     // 1. Setup
     Train t = rms->addTrain("City Connector", 50);
+    // Passenger is added explicitly to get ID for assertion, but Facade uses the name
     Passenger p = rms->addPassenger("David");
 
-    // 2. Action
-    Ticket ticket = rms->bookTicket(t.getTrainId(), p.getId());
+    // 2. Action: Use passenger's name for booking
+    Ticket ticket = rms->bookTicket(t.getTrainId(), "David");
 
     // 3. Assert
     EXPECT_GT(ticket.getId(), 0);
     EXPECT_EQ(ticket.getTrainId(), t.getTrainId());
+    // Verify the ticket was issued to the expected passenger ID
     EXPECT_EQ(ticket.getPassenger().getId(), p.getId());
 
     // Verify it appears in the list
@@ -119,62 +120,59 @@ TEST_F(RMSFacadeTest, BookTicket_HappyPath) {
 TEST_F(RMSFacadeTest, BookTicket_UpdatesSeatAvailability) {
     // 1. Create a train with EXACTLY 1 seat
     Train t = rms->addTrain("Tiny Train", 1);
-    Passenger p1 = rms->addPassenger("Eve");
-    Passenger p2 = rms->addPassenger("Frank");
 
-    // 2. Book the only seat
-    rms->bookTicket(t.getTrainId(), p1.getId());
+    // 2. Book the only seat using passenger's name
+    rms->bookTicket(t.getTrainId(), "Eve");
 
     // 3. Verify availability via Facade
     EXPECT_FALSE(rms->getTrainAvailability(t.getTrainId()));
 
-    // 4. Verify second booking fails
-    EXPECT_THROW(rms->bookTicket(t.getTrainId(), p2.getId()), std::runtime_error);
+    // 4. Verify second booking fails (using a different passenger's name)
+    EXPECT_THROW(rms->bookTicket(t.getTrainId(), "Frank"), std::runtime_error);
 }
 
 TEST_F(RMSFacadeTest, BookTicket_ValidatesInputs) {
-    EXPECT_THROW(rms->bookTicket(999, 1), std::runtime_error); // Invalid Train
+    // Invalid Train ID (999 does not exist)
+    EXPECT_THROW(rms->bookTicket(999, "David"), std::runtime_error);
 
     Train t = rms->addTrain("Valid Train", 10);
-    EXPECT_THROW(rms->bookTicket(t.getTrainId(), 999), std::runtime_error); // Invalid Passenger
+    // Invalid Passenger Name (Assuming empty string is invalid input)
+    EXPECT_THROW(rms->bookTicket(t.getTrainId(), ""), std::runtime_error);
 }
-
-// ================= CANCELLATION FLOW TESTS =================
-
 TEST_F(RMSFacadeTest, CancelTicket_RestoresAvailability) {
     // 1. Setup Train with 1 seat
     Train t = rms->addTrain("Full Train", 1);
     Passenger p1 = rms->addPassenger("Gary");
     Passenger p2 = rms->addPassenger("Helen");
 
-    // 2. Fill the train
-    Ticket ticket = rms->bookTicket(t.getTrainId(), p1.getId());
+    // 2. Fill the train using name
+    Ticket ticket = rms->bookTicket(t.getTrainId(), "Gary"); // Using updated signature
     EXPECT_FALSE(rms->getTrainAvailability(t.getTrainId()));
 
     // 3. Cancel the ticket
     rms->cancelTicket(ticket.getId());
 
     // 4. Check if ticket status changed
-    // Facade doesn't have getTicket(id), so we check the list
+    // Facade doesn't have getTicket(id), so we check the list (assuming 'cancelled' is a valid enum/status value)
     auto tickets = rms->listTickets();
+    // Assuming tickets.front() is the cancelled ticket if only one exists/is checked
+    // A better implementation would iterate or fetch by ID if possible. We use front for simplicity here.
     EXPECT_EQ(tickets.front().getStatus(), cancelled);
 
-    // 5. Verify we can book again (Seat freed)
+    // 5. Verify we can book again (Seat freed) using name
     EXPECT_TRUE(rms->getTrainAvailability(t.getTrainId()));
-    EXPECT_NO_THROW(rms->bookTicket(t.getTrainId(), p2.getId()));
+    EXPECT_NO_THROW(rms->bookTicket(t.getTrainId(), "Helen")); // Using updated signature
 }
-
-// ================= END-TO-END SCENARIO =================
-
 TEST_F(RMSFacadeTest, FullWorkflow_Scenario) {
     // 1. Admin sets up system
     Train express = rms->addTrain("Hogwarts Express", 100);
+    // Explicitly add passengers for consistency and verification
     Passenger harry = rms->addPassenger("Harry");
     Passenger ron = rms->addPassenger("Ron");
 
-    // 2. Users book tickets
-    Ticket t1 = rms->bookTicket(express.getTrainId(), harry.getId());
-    Ticket t2 = rms->bookTicket(express.getTrainId(), ron.getId());
+    // 2. Users book tickets using names
+    Ticket t1 = rms->bookTicket(express.getTrainId(), "Harry");
+    Ticket t2 = rms->bookTicket(express.getTrainId(), "Ron");
 
     // 3. Verify Manifest
     auto tickets = rms->listTickets();
@@ -183,7 +181,7 @@ TEST_F(RMSFacadeTest, FullWorkflow_Scenario) {
     // 4. Ron cancels
     rms->cancelTicket(t2.getId());
 
-    // 5. Verify cancellation logic
+    // 5. Verify cancellation logic (assuming 'booked' and 'cancelled' are valid status values)
     int activeCount = 0;
     int cancelledCount = 0;
     for(const auto& t : rms->listTickets()) {

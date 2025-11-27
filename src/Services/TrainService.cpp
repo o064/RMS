@@ -17,7 +17,7 @@ TrainService::~TrainService() {
     // do not delete repo because service is not owning the  repo it just use it
 }
 
-std::list<Train> TrainService::getAllTrains() {
+std::vector<Train> TrainService::getAllTrains() {
     return trainRepository->getAllTrains();
 }
 

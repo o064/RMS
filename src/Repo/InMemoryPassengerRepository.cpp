@@ -15,8 +15,8 @@ std::optional<Passenger> InMemoryPassengerRepository::getPassenger(const int &pa
     return std::nullopt; // not found
 }
 
-std::list<Passenger> InMemoryPassengerRepository::getAllPassengers() {
-    std::list<Passenger> results ;
+std::vector<Passenger> InMemoryPassengerRepository::getAllPassengers() {
+    std::vector<Passenger> results ;
     for(const auto & ps : passengers){
         results.push_back(ps.second);
     }

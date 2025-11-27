@@ -16,7 +16,7 @@ public:
     ~TrainService();
 
     std::optional<Train> getTrain(const int&);
-    std::list<Train> getAllTrains();
+    std::vector<Train> getAllTrains();
     Train createTrain(const std::string& name,const int& seats);
     bool deleteTrain(int trainId);
     bool isAvailbleSeat(int trainId);

@@ -3,7 +3,7 @@
 //
 #include "StartupManager.h"
 #include "Repo/InMemoryTrainRepository.h"
-#include "Repo/InMemoryTicketRepository .h"
+#include "Repo/InMemoryTicketRepository.h"
 #include "Repo/InMemoryPassengerRepository.h"
 
 RMSFacade *StartupManager::buildFacade() {

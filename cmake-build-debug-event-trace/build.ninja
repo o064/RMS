@@ -126,6 +126,20 @@ build CMakeFiles/rms_lib.dir/src/RMSFacade.cpp.obj: CXX_COMPILER__rms_lib_unscan
   OBJECT_DIR = CMakeFiles\rms_lib.dir
   OBJECT_FILE_DIR = CMakeFiles\rms_lib.dir\src
 
+build CMakeFiles/rms_lib.dir/src/StartupManager.cpp.obj: CXX_COMPILER__rms_lib_unscanned_Debug D$:/coding/.Colleage/RMS/src/StartupManager.cpp || cmake_object_order_depends_target_rms_lib
+  DEP_FILE = CMakeFiles\rms_lib.dir\src\StartupManager.cpp.obj.d
+  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
+  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src
+  OBJECT_DIR = CMakeFiles\rms_lib.dir
+  OBJECT_FILE_DIR = CMakeFiles\rms_lib.dir\src
+
+build CMakeFiles/rms_lib.dir/src/CLIController.cpp.obj: CXX_COMPILER__rms_lib_unscanned_Debug D$:/coding/.Colleage/RMS/src/CLIController.cpp || cmake_object_order_depends_target_rms_lib
+  DEP_FILE = CMakeFiles\rms_lib.dir\src\CLIController.cpp.obj.d
+  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
+  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src
+  OBJECT_DIR = CMakeFiles\rms_lib.dir
+  OBJECT_FILE_DIR = CMakeFiles\rms_lib.dir\src
+
 build CMakeFiles/rms_lib.dir/src/utils/helpers.cpp.obj: CXX_COMPILER__rms_lib_unscanned_Debug D$:/coding/.Colleage/RMS/src/utils/helpers.cpp || cmake_object_order_depends_target_rms_lib
   DEP_FILE = CMakeFiles\rms_lib.dir\src\utils\helpers.cpp.obj.d
   FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
@@ -141,7 +155,7 @@ build CMakeFiles/rms_lib.dir/src/utils/helpers.cpp.obj: CXX_COMPILER__rms_lib_un
 #############################################
 # Link the static library librms_lib.a
 
-build librms_lib.a: CXX_STATIC_LIBRARY_LINKER__rms_lib_Debug CMakeFiles/rms_lib.dir/src/models/Passenger.cpp.obj CMakeFiles/rms_lib.dir/src/models/SeatAllocator.cpp.obj CMakeFiles/rms_lib.dir/src/models/Train.cpp.obj CMakeFiles/rms_lib.dir/src/models/Ticket.cpp.obj CMakeFiles/rms_lib.dir/src/Repo/InMemoryTrainRepository.cpp.obj CMakeFiles/rms_lib.dir/src/Repo/InMemoryPassengerRepository.cpp.obj CMakeFiles/rms_lib.dir/src/Repo/InMemoryTicketRepository.cpp.obj CMakeFiles/rms_lib.dir/src/Services/PassengerService.cpp.obj CMakeFiles/rms_lib.dir/src/Services/TicketService.cpp.obj CMakeFiles/rms_lib.dir/src/Services/TrainService.cpp.obj CMakeFiles/rms_lib.dir/src/RMSFacade.cpp.obj CMakeFiles/rms_lib.dir/src/utils/helpers.cpp.obj
+build librms_lib.a: CXX_STATIC_LIBRARY_LINKER__rms_lib_Debug CMakeFiles/rms_lib.dir/src/models/Passenger.cpp.obj CMakeFiles/rms_lib.dir/src/models/SeatAllocator.cpp.obj CMakeFiles/rms_lib.dir/src/models/Train.cpp.obj CMakeFiles/rms_lib.dir/src/models/Ticket.cpp.obj CMakeFiles/rms_lib.dir/src/Repo/InMemoryTrainRepository.cpp.obj CMakeFiles/rms_lib.dir/src/Repo/InMemoryPassengerRepository.cpp.obj CMakeFiles/rms_lib.dir/src/Repo/InMemoryTicketRepository.cpp.obj CMakeFiles/rms_lib.dir/src/Services/PassengerService.cpp.obj CMakeFiles/rms_lib.dir/src/Services/TicketService.cpp.obj CMakeFiles/rms_lib.dir/src/Services/TrainService.cpp.obj CMakeFiles/rms_lib.dir/src/RMSFacade.cpp.obj CMakeFiles/rms_lib.dir/src/StartupManager.cpp.obj CMakeFiles/rms_lib.dir/src/CLIController.cpp.obj CMakeFiles/rms_lib.dir/src/utils/helpers.cpp.obj
   LANGUAGE_COMPILE_FLAGS = -g
   OBJECT_DIR = CMakeFiles\rms_lib.dir
   POST_BUILD = cd .
@@ -165,13 +179,6 @@ build CMakeFiles/rms_app.dir/src/main.cpp.obj: CXX_COMPILER__rms_app_unscanned_D
   OBJECT_DIR = CMakeFiles\rms_app.dir
   OBJECT_FILE_DIR = CMakeFiles\rms_app.dir\src
 
-build CMakeFiles/rms_app.dir/src/StartupManager.cpp.obj: CXX_COMPILER__rms_app_unscanned_Debug D$:/coding/.Colleage/RMS/src/StartupManager.cpp || cmake_object_order_depends_target_rms_app
-  DEP_FILE = CMakeFiles\rms_app.dir\src\StartupManager.cpp.obj.d
-  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
-  INCLUDES = -ID:/coding/.Colleage/RMS/include -ID:/coding/.Colleage/RMS/src
-  OBJECT_DIR = CMakeFiles\rms_app.dir
-  OBJECT_FILE_DIR = CMakeFiles\rms_app.dir\src
-
 
 # =============================================================================
 # Link build statements for EXECUTABLE target rms_app
@@ -180,7 +187,7 @@ build CMakeFiles/rms_app.dir/src/StartupManager.cpp.obj: CXX_COMPILER__rms_app_u
 #############################################
 # Link the executable rms_app.exe
 
-build rms_app.exe: CXX_EXECUTABLE_LINKER__rms_app_Debug CMakeFiles/rms_app.dir/src/main.cpp.obj CMakeFiles/rms_app.dir/src/StartupManager.cpp.obj | librms_lib.a || librms_lib.a
+build rms_app.exe: CXX_EXECUTABLE_LINKER__rms_app_Debug CMakeFiles/rms_app.dir/src/main.cpp.obj | librms_lib.a || librms_lib.a
   FLAGS = -g
   LINK_LIBRARIES = librms_lib.a  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\rms_app.dir

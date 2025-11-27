@@ -14,8 +14,9 @@ private:
 
 public:
     // Constructor
-    Train(const int& id, const std::string& name, const int& totalSeats = 10);
+    Train(const int id, const std::string& name, const int totalSeats = 10);
     ~Train() = default;
+
 
     //  copy operations for unique ptr
     std::unique_ptr<Train> clone() const ;

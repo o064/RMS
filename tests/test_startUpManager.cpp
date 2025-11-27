@@ -40,7 +40,7 @@ TEST_F(StartupManagerTest, Facade_HasWorkingTrainService) {
 TEST_F(StartupManagerTest, Facade_HasWorkingPassengerService) {
     facade->addPassenger("Test User");
 
-    auto passengers = facade->listPassenger();
+    auto passengers = facade->listPassengers();
     EXPECT_EQ(passengers.size(), 1);
     EXPECT_EQ(passengers.front().getName(), "Test User");
 }
@@ -54,7 +54,7 @@ TEST_F(StartupManagerTest, Facade_IntegrationIsWiredCorrectly) {
     Passenger p = facade->addPassenger("Integration Passenger");
 
     // If pointers were null, this would crash
-    Ticket ticket = facade->bookTicket(t.getTrainId(), p.getId());
+    Ticket ticket = facade->bookTicket(t.getTrainId(), p.getName());
 
     EXPECT_GT(ticket.getId(), 0);
 

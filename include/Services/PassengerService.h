@@ -17,9 +17,9 @@ private:
 public:
     PassengerService(IPassengerRepository *repo);
     std::optional<Passenger> getPassenger(const int& passengerId);
-    std::list<Passenger> getAllPassengers();
+    std::vector<Passenger> getAllPassengers();
     Passenger createPassenger(const std::string& name);
     bool deletePassenger(const int& passengerId);
-    std::optional<Passenger> find_or_create_passenger(const std::string& name);
+    Passenger find_or_create_passenger(const std::string& name);
 };
 #endif // RMS_PASSENGERSERVICE_H

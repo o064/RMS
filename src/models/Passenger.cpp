@@ -1,13 +1,16 @@
 //
 // Created by Omar on 11/19/2025.
 //
+#include <stdexcept>
 #include "models/Passenger.h"
 
 
 
 
 
-Passenger::Passenger(const int &id, const std::string &name) {
+Passenger::Passenger(const int id, const std::string &name) {
+    if(name.empty()) throw std::runtime_error("Invalid input name");
+    if(id <0) throw std::runtime_error("Invalid id");
     this->id = id;
     this->name =name;
 }

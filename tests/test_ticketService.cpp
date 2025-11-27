@@ -6,7 +6,7 @@
 #include "Services/TicketService.h"
 #include "Services/TrainService.h"
 #include "Services/PassengerService.h"
-#include "Repo/InMemoryTicketRepository .h"
+#include "Repo/InMemoryTicketRepository.h"
 #include "Repo/InMemoryTrainRepository.h"
 #include "Repo/InMemoryPassengerRepository.h"
 
