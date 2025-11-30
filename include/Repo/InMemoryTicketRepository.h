@@ -5,17 +5,17 @@
 #ifndef RMS_INMEMORYTICKETREPOSITORY_H
 #define RMS_INMEMORYTICKETREPOSITORY_H
 
-#include <map>
 #include <vector>
 #include <optional>
 
+#include "../structures/map.h"
 #include "ITicketRepository.h"
 #include "../models/Ticket.h"
 
 class InMemoryTicketRepository : public ITicketRepository
 {
 private:
-    std::map<int, Ticket> tickets;
+    Map<int, Ticket> tickets;
     int next_id = 1;
 
 public:

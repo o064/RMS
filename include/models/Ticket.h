@@ -22,6 +22,7 @@ class Ticket
 
 public:
 public:
+    Ticket() = default;
     Ticket(const int id,const int seat, const int trainId,const Passenger& p);
     int getId() const;
     int getSeat() const;

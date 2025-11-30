@@ -3,17 +3,17 @@
 
 #include <stdexcept>
 
-template <class Type>
+template <class T>
 struct Node {
-    Type data;
-    Node<Type>* link;
-    Node(const Type& val =-99999, Node<Type>* link_ptr= nullptr) : data(val), link(link_ptr) {}
+    T data;
+    Node<T>* link;
+    Node(const T& val =-99999, Node<T>* link_ptr= nullptr) : data(val), link(link_ptr) {}
 };
 
-template <class Type>
+template <class T>
 class stack {
 private:
-    Node<Type>* topPtr;
+    Node<T>* topPtr;
     int counter;
 
 public:
@@ -23,15 +23,15 @@ public:
         while (!empty()) pop();
     }
 
-    void push(const Type& value) {
-        topPtr = new Node<Type>(value, topPtr);
+    void push(const T& value) {
+        topPtr = new Node<T>(value, topPtr);
         ++counter;
     }
     //copy constructor
     stack(const stack& other);
     // assignment overloading
     stack& operator=(stack other);
-    friend void swap(stack<Type>& first, stack<Type>& second)  {
+    friend void swap(stack<T>& first, stack<T>& second)  {
         using std::swap;
         swap(first.topPtr, second.topPtr);
         swap(first.counter, second.counter);
@@ -40,19 +40,19 @@ public:
         if (empty())
             throw std::runtime_error("Stack underflow: pop() on empty stack");
 
-        Node<Type>* temp = topPtr;
+        Node<T>* temp = topPtr;
         topPtr = topPtr->link;
         delete temp;
         --counter;
     }
 
-    Type& top() {
+    T& top() {
         if (empty())
             throw std::runtime_error("Stack underflow: top() on empty stack");
 
         return topPtr->data;
     }
-    const Type& top() const {
+    const T& top() const {
         if (empty())
             throw std::runtime_error("Stack underflow: top() on empty stack");
         return topPtr->data;
@@ -66,16 +66,16 @@ public:
     }
 };
 // --- Implementation of Copy Constructor ---
-template <class Type>
-stack<Type>::stack(const stack& other) : topPtr(nullptr), counter(0) {
+template <class T>
+stack<T>::stack(const stack& other) : topPtr(nullptr), counter(0) {
     if (other.empty()) {
         return; //empty stack
     }
 
-    Node<Type>* otherCurrent = other.topPtr;
-    Node<Type>* lastNewNode = nullptr;
+    Node<T>* otherCurrent = other.topPtr;
+    Node<T>* lastNewNode = nullptr;
 
-    Node<Type>* newNode = new Node<Type>();
+    Node<T>* newNode = new Node<T>();
 
     newNode->data = otherCurrent->data;
     newNode->link = nullptr;
@@ -88,7 +88,7 @@ stack<Type>::stack(const stack& other) : topPtr(nullptr), counter(0) {
 
     // Copy the rest of the nodes
     while (otherCurrent != nullptr) {
-        Node<Type>* newNode = new Node<Type>();
+        Node<T>* newNode = new Node<T>();
         newNode->data = otherCurrent->data;
         newNode->link = nullptr;
 
@@ -101,8 +101,8 @@ stack<Type>::stack(const stack& other) : topPtr(nullptr), counter(0) {
 
 }
 
-template <class Type>
-stack<Type>& stack<Type>::operator=(stack<Type> other) {
+template <class T>
+stack<T>& stack<T>::operator=(stack<T> other) {
     swap(*this, other);
     return *this;
 }
