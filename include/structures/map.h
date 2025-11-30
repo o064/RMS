@@ -5,22 +5,22 @@
 #include <utility>
 #include <algorithm>
 
-
+template<typename Key, typename Value> class Map; // Forward declration 
 
 template<typename Key, typename Value>
-class Node{
+class MapNode{
 public:
     std::pair<Key, Value> data;
-    Node* left;
-    Node* right;
-    Node* parent;
+    MapNode* left;
+    MapNode* right;
+    MapNode* parent;
     int height;
 
-    Node(const std::pair<Key, Value>& data): data{data}, left{nullptr}, right{nullptr}, parent{nullptr}, height{}{ }
-    Node(const std::pair<Key, Value>& data, Node* left, Node* right, int height = 0)
+    MapNode(const std::pair<Key, Value>& data): data{data}, left{nullptr}, right{nullptr}, parent{nullptr}, height{}{ }
+    MapNode(const std::pair<Key, Value>& data, MapNode* left, MapNode* right, int height = 0)
     :data{data}, left{left}, right{right}, parent{nullptr}, height{height}{ }
-    Node(std::pair<Key, Value>&& data): data{std::move(data)}, left{nullptr}, right{nullptr}, parent{nullptr}, height{}{ }
-    Node(std::pair<Key, Value>&& data, Node* left, Node* right, int height = 0)
+    MapNode(std::pair<Key, Value>&& data): data{std::move(data)}, left{nullptr}, right{nullptr}, parent{nullptr}, height{}{ }
+    MapNode(std::pair<Key, Value>&& data, MapNode* left, MapNode* right, int height = 0)
     :data{std::move(data)}, left{left}, right{right}, parent{nullptr}, height{height}{ }
 
 };
@@ -28,10 +28,10 @@ public:
 template<typename Key, typename Value>
 class MapIterator{
 private:
-    Node<Key, Value>* node;
+    MapNode<Key, Value>* node;
 
     // return the next node in a sorted order
-    Node<Key, Value>* successor(Node<Key, Value>* nodePtr){
+    MapNode<Key, Value>* successor(MapNode<Key, Value>* nodePtr){
         if(nodePtr == nullptr) return nullptr;
         // If right subtree isn't empty
         // Go right then down to far left
@@ -43,7 +43,7 @@ private:
 
         // If right subtreee is empty
         // Keep goind up until we approach from a left suptree
-        Node<Key, Value>* p = nodePtr->parent;
+        MapNode<Key, Value>* p = nodePtr->parent;
         while(p != nullptr && nodePtr == p->right){ 
             nodePtr = p;
             p = nodePtr->parent;
@@ -53,7 +53,7 @@ private:
         return p;
     }
 
-    Node<Key, Value>* predecessor(Node<Key, Value>* nodePtr){
+    MapNode<Key, Value>* predecessor(MapNode<Key, Value>* nodePtr){
         if(nodePtr == nullptr) return nullptr;
 
         // If left subtree isn't empty
@@ -66,7 +66,7 @@ private:
 
         // If left subtreee is empty
         // Keep goind up until we approach from a right suptree
-        Node<Key, Value>* p = nodePtr->parent;
+        MapNode<Key, Value>* p = nodePtr->parent;
         while(p != nullptr && nodePtr == p->left){ 
             nodePtr = p;
             p = nodePtr->parent;
@@ -76,7 +76,14 @@ private:
         return p;
     }
 public:
-    MapIterator(Node<Key, Value>* node): node{node}{ }
+    Key first;
+    Value second;
+    MapIterator(MapNode<Key, Value>* node): node{node}{ 
+        if(node!= nullptr){
+            first = node->data.first;
+            second = node->data.second;
+        }
+    }
 
     // Dereference
     std::pair<Key, Value>& operator*() const{
@@ -111,23 +118,24 @@ public:
     bool operator!=(const MapIterator<Key, Value>& rhs)const{
         return node != rhs.node;
     }
+    friend class Map<Key, Value>;
 };
 
 template<typename Key, typename Value>
 class Map{
 private:
-    Node<Key, Value>* root;
+    MapNode<Key, Value>* root;
     int s{}; // Size
     static const int ALLOWED_IMBALANCE = 1;
 
-    int height(Node<Key, Value>* nodePtr){
+    int height(MapNode<Key, Value>* nodePtr){
         // Used to get the heights of the nodes
         return (nodePtr == nullptr?-1:nodePtr->height);    
     }
 
-    void insert(const std::pair<Key, Value>& item, Node<Key, Value>*& nodePtr){
+    void insert(const std::pair<Key, Value>& item, MapNode<Key, Value>*& nodePtr){
         if(nodePtr == nullptr) {// We reached a leaf, insert the node
-            nodePtr = new Node{item};
+            nodePtr = new MapNode{item};
             ++s;
         } 
 
@@ -147,15 +155,15 @@ private:
         balance(nodePtr);
     }
 
-    void updateParentPointer(Node<Key, Value>* nodePtr){
+    void updateParentPointer(MapNode<Key, Value>* nodePtr){
         if (nodePtr == nullptr) return;
         if(nodePtr->right != nullptr) nodePtr->right->parent = nodePtr;
         if(nodePtr->left != nullptr) nodePtr->left->parent = nodePtr;
     }
 
-    void insert(std::pair<Key, Value>&& item, Node<Key, Value>*& nodePtr){
+    void insert(std::pair<Key, Value>&& item, MapNode<Key, Value>*& nodePtr){
         if(nodePtr == nullptr) {// We reached a leaf, insert the node
-            nodePtr = new Node{item};
+            nodePtr = new MapNode{item};
             ++s;
         }      
 
@@ -175,7 +183,7 @@ private:
         balance(nodePtr);
     }
 
-    void balance(Node<Key, Value>*& nodePtr){
+    void balance(MapNode<Key, Value>*& nodePtr){
         if(nodePtr == nullptr) return;
 
         if(height(nodePtr->left) - height(nodePtr->right) > ALLOWED_IMBALANCE){
@@ -199,9 +207,9 @@ private:
         // Update the height of the node
         nodePtr->height = std::max(height(nodePtr->left), height(nodePtr->right)) +1;
     }
-    void rotateWithLeftChild(Node<Key, Value>*& parent){
+    void rotateWithLeftChild(MapNode<Key, Value>*& parent){
         // Hold the child node with a pointer
-        Node<Key, Value>* child = parent->left; 
+        MapNode<Key, Value>* child = parent->left; 
         // Repoint the parent's left pointer with the child's right's child
         parent->left = child->right;
         // Repoint the child's right pointer to its parent, rotation is done
@@ -220,13 +228,13 @@ private:
         updateParentPointer(parent);
 
     }
-    void doubleWithLeftChild(Node<Key, Value>*& nodePtr){
+    void doubleWithLeftChild(MapNode<Key, Value>*& nodePtr){
         rotateWithRightChild(nodePtr->left);
         rotateWithLeftChild(nodePtr);
     }
-    void rotateWithRightChild(Node<Key, Value>*& parent){
+    void rotateWithRightChild(MapNode<Key, Value>*& parent){
         // Hold the child node with a pointer
-        Node<Key, Value>* child = parent->right;
+        MapNode<Key, Value>* child = parent->right;
         // Repoint the the parent's left pointer to the right child of its child
         parent->right = child->left;
         // Repoint the child's left pointer to its parent, rotaion is done
@@ -244,24 +252,24 @@ private:
         // Update parent pointer of the children of the new parent
         updateParentPointer(parent);
     }
-    void doubleWithRightChild(Node<Key, Value>*& nodePtr){
+    void doubleWithRightChild(MapNode<Key, Value>*& nodePtr){
         rotateWithLeftChild(nodePtr->right);
         rotateWithRightChild(nodePtr);
     }
 
-    Node<Key, Value>* findMin(Node<Key, Value>* nodePtr) const{
+    MapNode<Key, Value>* findMin(MapNode<Key, Value>* nodePtr) const{
         if(nodePtr == nullptr) return nullptr;
         if(nodePtr->left == nullptr) return nodePtr; // Reached a leaf, return its pointer
         else return findMin(nodePtr->left); // Keep moving down the tree
     }
 
-    Node<Key, Value>* findMax(Node<Key, Value>* nodePtr) const{
+    MapNode<Key, Value>* findMax(MapNode<Key, Value>* nodePtr) const{
         if(nodePtr == nullptr) return nullptr;
         if(nodePtr->right == nullptr) return nodePtr; // Reached a leaf, return its pointer
         else return findMax(nodePtr->right); // Keep moving down the tree
     }
 
-    void clear(Node<Key, Value>* nodePtr){
+    void clear(MapNode<Key, Value>* nodePtr){
         if(nodePtr == nullptr) return; // Base case
         
         clear(nodePtr->right); // Clear nodes on the right
@@ -269,7 +277,7 @@ private:
         delete nodePtr; // Delete the current node
     }
 
-    void erase(const Key& item,Node<Key, Value>*& nodePtr){
+    void erase(const Key& item,MapNode<Key, Value>*& nodePtr){
         if(nodePtr == nullptr) return; // Item not found, return
 
         if(item < nodePtr->data.first) // Move left
@@ -288,7 +296,7 @@ private:
 
         else{ // Single child or no children
             // Hold the wanted node with a pointer
-            Node<Key, Value>* oldNode = nodePtr;
+            MapNode<Key, Value>* oldNode = nodePtr;
             // Repoint the parent's pointer to the child of the wanted node
             nodePtr = (nodePtr->right == nullptr)? nodePtr->left : nodePtr->right; 
             // Erase the wanted node
@@ -302,7 +310,7 @@ private:
         balance(nodePtr);
     }
 
-    void erase(Key&& item, Node<Key, Value>*& nodePtr){
+    void erase(Key&& item, MapNode<Key, Value>*& nodePtr){
         if(nodePtr == nullptr) return; // Item not found, return
 
         if(item < nodePtr->data.first) // Move left 
@@ -321,7 +329,7 @@ private:
 
         else{ // Single child or no children
             // Hold the wanted node with a pointer
-            Node<Key, Value>* oldNode = nodePtr;
+            MapNode<Key, Value>* oldNode = nodePtr;
             // Repoint the parent's pointer to the child of the wanted node
             nodePtr = (nodePtr->right == nullptr)? nodePtr->left : nodePtr->right; 
             // Erase the wanted node
@@ -335,38 +343,38 @@ private:
         balance(nodePtr);
     }
 
-    bool find(const Key& item, Node<Key, Value>* nodePtr) const{
+    bool count(const Key& item, MapNode<Key, Value>* nodePtr) const{
         if(nodePtr == nullptr) 
             return false; // Item not found, return false
 
         else if (item < nodePtr->data.first) // Move left
-            return find(item, nodePtr->left); 
+            return count(item, nodePtr->left); 
 
         else if (item > nodePtr->data.first) // Move right
-            return find(item, nodePtr->right); 
+            return count(item, nodePtr->right); 
 
         else return true; // Item found, return true
     }
 
-    bool find(Key&& item, Node<Key, Value>* nodePtr)const {
+    bool count(Key&& item, MapNode<Key, Value>* nodePtr)const {
         if(nodePtr == nullptr) return false; // Item not found, return false
 
         else if (item < nodePtr->data.first) // Move left
-            return find(std::move(item), nodePtr->left); 
+            return count(std::move(item), nodePtr->left); 
 
         else if (item > nodePtr->data.first) // Move right
-            return find(std::move(item), nodePtr->right);
+            return count(std::move(item), nodePtr->right);
 
         else return true; // Item found, return true
     }
-    void __clone__setParents(Node<Key, Value>* nodePtr){
+    void __clone__setParents(MapNode<Key, Value>* nodePtr){
         if(nodePtr == nullptr) return; // Base case
         __clone__setParents(nodePtr->left);
         __clone__setParents(nodePtr->right);
         updateParentPointer(nodePtr);
     }
 
-    void print(Node<Key, Value>* nodePtr){
+    void print(MapNode<Key, Value>* nodePtr){
         if (nodePtr == nullptr) return; // Base case
 
         print(nodePtr->left); // Print left subtree
@@ -374,9 +382,19 @@ private:
         print(nodePtr->right); // Print right subtree
     }
 
-    Node<Key, Value>* clone(Node<Key, Value>* rhsNodePtr){
+    MapNode<Key, Value>* clone(MapNode<Key, Value>* rhsNodePtr){
         if(rhsNodePtr == nullptr) return nullptr; // Base case
-        return new Node{rhsNodePtr->data, clone(rhsNodePtr->left), clone(rhsNodePtr->right)};
+        return new MapNode{rhsNodePtr->data, clone(rhsNodePtr->left), clone(rhsNodePtr->right)};
+    }
+
+    MapNode<Key, Value>* find(const Key& item, MapNode<Key, Value>* nodePtr) const{
+        if(nodePtr == nullptr) return nullptr;
+        if(item < nodePtr->data.first) // Move left
+            return find(item, nodePtr->left);
+        else if(item > nodePtr->data.first) // Move right
+            return find(item, nodePtr->right);
+        else // Found item, return its pointer
+            return nodePtr;
     }
 
 
@@ -438,6 +456,12 @@ public:
         return findMax(root)->data;
     }
 
+    std::pair<MapIterator<Key, Value>, bool> emplace(const Key& key, const Value& value){
+        insert(std::make_pair(key, value), root);
+        return std::make_pair(find(key), true);
+    }
+    
+
     void clear(){
         clear(root);
         root = nullptr;
@@ -452,12 +476,21 @@ public:
         erase(std::move(item), root);
     }
 
-    [[nodiscard]]bool find(const Key& item) const{
-        return find(item, root);
+    void erase(MapIterator<Key, Value> iterator){
+        if(iterator.node == nullptr) return;
+        erase(iterator->first);
     }
 
-    [[nodiscard]]bool find(Key&& item) const{
-        return find(std::move(item), root);
+    [[nodiscard]]bool count(const Key& item) const{
+        return count(item, root);
+    }
+
+    [[nodiscard]]bool count(Key&& item) const{
+        return count(std::move(item), root);
+    }
+
+    [[nodiscard]]MapIterator<Key, Value> find(const Key& item) const{
+        return MapIterator<Key, Value>{find(item,root)};
     }
 
     [[nodiscard]]bool empty() const{
@@ -471,7 +504,7 @@ public:
     }
 
     Value& operator[](const Key& item){
-        Node<Key, Value>* temp = root;
+        MapNode<Key, Value>* temp = root;
         while(temp != nullptr){
             if(item < temp->data.first) // Move left
                 temp = temp->left;
