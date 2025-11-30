@@ -79,13 +79,16 @@ void TicketService::cancelTicket(const int& ticketId)
         throw std::runtime_error("train is not exist or not has seat allocator");
     }
 
-    // free seat & save train
-    train->getSeatAllocator()->freeSeat(ticket->getSeat());
-    trainService->save(train.value());
+    // free seat
+    auto firstPassengerId = train->getSeatAllocator()->freeSeat(ticket->getSeat());
+    if(firstPassengerId == -1)
+        throw std::runtime_error("fail to free the seat \n");
+    // book seat to another passenger from waiting list if available
+    if(firstPassengerId != 0 ) // if seat added to user in the waiting list book ticket
+        bookTicket(train->getTrainId() , firstPassengerId);
+
     // cancel ticket
     ticket->setStatus(cancelled);
-
-    //save the changes
     ticketRepository->save(ticket.value());
 }
 
