@@ -335,27 +335,27 @@ private:
         balance(nodePtr);
     }
 
-    bool count(const Key& item, Node<Key, Value>* nodePtr) const{
+    bool find(const Key& item, Node<Key, Value>* nodePtr) const{
         if(nodePtr == nullptr) 
             return false; // Item not found, return false
 
         else if (item < nodePtr->data.first) // Move left
-            return count(item, nodePtr->left); 
+            return find(item, nodePtr->left); 
 
         else if (item > nodePtr->data.first) // Move right
-            return count(item, nodePtr->right); 
+            return find(item, nodePtr->right); 
 
         else return true; // Item found, return true
     }
 
-    bool count(Key&& item, Node<Key, Value>* nodePtr)const {
+    bool find(Key&& item, Node<Key, Value>* nodePtr)const {
         if(nodePtr == nullptr) return false; // Item not found, return false
 
         else if (item < nodePtr->data.first) // Move left
-            return count(std::move(item), nodePtr->left); 
+            return find(std::move(item), nodePtr->left); 
 
         else if (item > nodePtr->data.first) // Move right
-            return count(std::move(item), nodePtr->right);
+            return find(std::move(item), nodePtr->right);
 
         else return true; // Item found, return true
     }
@@ -452,12 +452,12 @@ public:
         erase(std::move(item), root);
     }
 
-    [[nodiscard]]bool count(const Key& item) const{
-        return count(item, root);
+    [[nodiscard]]bool find(const Key& item) const{
+        return find(item, root);
     }
 
-    [[nodiscard]]bool count(Key&& item) const{
-        return count(std::move(item), root);
+    [[nodiscard]]bool find(Key&& item) const{
+        return find(std::move(item), root);
     }
 
     [[nodiscard]]bool empty() const{
