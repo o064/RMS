@@ -24,7 +24,7 @@ std::string Passenger::getName() const {
 }
 
 void Passenger::setId(const int &passengerId) {
-    if(id <0) throw std::runtime_error("Invalid id");
+    if(passengerId <=0) throw std::runtime_error("Invalid id");
     this->id = passengerId;
 }
 

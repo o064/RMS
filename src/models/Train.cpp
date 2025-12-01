@@ -2,9 +2,9 @@
 #include <iostream>
 
 Train::Train(const int id, const std::string& name, const int totalSeats ){
-    if(id <0 ) throw std::runtime_error("Invalid id");
+    if(id < 0 ) throw std::runtime_error("Invalid  negative id");
     if(name.empty()) throw std::runtime_error("Invalid input name");
-    if(totalSeats < 0) throw std::runtime_error("total seat must be greater than 0");
+    if(totalSeats <= 0) throw std::runtime_error("total seat must be greater than 0");
     this->id = id;
     this->name = name;
     this->totalSeats = totalSeats;
@@ -27,7 +27,7 @@ void Train::setTrainName(const std::string& name) {
 }
 
 void Train::setTrainId(int trainId) {
-    if(id <0 ) throw std::runtime_error("Invalid id");
+    if(trainId <= 0 ) throw std::runtime_error("Invalid id");
     this->id = trainId;
 }
 

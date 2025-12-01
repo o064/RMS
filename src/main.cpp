@@ -5,7 +5,6 @@
 
 void loadMockData(RMSFacade* facade) {
     // ---- Add Trains ----
-    facade->addTrain("Cairo-Express", 50);
     facade->addTrain("Alex NightLine", 30);
     facade->addTrain("Luxor Premium", 40);
 

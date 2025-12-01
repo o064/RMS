@@ -33,7 +33,7 @@ int SeatAllocator::allocateSeat(const int& passengerId) {
         }
     }
     //cheeck if in waiting list
-    auto tempQueue = waitingList;
+    std::queue<int> tempQueue = waitingList;
     while(!tempQueue.empty()){
         if(tempQueue.front() == passengerId){
             std::cout << "the passenger is already in the waiting list";
@@ -75,80 +75,22 @@ int SeatAllocator::freeSeat(const int& seatNumber) {
         std::cout << "this seat not yet allocated \n" ;
         return -1;
     }
+    allocatedSeats[seat->first] = -1; // mark as unAllocated
+    cancelledSeats.push(seat->first); // push to the stack
 // if there is someone in waiting list assign the seat it him\her
     if(!waitingList.empty()){// waiting list is not empty
         const int firstPassengerId = waitingList.front();
         waitingList.pop();
-        allocatedSeats[seat->first] = firstPassengerId;
-        std::cout << "seat " << seat->first
-        << " is assigned to passenger with id :"
-        << firstPassengerId << "from the waitining list " << std::endl;
+        // push seat to cancelled stack for later allocation
+        std::cout << "Seat " << seatNumber
+                  << " freed and waiting passenger ID " << firstPassengerId
+                  << " can now book it\n";
         return firstPassengerId;
     }
-    // if there is no one in waiting list add to the stack for the next passenger
-    allocatedSeats[seat->first] = -1; // mark as unAllocated
-    cancelledSeats.push(seat->first); // push to the stack
+    // if there is no one in waiting list return 0
     return 0 ;
 }
 
-void SeatAllocator::printStatus() const {
-        std::cout << "\n=== Seat Allocator Status ===" << std::endl;
-        std::cout << "Total Seats: " << totalSeats << std::endl;
-        std::cout << "Available Seats Count: " << getAvailableSeatCount() << std::endl;
-        // Print available seats (need to copy since priority_queue doesn't allow iteration)
-        std::set<int> availableCopy = availableSeats;
-        std::cout << "Available Seats: ";
-        if (availableCopy.empty()) {
-            std::cout << "None";
-        } else {
-            while (!availableCopy.empty()) {
-                std::cout << *availableCopy.begin() << " ";
-                availableCopy.erase(availableCopy.begin());
-            }
-        }
-        std::cout << std::endl;
-
-        // Print waiting list
-        std::queue<int> waitingCopy = waitingList;
-        std::cout << "Waiting List: ";
-        if (waitingCopy.empty()) {
-            std::cout << "None";
-        } else {
-            while (!waitingCopy.empty()) {
-                std::cout << waitingCopy.front() << " ";
-                waitingCopy.pop();
-            }
-        }
-        std::cout << std::endl;
-
-        // Print allocated seats
-        std::cout << "Allocated Seats: ";
-        if (allocatedSeats.empty()) {
-            std::cout << "None";
-        } else {
-            for (const auto& pair : allocatedSeats) {
-                std::cout << "Seat " << pair.first << "->Passenger " << pair.second << ", ";
-            }
-        }
-        std::cout << std::endl;
-
-        // Print cancelled seats
-        stack<int> cancelledCopy = cancelledSeats;
-        std::cout << "Cancelled Seats Stack: ";
-        if (cancelledCopy.empty()) {
-            std::cout << "None";
-        } else {
-            while (!cancelledCopy.empty()) {
-                std::cout << cancelledCopy.top() << " ";
-                cancelledCopy.pop();
-            }
-        }
-        std::cout << std::endl;
-
-        std::cout << "Has Available Seats: " << (hasAvailableSeats()? "Yes" : "No") << std::endl;
-        std::cout << "=============================\n" << std::endl;
-
-}
 
 bool SeatAllocator::hasAvailableSeats() const {
     // if the is seat in cancelled tickets or minHeap

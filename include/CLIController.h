@@ -9,31 +9,21 @@
 #include <string>
 #include <iostream>
 using namespace std;
-enum CommandType{
-    LIST,
-    ADD,
-    UPDATE,
-    BOOK,
-    CANCEL,
-    TRAIN,
-    DELETE,
-    HELP,
-    EXIT,
-    UNKNOWN
-};
+
 class CLIController {
 private:
     RMSFacade* facade;
 
 public:
     CLIController(RMSFacade* facade);
-    CommandType getCommandType(const string& cmd);
-    void show_help();
-    vector<string> tokenize(const string &args) ;
-    string readLine();
-
+    //helpers to manipulate text
+    static vector<string> tokenize(const string &args) ;
+    static string readLine();
+    // run
      void run();
 
+     // help
+     void show_help();
 
     // train commands
     void list_trains();

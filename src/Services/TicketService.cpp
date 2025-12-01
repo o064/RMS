@@ -1,5 +1,7 @@
 #include "Services/TicketService.h"
 #include <stdexcept> //for run time exception
+#include <iostream>
+
 TicketService::TicketService(ITicketRepository *repo, TrainService *ts, PassengerService *ps):ticketRepository(repo),trainService(ts),passengerService(ps) {
 
 }
@@ -79,13 +81,20 @@ void TicketService::cancelTicket(const int& ticketId)
         throw std::runtime_error("train is not exist or not has seat allocator");
     }
 
-    // free seat
-    auto firstPassengerId = train->getSeatAllocator()->freeSeat(ticket->getSeat());
-    if(firstPassengerId == -1)
+    // pass seat to waiting list
+    auto waitingPassengerId  = train->getSeatAllocator()->freeSeat(ticket->getSeat());
+    if(waitingPassengerId  == -1)
         throw std::runtime_error("fail to free the seat \n");
     // book seat to another passenger from waiting list if available
-    if(firstPassengerId != 0 ) // if seat added to user in the waiting list book ticket
-        bookTicket(train->getTrainId() , firstPassengerId);
+    if(waitingPassengerId > 0) {  // >0 means there was a waiting passenger
+        try {
+            bookTicket(train->getTrainId(), waitingPassengerId);
+        } catch (const std::exception& e) {
+            // Log error and continue with cancellation
+            std::cerr << "Failed to book ticket for waiting passenger "
+                      << waitingPassengerId << ": " << e.what() << "\n";
+        }
+    }
 
     // cancel ticket
     ticket->setStatus(cancelled);

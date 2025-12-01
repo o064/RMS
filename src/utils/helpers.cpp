@@ -8,7 +8,9 @@
 #include <chrono>
 #include <iomanip>
 
-using namespace std;
+using std::string;
+using std::cout;
+using std::endl;
 
 std::string toLowerCase(std::string word){
     for(char & ch : word){

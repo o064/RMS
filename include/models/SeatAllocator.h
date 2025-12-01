@@ -41,7 +41,6 @@ public:
     std::queue<int> getWaitingList()const;
 
     bool hasAvailableSeats() const;
-    void printStatus() const ;
 
 };
 #endif //RMS_SEATALLOCATOR_H

@@ -9,9 +9,11 @@
 #include "CLIController.h"
 
 class RMSApp {
-    StartupManager* startupManager;
-    CLIController* cli;
+    unique_ptr<StartupManager> startupManager;
+    unique_ptr<CLIController> cli;
 public:
+    RMSApp();
+    ~RMSApp()= default;
     void run();
     void shut_down();
 };

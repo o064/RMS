@@ -22,7 +22,7 @@ bool PassengerService::deletePassenger(const int &passengerId) {
 }
 
 Passenger PassengerService::createPassenger(const std::string& name) {
-    Passenger p(0,name);
+    Passenger p(0,trim(name));
     passengerRepository->save(p);
     return p;
 }

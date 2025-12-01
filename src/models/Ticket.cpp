@@ -3,7 +3,7 @@
 
 Ticket::Ticket(const int id, const int seat, const int trainId, const Passenger& p)
         :passenger(p), status(booked){
-    if(id <0 || trainId < 0 ) throw std::runtime_error("Invalid id");
+    if(id <0 || trainId <= 0 ) throw std::runtime_error("Invalid id");
     if(seat<=0  ) throw std::runtime_error("Invalid seat");
     this->id = id;
     this->ticketSeat = seat;
@@ -41,6 +41,7 @@ Passenger Ticket::getPassenger() const
 
 void Ticket::setId(const int newId)
 {
+    if(newId <=0 )throw std::invalid_argument("Invalid id");
     this->id = newId;
 }
 
