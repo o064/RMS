@@ -12,6 +12,8 @@ public:
     Passenger(const int id, const std::string& name);
     int getId() const;
     std::string getName() const;
+    void setName(const std::string& name);
+
     void setId(const int & passengerId) ;
 
 };

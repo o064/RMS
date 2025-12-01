@@ -23,14 +23,21 @@ public:
 
     // train features
     std::vector<Train> listTrains();
-    Train addTrain(const std::string &name, const int &totalSeats);
+    Train addTrain(std::string &name,  int totalSeats);
     std::optional<Train> getTrain(const int &trainId);
     bool getTrainAvailability(const int &trainId);
+    Train updateTrain(int trainId, const std::string& name  ,int seats=0);
+    Train addSeats(int trainId,int seats=0);
+    Train addSeats(const std::string& name,int seats=0);
+    void deleteTrain(int trainId);
 
     // passenger features
     std::vector<Passenger> listPassengers();
     std::optional<Passenger> getPassenger(const int &totalSeats);
-    Passenger addPassenger(const std::string &name);
+    Passenger addPassenger( std::string& name);
+    Passenger updatePassenger(int passengerId, const std::string &name);
+    void deletePassenger(int passengerId);
+
 
     // ticket features
     std::vector<Ticket> listTickets();

@@ -37,7 +37,6 @@ compile_commands.json
 CTestTestfile.cmake
 _deps/
 CMakeUserPresets.json
-.idea
-.vscode
+build
 cmake-build-debug-event-trace
 cmake-build-debug

@@ -12,7 +12,7 @@ SeatAllocator::SeatAllocator(const int& totalSeats){
         this->totalSeats = totalSeats;
 //    add the seats to the minHeap
     for(int seat = 1 ; seat <= this->totalSeats; seat++ )
-        availableSeats.push(seat);
+        availableSeats.insert(seat);
 }
 
 int SeatAllocator::getAvailableSeatCount() const {
@@ -55,26 +55,27 @@ int SeatAllocator::allocateSeat(const int& passengerId) {
         cancelledSeats.pop();
     }
     else{
-        seatNumber = availableSeats.top();
-        availableSeats.pop();
+        auto minAvailbleSeat = availableSeats.begin();
+        seatNumber = *minAvailbleSeat;
+        availableSeats.erase(minAvailbleSeat);
 
     }
     allocatedSeats[seatNumber] = passengerId;
     return seatNumber;
 }
 
-void SeatAllocator::freeSeat(const int& seatNumber) {
+int SeatAllocator::freeSeat(const int& seatNumber) {
     if(totalSeats  <  seatNumber  || seatNumber <= 0 ){
         std::cout << "this seat not exist in the train \n" ;
-        return;
+        return -1 ;
     }
 //    if seat is not in allocated seats say it already not assigned to anyone
     const auto seat = allocatedSeats.find(seatNumber);
     if(seat == allocatedSeats.end() || seat->second == -1 ){ // not found or cancelled but not allocated
         std::cout << "this seat not yet allocated \n" ;
-        return;
+        return -1;
     }
-// if there is someOne in waiting list assign the seat it him\her
+// if there is someone in waiting list assign the seat it him\her
     if(!waitingList.empty()){// waiting list is not empty
         const int firstPassengerId = waitingList.front();
         waitingList.pop();
@@ -82,11 +83,12 @@ void SeatAllocator::freeSeat(const int& seatNumber) {
         std::cout << "seat " << seat->first
         << " is assigned to passenger with id :"
         << firstPassengerId << "from the waitining list " << std::endl;
-        return ;
+        return firstPassengerId;
     }
     // if there is no one in waiting list add to the stack for the next passenger
     allocatedSeats[seat->first] = -1; // mark as unAllocated
     cancelledSeats.push(seat->first); // push to the stack
+    return 0 ;
 }
 
 void SeatAllocator::printStatus() const {
@@ -94,14 +96,14 @@ void SeatAllocator::printStatus() const {
         std::cout << "Total Seats: " << totalSeats << std::endl;
         std::cout << "Available Seats Count: " << getAvailableSeatCount() << std::endl;
         // Print available seats (need to copy since priority_queue doesn't allow iteration)
-        std::priority_queue<int, std::vector<int>, std::greater<int>> availableCopy = availableSeats;
+        std::set<int> availableCopy = availableSeats;
         std::cout << "Available Seats: ";
         if (availableCopy.empty()) {
             std::cout << "None";
         } else {
             while (!availableCopy.empty()) {
-                std::cout << availableCopy.top() << " ";
-                availableCopy.pop();
+                std::cout << *availableCopy.begin() << " ";
+                availableCopy.erase(availableCopy.begin());
             }
         }
         std::cout << std::endl;
@@ -175,4 +177,57 @@ SeatAllocator& SeatAllocator::operator=(const SeatAllocator& other) {
         cancelledSeats = other.cancelledSeats;
     }
     return *this;
+}
+
+void SeatAllocator::addSeats(const int seats) {
+    if(seats <= 0 )
+        throw std::runtime_error("Seats must be greater than zero");
+
+    int prevTotalSeats =totalSeats;
+    totalSeats = prevTotalSeats + seats; // update seats
+    for(int i = prevTotalSeats + 1 ; i <= totalSeats ; i++)
+        availableSeats.insert(i); // update heap
+
+
+}
+
+void SeatAllocator::changeTotalSeats(const int newTotalSeats) {
+    // 1) newTotalSeats can be larger than the current seat , so expand ( 30 | 20 )
+    // 2) newTotalSeats can be smaller than but there is space to shrink  (  | 20 , 18 )
+//    3) smaller + no space to shrink
+
+    if(newTotalSeats < getAllocatedSeatCount()) // smaller than allocated seats
+        throw std::runtime_error("Cannot reduce total seats because some of the higher seats are allocated");
+    if(newTotalSeats < totalSeats){ // shrink
+
+        int seatsToRemove  = totalSeats - newTotalSeats;
+        if (availableSeats.size() < seatsToRemove)
+            throw std::runtime_error("Cannot shrink: not enough free seats");
+
+
+        while (seatsToRemove > 0 ){
+            auto lastSeat = std::prev(availableSeats.end()); // end point to end of set not the last element
+            availableSeats.erase(lastSeat);
+            seatsToRemove--;
+        }
+
+
+    }else if (newTotalSeats > totalSeats) // expand
+        for(int i = totalSeats + 1 ; i  <= newTotalSeats ; i++)
+            availableSeats.insert(i);
+
+    totalSeats = newTotalSeats;
+
+}
+
+int SeatAllocator::getAllocatedSeatCount() const {
+    return totalSeats - getAvailableSeatCount();
+}
+
+std::queue<int> SeatAllocator::getWaitingList() const {
+    return waitingList;
+}
+
+int SeatAllocator::getTotalSeats() const {
+    return totalSeats;
 }

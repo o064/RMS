@@ -21,10 +21,13 @@ std::string Train::getTrainName() const {
 }
 
 void Train::setTrainName(const std::string& name) {
+    if(name.empty() )
+        throw std::runtime_error("Invalid input name");
     this->name = name;
 }
 
 void Train::setTrainId(int trainId) {
+    if(id <0 ) throw std::runtime_error("Invalid id");
     this->id = trainId;
 }
 
@@ -64,5 +67,21 @@ Train &Train::operator=(const Train &other) {
         }
         return *this;
 
+}
+
+void Train::addSeats(int seats) {
+    if(seats <= 0 )
+        throw std::runtime_error("Seats must be greater than zero");
+    seatAllocator->addSeats(seats);
+
+    this->totalSeats = seatAllocator->getTotalSeats();
+}
+
+void Train::setSeats(int seats) {
+    if(seats <= 0)
+        throw std::runtime_error("Seats must be greater than zero");
+    seatAllocator->changeTotalSeats(seats);
+
+    totalSeats =seatAllocator->getTotalSeats();
 }
 

@@ -9,12 +9,13 @@
 #include <unordered_map>
 #include <vector>
 #include <queue>
+#include <set>
 #include "../structures/stack.h"
 #include <string>
 #include<memory>
 
 class SeatAllocator{
-    std::priority_queue<int, std::vector<int>, std::greater<int> > availableSeats;
+    std::set<int> availableSeats;
     std::queue<int> waitingList;
     std::unordered_map<int, int> allocatedSeats;
     stack<int> cancelledSeats;
@@ -27,9 +28,18 @@ public:
     SeatAllocator(const SeatAllocator& other);
     SeatAllocator& operator=(const SeatAllocator& other);
 
-    void freeSeat(const int& seatNumber);
+    void addSeats(const int seats);
+    void changeTotalSeats(const int newTotalSeats);
+
+    int freeSeat(const int& seatNumber);
     int allocateSeat(const int& passengerId);
+
     int getAvailableSeatCount() const;
+    int getAllocatedSeatCount() const;
+    int getTotalSeats() const;
+
+    std::queue<int> getWaitingList()const;
+
     bool hasAvailableSeats() const;
     void printStatus() const ;
 

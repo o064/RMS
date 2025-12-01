@@ -10,6 +10,8 @@
 CommandType CLIController::getCommandType(const string& cmd){
     if(cmd == "list") return CommandType::LIST;
     if(cmd == "add") return CommandType::ADD;
+    if(cmd == "update") return CommandType::UPDATE;
+    if(cmd == "delete") return CommandType::DELETE;
     if(cmd == "exit" || cmd == "q") return CommandType::EXIT;
     if(cmd == "help"|| cmd == "h" || cmd == "?") return CommandType::HELP;
     if(cmd == "train") return CommandType::TRAIN;
@@ -18,6 +20,7 @@ CommandType CLIController::getCommandType(const string& cmd){
     return CommandType::UNKNOWN;
 
 }
+
 vector<string> CLIController::tokenize(const string &args) { // split the sentence to args
     stringstream ss(args);
     vector<string> tokens ;
@@ -26,7 +29,6 @@ vector<string> CLIController::tokenize(const string &args) { // split the senten
         tokens.push_back(token);
     }
     return tokens;
-
 }
 
 string CLIController::readLine() {
@@ -36,21 +38,35 @@ string CLIController::readLine() {
 }
 
 void CLIController::show_help() {
-    cout << "RMS - Available Commands:\n";
-    cout << "Management:\n";
-    cout << " list trains\n";
-    cout << " list passengers\n";
-    cout << " list tickets\n";
-    cout << " add train <name> <seats>\n";
-    cout << " add passenger <name>          - Show all trains - Show all passengers - Show all tickets - Add a new train - Add a new passenger\n";
-    cout << "Booking:\n";
-    cout << " book ticket <train_id> <passenger_name> - Book a ticket\n";
-    cout << " cancel ticket <ticket_id>     - Cancel a ticket\n";
-    cout << " train availability <train_id> - Check available seats\n";
-    cout << "System:\n";
-    cout << " help / h / ?\n";
-    cout << " exit / quit / q\n";
+    cout << "\n===============================================\n";
+    cout << "         RMS - Railway Management System        \n";
+    cout << "===============================================\n\n";
+
+    cout << "Usage: <command> [arguments]\n\n";
+
+    cout << "-------------- Management Commands --------------\n";
+    cout << "  list trains                                   \n";
+    cout << "  list passengers                               \n";
+    cout << "  list tickets                                  \n";
+    cout << "  add train <name> <seats>                      \n";
+    cout << "  add passenger <name>                          \n";
+    cout << "  add seats <trainId|trainName> <seats>         \n";
+    cout << "  update train <train_id> <seats> <name>        \n\n";
+    cout << "  update passenger <passenger_id> <newName>     \n\n";
+    cout << "  delete train <train_id>                        \n\n";
+    cout << "  delete passenger <passenger_id>               \n\n";
+
+    cout << "---------------- Booking Commands ----------------\n";
+    cout << "  book ticket <train_id> <passenger_name>       - Book a ticket\n";
+    cout << "  cancel ticket <ticket_id>                     - Cancel a ticket\n";
+    cout << "  train availability <train_id>                 - Check seats\n\n";
+
+    cout << "------------------ System Commands ---------------\n";
+    cout << "  help / h / ?                                  \n";
+    cout << "  exit / quit / q                               \n";
+    cout << "--------------------------------------------------\n\n";
 }
+
 
 void CLIController::list_trains() {
     const auto trains = facade->listTrains();
@@ -96,7 +112,7 @@ void CLIController::list_passengers() {
 void CLIController::list_tickets() {
     const auto tickets = facade->listTickets();
     if(tickets.empty())
-        cout << "No tikcets avialble \n";
+        cout << "No tickets available \n";
     cout << "\n====================================== Tickets =======================================\n";
 
     cout << left
@@ -126,19 +142,28 @@ CLIController::CLIController(RMSFacade *facade) :facade(facade){
 
 }
 
-void CLIController::run() {
+
+void sayWelcome(){
     cout << "===============================================\n";
     cout << "  Welcome to the Railway Reservation System  \n";
     cout << "===============================================\n";
-    cout << "type help to show commands \n";
+    cout << "Type 'help' to show the list of commands.\n";
     cout << "-----------------------------------------------\n";
-    cout << "How can I assist you today?\n\n";
+    printCurrentDate();
+    cout << "-----------------------------------------------\n";
+    cout << "Under the supervision of Dr.Iman and Eng/Mariem Abdelrahman?\n\n";
+}
+void CLIController::run() {
+    sayWelcome();
     while(true){
-        cout << "\nDr.Eman >  ";
+        cout << "\ncmd >  ";
         string command =readLine();
         vector<string> args = tokenize(command);
-        if(args.empty())
+        if(args.empty()){
+            cout << "Please enter a command. Type 'help' for available commands.\n";
             continue;
+
+        }
         CommandType cmdType = getCommandType(args[0]);
         switch (cmdType) {
 
@@ -177,6 +202,8 @@ void CLIController::run() {
                     add_train(args);
                 else if (args[1] == "passenger")
                     add_passenger(args);
+                else if (args[1]=="seats")
+                    add_seats(args);
                 else
                     cout << "Unknown add target.\n";
                 break;
@@ -185,15 +212,42 @@ void CLIController::run() {
             case CommandType::BOOK:
                 book_ticket(args);
                 break;
+                // ===================== UPDATE ============================
+            case CommandType::UPDATE:
+                if (args.size() < 2) {
+                    cout << "Usage: update [train|passenger]\n";
+                    break;
+                }
+                if (args[1] == "train")
+                    update_train(args);
+                else if(args[1] =="passenger")
+                    update_passenger(args);
+                else
+                    cout << "Unknown update target.\n";
+                break;
 
+                // ===================== Delete ============================
+            case CommandType::DELETE:
+                if (args.size() < 2) {
+                    cout << "Usage: delete [train|passenger]\n";
+                    break;
+                }
+                if (args[1] == "train")
+                    delete_train(args);
+                else if(args[1] =="passenger")
+                    delete_passenger(args);
+                else
+                    cout << "Unknown delete target.\n";
+                break;
                 // ===================== CANCEL ==========================
             case CommandType::CANCEL:
                 cancel_ticket(args);
                 break;
-            // ===================== CANCEL ==========================
+            // ===================== Exit ==========================
 
             case CommandType::EXIT:
                 cout<< "GoodBye..........! \n";
+                exit(0);
                 return;
                 // ===================== UNKNOWN =========================
             default:
@@ -214,12 +268,12 @@ void CLIController::add_passenger(const vector<string> &args) {
     try{
         name = combineString(args,2);
         auto p = facade->addPassenger(name);
-        cout << "--- Passenger Added Successfully ---\n";
-        cout << "ID: " << p.getId() << "\n";
-        cout << "Name: " << p.getName() << "\n";
-        cout << "------------------------------------\n";
+        printPassengerInfo(p ,"--- Passenger Added Successfully ---\n");
+
     } catch(const exception& e) {
-        cout << "ERROR: Could not add passenger " << name << ". " << e.what() << "\n";
+        cout << "ERROR: Could not add passenger " << name << ". " << "\n";
+        cout << "Details: " << e.what() << "\n";
+
     }
 }
 
@@ -232,35 +286,35 @@ void CLIController::get_train_availability(const vector<string> &args) {
     int id ;
     try{
         id = parseInt(args[2],"id");
+        bool isAvailable = facade->getTrainAvailability(id);
+        if(!isAvailable)
+            cout << "This train is full \n";
+        else
+            cout << "This train is available \n";
+
     }catch(const exception& e){
         cout << "Error while get_train_availability : " << e.what() << endl;
         return;
     }
 
-    bool isAvailable = facade->getTrainAvailability(id);
-    if(!isAvailable)
-        cout << "This train is full \n";
-    else
-        cout << "This train is available \n";
+
 
 }
 
 void CLIController::add_train(const vector<string> &args) {
     if(args.size() < 4) {
-        cout << "Usage: add train <seats> <name>\n";
+        cout << "Usage: add train <name> <seats> \n";
         return;
     }
-    const string& seatArgs = args[2];
+    const string& seatArgs = args[3];
     string name;
     try {
         const int &seats = parseInt(seatArgs,"seats");
-        name = combineString(args,3);
+        name = combineString(args,2,-1);
 
         auto t = facade->addTrain(name,seats);
-        cout << "--- Train Added Successfully ---\n";
-        cout << "Name: " << t.getTrainName() << "\n";
-        cout << "Total Seats: " << t.getTotalSeats() << "\n";
-        cout << "--------------------------------\n";
+        printTrainInfo(t,"--- Train Added Successfully ---\n");
+
     }
     catch (const exception& e) {
         cout << "ERROR: Could not add train " << name << ". " << e.what() << "\n";
@@ -280,12 +334,7 @@ void CLIController::book_ticket(const vector<string> &args) {
         passengerName = combineString(args,3);
 
         auto t = facade->bookTicket(trainId, passengerName);
-
-        cout << "--- Ticket Booked Successfully ---\n";
-        cout << "Ticket ID: " << t.getId() << "\n";
-        cout << "Train ID: " << t.getTrainId() << "\n";
-        cout << "Passenger: " << t.getPassenger().getName() << "\n";
-        cout << "----------------------------------\n";
+        printTicketInfo(t,"--- Ticket Booked Successfully ---\n");
 
     } catch (const exception& e) {
         cout << "ERROR: Could not book ticket for " << passengerName << " on Train ID " << trainIdArg << ".\n";
@@ -315,3 +364,111 @@ void CLIController::cancel_ticket(const vector<string> &args) {
         cout << "Details: " << e.what() << "\n";
     }
 }
+
+void CLIController::update_train(const vector<string> &args) {
+
+    if(args.size() < 5) {
+        cout << "Usage: update train <train_id> <name> <seats>\n";
+        return;
+    }
+
+    const string& tarinIdArg = args[2];
+    const string& seatArg = args[4];
+    try {
+        int trainId = parseInt(tarinIdArg , "train id");
+        int seats = parseInt(seatArg, "seat number");
+        string name = combineString(args,3,-1);
+        auto t =facade->updateTrain(trainId , name , seats);
+
+        printTrainInfo(t , "------ Train updated successfully ------ \n");
+
+
+    } catch (const exception& e) {
+        cout << "ERROR: Could not updateTrain " << tarinIdArg << ".\n";
+        cout << "Details: " << e.what() << "\n";
+    }
+}
+
+void CLIController::add_seats(const vector<string> &args) {
+    if(args.size() < 5) {
+        cout << "Usage: add seats <trainId|trainName> <seats>\n";
+        return;
+    }
+
+    const string& trainArg = args[2];
+    const string& seatArg = args[3];
+    try {
+        int seats = parseInt(seatArg, "seat number");
+        // add seats trainId
+        if(isInteger(trainArg)){
+            int trainId = parseInt(trainArg , "train id");
+            const auto &t = facade->addSeats(trainId, seats);
+            printTrainInfo(t , "--- Train updated successfully. --- \n");
+
+        }else{  // add seats trainName
+            string name = combineString(args,2,-1); // until last field
+            const auto &t =facade->addSeats(name, seats);
+            printTrainInfo(t , "Train updated successfully.");
+
+        }
+
+
+
+    } catch (const exception& e) {
+        cout << "ERROR: Could not update Train " << trainArg << ".\n";
+        cout << "Details: " << e.what() << "\n";
+    }
+}
+
+void CLIController::update_passenger(const vector<string> &args) {
+    if(args.size() < 5) {
+        cout << "Usage: update passenger <passengerId> <newName>\n";
+        return;
+    }
+
+    const string& passengerArg = args[2];
+    try {
+        int passengerId = parseInt(passengerArg , "passenger Id");
+        string name = combineString(args,3);
+        auto p = facade->updatePassenger(passengerId, name);
+        printPassengerInfo(p , "------ Passenger updated successfully ------ \n");
+
+    } catch (const exception& e) {
+        cout << "ERROR: Could not update passenger " << passengerArg<< ".\n";
+        cout << "Details: " << e.what() << "\n";
+    }
+}
+
+void CLIController::delete_train(const vector<string> &args) {
+    if(args.size() < 3) {
+        cout << "Usage: delete train <trainId>\n";
+        return;
+    }
+    const string& trainArg = args[2];
+    try {
+        int trainId = parseInt(trainArg,"train Id");
+        facade->deleteTrain(trainId);
+        cout << "train with id " << trainId << " deleted successfully \n";
+    }catch (const exception& e) {
+        cout << "ERROR: Could not delete train" << ".\n";
+        cout << "Details: " << e.what() << "\n";
+    }
+}
+
+void CLIController::delete_passenger(const vector<string> &args) {
+    if(args.size() < 3) {
+        cout << "Usage: delete passenger <passengerId>\n";
+        return;
+    }
+    const string& passengerArg = args[2];
+    try {
+        int passengerId = parseInt(passengerArg,"train Id");
+        facade->deletePassenger(passengerId);
+        cout << "passenger with id " << passengerId << " deleted successfully \n";
+    }catch (const exception& e) {
+        cout << "ERROR: Could not delete passenger" << ".\n";
+        cout << "Details: " << e.what() << "\n";
+    }
+}
+
+

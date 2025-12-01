@@ -9,7 +9,8 @@ PassengerService::PassengerService(IPassengerRepository *repo) {
 }
 
 std::optional<Passenger> PassengerService::getPassenger(const int &passengerId) {
-    return passengerRepository->getPassenger(passengerId);
+
+    return  passengerRepository->getPassenger(passengerId);
 }
 
 std::vector<Passenger> PassengerService::getAllPassengers() {
@@ -24,6 +25,14 @@ Passenger PassengerService::createPassenger(const std::string& name) {
     Passenger p(0,name);
     passengerRepository->save(p);
     return p;
+}
+Passenger PassengerService::updatePassenger(const int passengerId , const std::string& name) {
+    auto passenger = passengerRepository->getPassenger(passengerId);
+    if(!passenger.has_value())
+        throw std::runtime_error("passenger with id: "+ std::to_string(passengerId) + " does not exit \n");
+    passenger->setName(name); //update name
+    passengerRepository->save(passenger.value());
+    return passenger.value();
 }
 
 Passenger PassengerService::find_or_create_passenger(const std::string &name) {

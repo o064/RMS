@@ -33,6 +33,8 @@ public:
 
     void setTrainName(const std::string& name);
     void setTrainId(int trainId);
+    void setSeats(int seats);
+    void addSeats(int seats);
 
     bool hasAvailableSeats() const;
 

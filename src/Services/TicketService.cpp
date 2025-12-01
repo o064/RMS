@@ -92,3 +92,9 @@ void TicketService::cancelTicket(const int& ticketId)
     ticketRepository->save(ticket.value());
 }
 
+Ticket TicketService::updateTicket(Ticket &t) {
+    ticketRepository->save(t);
+    return t;
+
+}
+

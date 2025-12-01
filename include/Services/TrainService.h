@@ -14,11 +14,17 @@ private:
 public:
     TrainService(ITrainRepository* repo) ;
     ~TrainService();
-
+    //crud
     std::optional<Train> getTrain(const int&);
     std::vector<Train> getAllTrains();
-    Train createTrain(const std::string& name,const int& seats);
+    Train createTrain(const std::string& name,int seats);
+    Train updateTrain(const int& id , const std::string& name,int seats = 0);
     bool deleteTrain(int trainId);
+
+    //seats
+    Train addSeats(const int trainId , const int seats);
+    Train addSeats(const std::string name  , const int seats);
+
     bool isAvailbleSeat(int trainId);
     void save(Train & train);
 };
