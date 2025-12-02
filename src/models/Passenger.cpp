@@ -3,16 +3,20 @@
 //
 #include <stdexcept>
 #include "models/Passenger.h"
+#include "utils/helpers.h"
 
+#include <iostream>
+using std::cout;
+using std::endl;
 
 
 
 
 Passenger::Passenger(const int id, const std::string &name) {
-    if(name.empty()) throw std::runtime_error("Invalid input name");
-    if(id <0) throw std::runtime_error("Invalid id");
+    if(!isValidName(name)) throw std::invalid_argument("Invalid input name");
+    if(id <0) throw std::invalid_argument("Invalid id");
     this->id = id;
-    this->name =name;
+    this->name = trim(name);
 }
 
 int Passenger::getId() const {
@@ -24,13 +28,21 @@ std::string Passenger::getName() const {
 }
 
 void Passenger::setId(const int &passengerId) {
-    if(passengerId <=0) throw std::runtime_error("Invalid id");
+    if(passengerId <=0) throw std::invalid_argument("Invalid id");
     this->id = passengerId;
 }
 
 void Passenger::setName(const std::string& name) {
-    if(name.empty()) throw std::runtime_error("Invalid input name");
-    this->name = name;
+    if(!isValidName(name)) throw std::invalid_argument("Invalid input name");
+    this->name = trim(name);
+}
+
+void Passenger::print(const std::string &msg) const {
+    cout << "--------------------------------------------------\n";
+    cout << msg << endl;
+    cout << "Passenger ID   : " << id << "\n";
+    cout << "Name   : " << name << "\n";
+    cout << "--------------------------------------------------\n";
 }
 
 

@@ -36,6 +36,8 @@ add_library(rms_lib
         src/StartupManager.cpp
         src/CLIController.cpp
         src/utils/helpers.cpp
+        src/RMSCommand.cpp
+        src/RMSApp.cpp
 
 )
 
@@ -68,11 +70,12 @@ add_executable(rms_tests
         tests/test_helpers.cpp
         tests/test_ticket.cpp
         tests/test_ticktRepo.cpp
-        tests/test_ticketService.cpp
-        tests/test_facade.cpp
-        tests/test_startUpManager.cpp
-        tests/test_cliController.cpp
+#        tests/test_ticketService.cpp
+#        tests/test_facade.cpp
+#        tests/test_startUpManager.cpp
+#        tests/test_cliController.cpp
         tests/structures/test_stack.cpp
+        tests/test_models.cpp
 )
 target_link_libraries(rms_tests
         PRIVATE

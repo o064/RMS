@@ -60,79 +60,57 @@ int parseInt(const std::string& arg , const std::string& argName){
 }
 
 bool isValidName(const std::string& name) {
-    static const std::regex pattern("^[A-Za-z]+([' -][A-Za-z]+)*$"); // a-z - '
+    static const std::regex pattern("^[A-Za-z0-9]+([' -][A-Za-z0-9]+)*$"); // a-z - '
     return std::regex_match(name, pattern);
 }
-std::string combineString(const std::vector<std::string>& args,int start){
-    if(args[start].empty())
-        return "";
-    std::string text;
-    for(int i = start ; i < args.size() ; i++){
-        if(!isValidName(args[i]))
-            throw std::runtime_error("invalid name");
-        text+= args[i] + " ";
-    }
-    text.pop_back(); //remove last char
-    return text;
+
+std::string combineString(const std::vector<std::string>& args, int start) {
+   return combineString(args , start ,args.size()); // not including the end
 }
 
-std::string combineString(const std::vector<std::string>& args, int start , int end){
-    if(args[start].empty())
-        return "";
-    if (end == -1) {
-        end = args.size() - 1; // stop at prev-last element
+std::string combineString(const std::vector<std::string>& args, int start, int end) {
+    if (start < 0 || start >= args.size())
+        throw std::runtime_error("Start index out of range");
+
+    if (end == -1)
+        end = args.size() - 1;
+
+    if (end < start || end > args.size())
+        throw std::runtime_error("Invalid end index");
+
+    std::string text;
+    for (int i = start; i < end; i++) {  // inclusive
+        if (!isValidName(args[i]) || isInteger(args[i]))
+            throw std::runtime_error("invalid name");
+        text += args[i] + " ";
     }
 
-    if (start < 0 || start >= args.size() || end < start) {
-        throw std::runtime_error("Invalid start/end range for combineString");
-    }
-    std::string text;
-    for(int i = start ; i < end; i++){
-        if(!isValidName(args[i]))
-            throw std::runtime_error("invalid name");
-        text+= args[i] + " ";
-    }
-    text.pop_back(); //remove last char
+    if (!text.empty())
+        text.pop_back(); // remove last space
+
     return text;
 }
 bool compareString(const std::string& str1 , const std::string& str2){
     return toLowerCase(trim(str1)) ==toLowerCase(trim(str2));
 }
 bool isInteger(const std::string& str) {
-    try {
-        std::stoi(str);
+    try{
+        std::size_t pos; // have the index of non int char
+
+        stoi(trim(str),&pos);
+        if(pos == 0 || pos != trim(str).size()) // to pass 12a and abc
+            throw std::invalid_argument("");
+
         return true;
-    } catch (std::exception&) {
+
+    }catch (std::invalid_argument& e) {
         return false;
+    }
+    catch ( std::out_of_range& e) {
+        throw std::out_of_range( str +" value is too large");
     }
 }
 
-void printTrainInfo(const Train& t, const string& msg){
-    cout << "--------------------------------------------------\n";
-    cout << msg << endl;
-    cout << "Train ID   : " << t.getTrainId() << "\n";
-    cout << " Name   : " << t.getTrainName() << "\n";
-    cout << "Seats  : " << t.getTotalSeats() << "\n";
-    cout << "Availability: " << (t.hasAvailableSeats() ? "Available" : "full") << "\n";
-    cout << "--------------------------------------------------\n";
-}
-void printPassengerInfo(const Passenger& p, const string& msg){
-    cout << "--------------------------------------------------\n";
-    cout << msg << endl;
-    cout << "Passenger ID   : " << p.getId() << "\n";
-    cout << "Name   : " << p.getName() << "\n";
-    cout << "--------------------------------------------------\n";
-}
-void printTicketInfo(const Ticket& t, const string& msg){
-    cout << "--------------------------------------------------\n";
-    cout << msg << endl;
-    cout << "Ticket ID: " << t.getId() << "\n";
-    cout << "Seat: " << t.getSeat() << "\n";
-    cout << "Train ID: " << t.getTrainId() << "\n";
-    cout << "Passenger: " << t.getPassenger().getName() << "\n";
-    cout << "Status : " << ((t.getStatus() == booked) ? "Booked" : "Cancelled") << "\n";
-    cout << "--------------------------------------------------\n";
-}
 
 void printCurrentDate(){
     auto now = std::chrono::system_clock::now();

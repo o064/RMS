@@ -4,9 +4,17 @@
 
 #include <sstream>
 #include <iomanip> // required for setw()
+#include <limits> // for numeric_limits
+#include <cstdlib> // Required for system()
+
 #include "CLIController.h"
 #include "utils/helpers.h" // parseInt , trim
 #include "RMSCommand.h"
+
+using std::cout ;
+using std::endl;
+using std::string;
+using std::cin;
 
 //enums [MainCmd instead of RMSCommand::MainCmd
 using MainCmd = RMSCommand::MainCmd;
@@ -32,7 +40,11 @@ vector<string> CLIController::tokenize(const string &args) { // split the senten
     }
     return tokens;
 }
-
+void CLIController::waitUser(){
+//    cin.ignore(numeric_limits<streamsize>::max(), '\n'); //  clear buffer to ingnore '\n'
+    cout << "Press Enter to exit...";
+    cin.get(); // wait for Enter
+}
 string CLIController::readLine() {
     string line;
     getline(cin ,line);
@@ -48,6 +60,7 @@ void CLIController::show_help() {
 
     cout << "---------------------- Commands ----------------------\n\n";
 
+
     // ======================== TRAIN ========================
     cout << "train:\n";
     cout << "   train list                                     - Show all trains\n";
@@ -56,6 +69,7 @@ void CLIController::show_help() {
     cout << "   train update <id> <seats> <name>               - Update a train\n";
     cout << "   train seats add <id> <count>                   - Increase seat count\n";
     cout << "   train availability <id>                        - Show seat status\n\n";
+    cout << "   train status <id>                              - Show full train status\n\n";
 
     // ====================== PASSENGER ======================
     cout << "passenger:\n";
@@ -74,6 +88,8 @@ void CLIController::show_help() {
     cout << "system:\n";
     cout << "   help | h | ?                                   - Show help menu\n";
     cout << "   exit | quit | q                                - Exit program\n";
+    cout << "   clear                                          - Clear Screen\n";
+
     cout << "--------------------------------------------------------\n\n";
 }
 
@@ -85,7 +101,7 @@ void CLIController::list_trains() {
         cout << "No trains avialble \n";
     cout << "\n======== Trains ==========\n";
     cout << left << setw(6) << "ID"
-         << left << setw(15) << "Name"
+         << left << setw(20) << "Name"
          << left << setw(20) << "Status"
          << "\n";
 
@@ -98,7 +114,7 @@ void CLIController::list_trains() {
                         : to_string(seats) + " seats available";
 
         cout << left << setw(6)  << train.getTrainId()
-             << left << setw(15) << train.getTrainName()
+             << left << setw(20) << train.getTrainName()
              << left << setw(20) << status
              << "\n";
     }
@@ -162,9 +178,11 @@ void sayWelcome(){
     cout << "-----------------------------------------------\n";
     printCurrentDate();
     cout << "-----------------------------------------------\n";
+    cout << "Author : Dangerous Team .\n";
     cout << "Under the supervision of Dr.Iman and Eng/Mariem Abdelrahman.\n\n";
 }
 void CLIController::run() {
+    clear();
     sayWelcome();
 //lambad function
     auto printUsage = [](MainCmd cmd) {
@@ -201,6 +219,8 @@ void CLIController::run() {
                     case TrainCmd::UPDATE:       update_train(args); break;
                     case TrainCmd::SEATS_ADD:    add_seats(args); break;
                     case TrainCmd::AVAILABILITY: get_train_availability(args); break;
+                    case TrainCmd::STATUS: get_train_status(args); break;
+
                     default: cout << "Invalid train command.\n";
                 }
                 break;
@@ -238,9 +258,14 @@ void CLIController::run() {
                 SystemCmd sCmd = getSystemCmd(args[0]);
                 switch (sCmd) {
                     case SystemCmd::HELP: show_help(); break;
+                    case SystemCmd::CLEAR :
+                        clear();
+                        sayWelcome();
+                        break;
                     case SystemCmd::EXIT:
                         cout << "Goodbye!\n";
-                        exit(0);
+                        waitUser();
+                        return;
                     default: cout << "Invalid system command.\n";
                 }
                 break;
@@ -257,13 +282,14 @@ void CLIController::add_passenger(const vector<string> &args) {
 //add passenger <name>
     if(args.size() < 3) {
         cout << "Usage: passenger add  <name>\n";
+
         return;
     }
      string name;
     try{
         name = combineString(args,2);
         auto p = facade->addPassenger(name);
-        printPassengerInfo(p ,"--- Passenger Added Successfully ---\n");
+        p.print("--- Passenger Added Successfully ---\n");
 
     } catch(const exception& e) {
         cout << "ERROR: Could not add passenger " << name << ". " << "\n";
@@ -295,6 +321,9 @@ void CLIController::get_train_availability(const vector<string> &args) {
 
 
 }
+void CLIController::clear(){
+    system("cls");
+}
 
 void CLIController::add_train(const vector<string> &args) {
     if(args.size() < 4) {
@@ -308,7 +337,7 @@ void CLIController::add_train(const vector<string> &args) {
         name = combineString(args,2,-1);
 
         auto t = facade->addTrain(name,seats);
-        printTrainInfo(t,"--- Train Added Successfully ---\n");
+        t.print("--- Train Added Successfully ---\n");
 
     }
     catch (const exception& e) {
@@ -329,7 +358,10 @@ void CLIController::book_ticket(const vector<string> &args) {
         passengerName = combineString(args,3);
 
         auto t = facade->bookTicket(trainId, passengerName);
-        printTicketInfo(t,"--- Ticket Booked Successfully ---\n");
+        if(t.has_value())
+            t->print("--- Ticket Booked Successfully ---\n");
+        else
+            cout << "train is full so the passenger added to the waiting list \n";
 
     } catch (const exception& e) {
         cout << "ERROR: Could not book ticket for " << passengerName << " on Train ID " << trainIdArg << ".\n";
@@ -375,7 +407,7 @@ void CLIController::update_train(const vector<string> &args) {
         string name = combineString(args,3,-1);
         auto t =facade->updateTrain(trainId , name , seats);
 
-        printTrainInfo(t , "------ Train updated successfully ------ \n");
+        t.print( "------ Train updated successfully ------ \n");
 
 
     } catch (const exception& e) {
@@ -398,12 +430,12 @@ void CLIController::add_seats(const vector<string> &args) {
         if(isInteger(trainArg)){
             int trainId = parseInt(trainArg , "train id");
             const auto &t = facade->addSeats(trainId, seats);
-            printTrainInfo(t , "--- Train updated successfully. --- \n");
+            t.print( "--- Train updated successfully. --- \n");
 
         }else{  // add seats trainName
             string name = combineString(args,2,-1); // until last field
             const auto &t =facade->addSeats(name, seats);
-            printTrainInfo(t , "Train updated successfully.");
+            t.print( "Train updated successfully.\n");
 
         }
 
@@ -426,7 +458,7 @@ void CLIController::update_passenger(const vector<string> &args) {
         int passengerId = parseInt(passengerArg , "passenger Id");
         string name = combineString(args,3);
         auto p = facade->updatePassenger(passengerId, name);
-        printPassengerInfo(p , "------ Passenger updated successfully ------ \n");
+        p.print( "------ Passenger updated successfully ------ \n");
 
     } catch (const exception& e) {
         cout << "ERROR: Could not update passenger " << passengerArg<< ".\n";
@@ -462,6 +494,21 @@ void CLIController::delete_passenger(const vector<string> &args) {
         cout << "passenger with id " << passengerId << " deleted successfully \n";
     }catch (const exception& e) {
         cout << "ERROR: Could not delete passenger" << ".\n";
+        cout << "Details: " << e.what() << "\n";
+    }
+}
+
+void CLIController::get_train_status(const vector<string> &args) {
+    if(args.size() < 3) {
+        cout << "Usage: train status  <trainId>\n";
+        return;
+    }
+    const string& trainArg = args[2];
+    try {
+        int trainId = parseInt(trainArg,"train Id");
+        facade->trainStatus(trainId);
+    }catch (const exception& e) {
+        cout << "ERROR: could not print train data with id : " << trainArg << ".\n";
         cout << "Details: " << e.what() << "\n";
     }
 }

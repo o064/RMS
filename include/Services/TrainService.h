@@ -24,7 +24,8 @@ public:
     //seats
     Train addSeats(const int trainId , const int seats);
     Train addSeats(const std::string name  , const int seats);
-
+    // status
+    void printStatus(int trainId);
     bool isAvailbleSeat(int trainId);
     void save(Train & train);
 };

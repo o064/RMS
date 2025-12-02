@@ -15,6 +15,5 @@ public:
     RMSApp();
     ~RMSApp()= default;
     void run();
-    void shut_down();
 };
 #endif //RMS_RMSAPP_H

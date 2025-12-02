@@ -13,34 +13,41 @@
 #include "../structures/stack.h"
 #include <string>
 #include<memory>
+#include <functional>
 
 class SeatAllocator{
     std::set<int> availableSeats;
     std::queue<int> waitingList;
+    std::set<int> waitingSet;              // prevent duplicate waiting entries
     std::unordered_map<int, int> allocatedSeats;
     stack<int> cancelledSeats;
     int totalSeats ;
 public:
 
-    SeatAllocator(const int& totalSeats = 10);
+    SeatAllocator( int totalSeats = 10);
     // for copying
     std::unique_ptr<SeatAllocator> clone() const;
     SeatAllocator(const SeatAllocator& other);
     SeatAllocator& operator=(const SeatAllocator& other);
 
-    void addSeats(const int seats);
-    void changeTotalSeats(const int newTotalSeats);
+    void addSeats(int seats);
+    void changeTotalSeats(int newTotalSeats);
 
-    int freeSeat(const int& seatNumber);
-    int allocateSeat(const int& passengerId);
+    int freeSeat( int seatNumber);
+    int allocateSeat( int passengerId);
+    int processWaitingList(int seatsToAdd, std::function<void(int)> bookCallback) ;
+
 
     int getAvailableSeatCount() const;
     int getAllocatedSeatCount() const;
     int getTotalSeats() const;
+    int getWaitingListSize()const;
 
     std::queue<int> getWaitingList()const;
 
     bool hasAvailableSeats() const;
+
+    void printStatus() const;
 
 };
 #endif //RMS_SEATALLOCATOR_H

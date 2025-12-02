@@ -16,5 +16,7 @@ public:
 
     void setId(const int & passengerId) ;
 
+    void print(const std::string& msg) const ;
+
 };
 #endif //RMS_PASSENGER_H

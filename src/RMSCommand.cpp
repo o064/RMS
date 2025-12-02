@@ -14,6 +14,8 @@ RMSCommand::MainCmd RMSCommand::getMainCmd(const string &cmd){
             {"exit", MainCmd::SYSTEM},
             {"quit", MainCmd::SYSTEM},
             {"q", MainCmd::SYSTEM},
+            {"clear", MainCmd::SYSTEM},
+
 
     };
     auto it = table.find(cmd);
@@ -27,7 +29,8 @@ RMSCommand::TrainCmd RMSCommand::getTrainCmd(const string &sub) {
             {"delete", TrainCmd::DELETE},
             {"update", TrainCmd::UPDATE},
             {"seats", TrainCmd::SEATS_ADD},
-            {"availability", TrainCmd::AVAILABILITY}
+            {"availability", TrainCmd::AVAILABILITY},
+            {"status" , TrainCmd::STATUS}
     };
     auto it = table.find(sub);
     return (it != table.end()) ? it->second : TrainCmd::UNKNOWN;
@@ -56,5 +59,7 @@ RMSCommand::TicketCmd RMSCommand::getTicketCmd(const string &sub) {
 RMSCommand::SystemCmd RMSCommand::getSystemCmd(const string &cmd) {
     if(cmd == "help" || cmd == "h" || cmd == "?") return SystemCmd::HELP;
     if(cmd == "exit" || cmd == "quit" || cmd == "q") return SystemCmd::EXIT;
+    if(cmd == "clear") return SystemCmd::CLEAR;
+
     return SystemCmd::UNKNOWN;
 }

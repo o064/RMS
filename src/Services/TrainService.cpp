@@ -82,3 +82,10 @@ Train TrainService::addSeats(const std::string name, const int seats) {
     throw std::runtime_error("train with name : " + name +" does not exit");
 
 }
+
+void TrainService::printStatus(int trainId) {
+    auto train = trainRepository->getTrainById(trainId);
+    if(!train.has_value())
+        throw std::runtime_error("train with id : " +  std::to_string(trainId) + "does not exit");
+    train->trainStatus();
+}

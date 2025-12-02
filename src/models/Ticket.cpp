@@ -1,10 +1,14 @@
 #include <stdexcept>
+#include <iostream>
+#include <utility>
 #include "models/Ticket.h"
+using std::cout;
+using std::endl;
 
-Ticket::Ticket(const int id, const int seat, const int trainId, const Passenger& p)
-        :passenger(p), status(booked){
-    if(id <0 || trainId <= 0 ) throw std::runtime_error("Invalid id");
-    if(seat<=0  ) throw std::runtime_error("Invalid seat");
+Ticket::Ticket(const int id, const int seat, const int trainId, Passenger  p)
+        :passenger(std::move(p)), status(booked){
+    if(id <0 || trainId <= 0 ) throw std::invalid_argument("Invalid id");
+    if(seat<=0) throw std::invalid_argument("Invalid seat");
     this->id = id;
     this->ticketSeat = seat;
     this->trainId = trainId;
@@ -45,4 +49,14 @@ void Ticket::setId(const int newId)
     this->id = newId;
 }
 
+void Ticket::print(const std::string &msg) const {
+    cout << "--------------------------------------------------\n";
+    cout << msg << endl;
+    cout << "Ticket ID: " << id << "\n";
+    cout << "Seat: " << ticketSeat<< "\n";
+    cout << "Train ID: " << trainId << "\n";
+    cout << "Passenger: " << passenger.getName() << "\n";
+    cout << "Status : " << ((status == Status::booked) ? "Booked" : "Cancelled") << "\n";
+    cout << "--------------------------------------------------\n";
+}
 

@@ -19,11 +19,12 @@ public:
     //helpers to manipulate text
     static vector<string> tokenize(const string &args) ;
     static string readLine();
+    static  void waitUser();
     // run
      void run();
-
+     static void clear();
      // help
-     void show_help();
+     static void show_help();
 
     // train commands
     void list_trains();
@@ -32,6 +33,7 @@ public:
     void update_train(const vector<string>& args);
     void add_seats(const vector<string>& args);
     void delete_train(const vector<string>& args);
+    void get_train_status(const vector<string>& args);
 
     // passenger commands
 
@@ -45,7 +47,6 @@ public:
 
     void cancel_ticket(const vector<string>& args);
     void book_ticket(const vector<string>& args);
-
 
 
 };
