@@ -496,7 +496,7 @@ TEST_F(InMemoryTrainRepositoryTest, DuplicateTrainNames) {
 
 TEST_F(InMemoryTrainRepositoryTest, SaveEmptyNameTrainThrows) {
     // Cannot create a train with empty name
-    EXPECT_THROW(Train t(5, "", 10), std::runtime_error);
+    EXPECT_THROW(Train t(5, "", 10), std::invalid_argument);
 }
 
 TEST_F(InMemoryTrainRepositoryTest, SaveValidTrain) {
@@ -509,7 +509,7 @@ TEST_F(InMemoryTrainRepositoryTest, SaveValidTrain) {
 }
 TEST_F(InMemoryTrainRepositoryTest, NegativeExplicitIdThrows) {
     // Cannot create a train with negative ID; should throw
-    EXPECT_THROW(Train t(-5, "Negative", 10), std::runtime_error);
+    EXPECT_THROW(Train t(-5, "Negative", 10), std::invalid_argument);
 
     // Next auto-increment train works fine
     Train t2(0, "Auto", 10);
@@ -606,7 +606,7 @@ TEST_F(InMemoryTrainRepositoryTest, SaveWithNegativeIdThrows) {
     EXPECT_THROW({
                      Train t(-10, "Negative", 10);
                      repo.save(t);
-                 }, std::runtime_error);
+                 }, std::invalid_argument);
 }
 
 TEST_F(InMemoryTrainRepositoryTest, GetTrainWithNegativeIdThrows) {
@@ -616,7 +616,7 @@ TEST_F(InMemoryTrainRepositoryTest, GetTrainWithNegativeIdThrows) {
 
 TEST_F(InMemoryTrainRepositoryTest, SaveEmptyNameTrain) {
     // Cannot create a train with empty name; should throw
-    EXPECT_THROW(Train emptyNameTrain(5, "", 10), std::runtime_error);
+    EXPECT_THROW(Train emptyNameTrain(5, "", 10), std::invalid_argument);
 
     // For a valid train
     Train t(1, "Valid Train", 10);

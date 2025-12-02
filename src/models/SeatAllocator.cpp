@@ -4,175 +4,256 @@
 
 #include "models/SeatAllocator.h"
 #include <iostream>
+#include <functional>
 
-SeatAllocator::SeatAllocator(const int& totalSeats){
+SeatAllocator::SeatAllocator(int totalSeats){
     if(totalSeats <= 0 )
         this->totalSeats = 10 ;
     else
         this->totalSeats = totalSeats;
-//    add the seats to the minHeap
+//    add the seats to the set
     for(int seat = 1 ; seat <= this->totalSeats; seat++ )
-        availableSeats.push(seat);
-}
-
-int SeatAllocator::getAvailableSeatCount() const {
-//    return the numbers of seats in the heap and the cancelled seats
-    return availableSeats.size() + cancelledSeats.size() ;
+        availableSeats.insert(seat);
 }
 
 
 
-int SeatAllocator::allocateSeat(const int& passengerId) {
-    // Check for duplicate passenger ID
 
-//    check in assigned seats
-    for (auto it = allocatedSeats.begin(); it != allocatedSeats.end(); it++){
-        if(it->second == passengerId){
-            std::cout << "Passenger ID " << passengerId << " is already allocated a seat.\n";
-            return -1;
-        }
-    }
-    //cheeck if in waiting list
-    auto tempQueue = waitingList;
-    while(!tempQueue.empty()){
-        if(tempQueue.front() == passengerId){
-            std::cout << "the passenger is already in the waiting list";
-            return -1 ;
-        }
-        tempQueue.pop();
+int SeatAllocator::allocateSeat(int passengerId) {
+    // prevent duplicate passenger allocation
+    for (const auto& p : allocatedSeats) {
+        if (p.second == passengerId)
+            throw std::runtime_error("Passenger " + std::to_string(passengerId) + " already has a seat.\n");
     }
 
-    // no avaiable seat so add to the waiting list
-    if(!hasAvailableSeats()){
+    // prevent duplicate waiting list insertion
+    if (waitingSet.count(passengerId))
+        throw std::runtime_error("Passenger " + std::to_string(passengerId) + " already in waiting list.\n");
+
+    // No available seats , push to waiting list
+    if (!hasAvailableSeats()) {
         waitingList.push(passengerId);
-        std::cout << "Train full, passenger added to waiting list\n";
+        waitingSet.insert(passengerId);
+        std::cout << "Train full, passenger added to waiting list.\n";
         return -1;
     }
-    // assign seat
-    int seatNumber ;
-    if(!cancelledSeats.empty()){
+
+    int seatNumber;
+
+    // prefer reusing cancelled seats first
+    if (!cancelledSeats.empty()) {
         seatNumber = cancelledSeats.top();
         cancelledSeats.pop();
+    } else {
+        // smallest seat in the set
+        seatNumber = *availableSeats.begin();
+        availableSeats.erase(availableSeats.begin());
+        std::cout <<"seat : " <<seatNumber;
     }
-    else{
-        seatNumber = availableSeats.top();
-        availableSeats.pop();
 
-    }
     allocatedSeats[seatNumber] = passengerId;
     return seatNumber;
 }
 
-void SeatAllocator::freeSeat(const int& seatNumber) {
-    if(totalSeats  <  seatNumber  || seatNumber <= 0 ){
-        std::cout << "this seat not exist in the train \n" ;
-        return;
-    }
-//    if seat is not in allocated seats say it already not assigned to anyone
-    const auto seat = allocatedSeats.find(seatNumber);
-    if(seat == allocatedSeats.end() || seat->second == -1 ){ // not found or cancelled but not allocated
-        std::cout << "this seat not yet allocated \n" ;
-        return;
-    }
-// if there is someOne in waiting list assign the seat it him\her
-    if(!waitingList.empty()){// waiting list is not empty
-        const int firstPassengerId = waitingList.front();
+
+int SeatAllocator::freeSeat(int seatNumber) {
+    if (seatNumber <= 0 || seatNumber > totalSeats)
+        throw std::invalid_argument("Invalid seat number.\n");
+
+    auto it = allocatedSeats.find(seatNumber);
+    if (it == allocatedSeats.end())
+        throw std::out_of_range("Invalid seat number.\n");
+
+    // delete from the hash map and add to the stack
+    allocatedSeats.erase(seatNumber);
+    cancelledSeats.push(seatNumber);
+
+    // assign to waiting passenger if any
+    if (!waitingList.empty()) {
+        int firstPassenger = waitingList.front();
         waitingList.pop();
-        allocatedSeats[seat->first] = firstPassengerId;
-        std::cout << "seat " << seat->first
-        << " is assigned to passenger with id :"
-        << firstPassengerId << "from the waitining list " << std::endl;
-        return ;
+        waitingSet.erase(firstPassenger);
+        std::queue<int> temp = waitingList;
+        while (!temp.empty()) {
+            std::cout << temp.front() << " ";
+            temp.pop();
+        }
+        std::cout << "\n";
+        std::cout << "Seat " << seatNumber
+                  << " freed and assigned to waiting passenger "
+                  << firstPassenger << "\n";
+
+        return firstPassenger;
     }
-    // if there is no one in waiting list add to the stack for the next passenger
-    allocatedSeats[seat->first] = -1; // mark as unAllocated
-    cancelledSeats.push(seat->first); // push to the stack
+
+    return 0;  // no waiting passengers
 }
+
+void SeatAllocator::addSeats(int seats) {
+    if (seats <= 0)
+        throw std::invalid_argument("Seats must be greater than zero.\n");
+
+    int oldTotal = totalSeats;
+    totalSeats += seats;
+
+    for (int i = oldTotal + 1; i <= totalSeats; i++)
+        availableSeats.insert(i);
+}
+
+
+void SeatAllocator::changeTotalSeats(int newTotalSeats) {
+    if (newTotalSeats < getAllocatedSeatCount())
+        throw std::out_of_range("Cannot shrink below allocated count.\n");
+
+    if (newTotalSeats > totalSeats) {
+        // expand
+        for (int i = totalSeats + 1; i <= newTotalSeats; i++)
+            availableSeats.insert(i);
+    } else {
+        // shrink
+        int seatsToRemove = totalSeats - newTotalSeats;
+
+        if ( availableSeats.size() < seatsToRemove)
+            throw std::runtime_error("Cannot shrink: not enough free seats.\n");
+
+        while (seatsToRemove-- > 0) {
+            auto it = std::prev(availableSeats.end());
+            availableSeats.erase(it);
+        }
+    }
+
+    totalSeats = newTotalSeats;
+}
+
 
 void SeatAllocator::printStatus() const {
-        std::cout << "\n=== Seat Allocator Status ===" << std::endl;
-        std::cout << "Total Seats: " << totalSeats << std::endl;
-        std::cout << "Available Seats Count: " << getAvailableSeatCount() << std::endl;
-        // Print available seats (need to copy since priority_queue doesn't allow iteration)
-        std::priority_queue<int, std::vector<int>, std::greater<int>> availableCopy = availableSeats;
-        std::cout << "Available Seats: ";
-        if (availableCopy.empty()) {
-            std::cout << "None";
-        } else {
-            while (!availableCopy.empty()) {
-                std::cout << availableCopy.top() << " ";
-                availableCopy.pop();
-            }
+    std::cout << "\n========== Seat Allocation Status ==========\n";
+
+    std::cout << "Total Seats          : " << totalSeats << "\n";
+    std::cout << "Allocated Seat Count : " << getAllocatedSeatCount() << "\n";
+    std::cout << "Available Seat Count : " << getAvailableSeatCount() << "\n\n";
+
+    // ---- Allocated Seats ----
+    std::cout << "--- Allocated Seats (Seat -> Passenger ID) ---\n";
+    if (allocatedSeats.empty()) {
+        std::cout << "No seats allocated.\n";
+    } else {
+        for (const auto &p : allocatedSeats) {
+            if (p.second != -1)
+                std::cout << "Seat " << p.first << " -> Passenger " << p.second << "\n";
         }
-        std::cout << std::endl;
+    }
+    std::cout << "\n";
 
-        // Print waiting list
-        std::queue<int> waitingCopy = waitingList;
-        std::cout << "Waiting List: ";
-        if (waitingCopy.empty()) {
-            std::cout << "None";
-        } else {
-            while (!waitingCopy.empty()) {
-                std::cout << waitingCopy.front() << " ";
-                waitingCopy.pop();
-            }
+    // ---- Available Seats ----
+    std::cout << "--- Available Seats ---\n";
+    if (availableSeats.empty()) {
+        std::cout << "No free seats.\n";
+    } else {
+        for (int s : availableSeats)
+            std::cout << s << " ";
+        std::cout << "\n";
+    }
+    std::cout << "\n";
+
+    // ---- Cancelled Seats Stack ----
+    std::cout << "--- Cancelled Seats Stack (top to bottom) ---\n";
+    if (cancelledSeats.empty()) {
+        std::cout << "Empty\n";
+    } else {
+        stack<int> temp = cancelledSeats;
+        while (!temp.empty()) {
+            std::cout << temp.top() << " ";
+            temp.pop();
         }
-        std::cout << std::endl;
+        std::cout << "\n";
+    }
+    std::cout << "\n";
 
-        // Print allocated seats
-        std::cout << "Allocated Seats: ";
-        if (allocatedSeats.empty()) {
-            std::cout << "None";
-        } else {
-            for (const auto& pair : allocatedSeats) {
-                std::cout << "Seat " << pair.first << "->Passenger " << pair.second << ", ";
-            }
+    // ---- Waiting List ----
+    std::cout << "--- Waiting List (front -> back) ---\n";
+    if (waitingList.empty()) {
+        std::cout << "No passengers in waiting list.\n";
+    } else {
+        std::queue<int> temp = waitingList;
+        while (!temp.empty()) {
+            std::cout << temp.front() << " ";
+            temp.pop();
         }
-        std::cout << std::endl;
+        std::cout << "\n";
+    }
 
-        // Print cancelled seats
-        stack<int> cancelledCopy = cancelledSeats;
-        std::cout << "Cancelled Seats Stack: ";
-        if (cancelledCopy.empty()) {
-            std::cout << "None";
-        } else {
-            while (!cancelledCopy.empty()) {
-                std::cout << cancelledCopy.top() << " ";
-                cancelledCopy.pop();
-            }
-        }
-        std::cout << std::endl;
-
-        std::cout << "Has Available Seats: " << (hasAvailableSeats()? "Yes" : "No") << std::endl;
-        std::cout << "=============================\n" << std::endl;
-
+    std::cout << "=============================================\n\n";
 }
+
+
 
 bool SeatAllocator::hasAvailableSeats() const {
     // if the is seat in cancelled tickets or minHeap
 //   return avaiable(true) if availableSeats or cancelledSeats is not  empty
     return !availableSeats.empty() || !cancelledSeats.empty();
 }
-
-std::unique_ptr<SeatAllocator> SeatAllocator::clone() const  {
+int SeatAllocator::getAvailableSeatCount() const {
+//    return the numbers of seats in the heap and the cancelled seats
+    return availableSeats.size() + cancelledSeats.size() ;
+}
+std::unique_ptr<SeatAllocator> SeatAllocator::clone() const {
     return std::make_unique<SeatAllocator>(*this);
 }
 
 SeatAllocator::SeatAllocator(const SeatAllocator& other)
-        : totalSeats(other.totalSeats),
-          availableSeats(other.availableSeats),
+        : availableSeats(other.availableSeats),
           waitingList(other.waitingList),
           allocatedSeats(other.allocatedSeats),
-          cancelledSeats(other.cancelledSeats) {
-}
+          cancelledSeats(other.cancelledSeats),
+          waitingSet(other.waitingSet),
+          totalSeats(other.totalSeats) {}
 
 SeatAllocator& SeatAllocator::operator=(const SeatAllocator& other) {
     if (this != &other) {
-        totalSeats = other.totalSeats;
         availableSeats = other.availableSeats;
         waitingList = other.waitingList;
         allocatedSeats = other.allocatedSeats;
         cancelledSeats = other.cancelledSeats;
+        waitingSet = other.waitingSet;
+        totalSeats = other.totalSeats;
     }
     return *this;
+}
+
+
+int SeatAllocator::getAllocatedSeatCount() const {
+    return allocatedSeats.size();
+}
+
+std::queue<int> SeatAllocator::getWaitingList() const {
+    return waitingList;
+}
+
+int SeatAllocator::getTotalSeats() const {
+    return totalSeats;
+}
+
+int SeatAllocator::getWaitingListSize() const {
+    return waitingList.size();
+}
+
+int SeatAllocator::processWaitingList(int seatsToAdd, std::function<void(int)> bookCallback) {
+    int processed = 0;
+    std::queue<int> waitingCopy = getWaitingList(); // get copy of waiting list
+
+    while (!waitingCopy.empty() && seatsToAdd > 0) {
+        int passengerId = waitingCopy.front();
+        waitingCopy.pop();
+        try {
+            bookCallback(passengerId);
+            seatsToAdd--;
+            processed++;
+        }
+        catch (const std::exception& e) {
+            std::cerr << "Failed to book ticket for waiting passenger "
+                      << passengerId << ": " << e.what() << "\n";
+        }
+    }
+    return processed;
 }

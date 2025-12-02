@@ -9,29 +9,45 @@
 #include <unordered_map>
 #include <vector>
 #include <queue>
+#include <set>
 #include "../structures/stack.h"
 #include <string>
 #include<memory>
+#include <functional>
 
 class SeatAllocator{
-    std::priority_queue<int, std::vector<int>, std::greater<int> > availableSeats;
+    std::set<int> availableSeats;
     std::queue<int> waitingList;
+    std::set<int> waitingSet;              // prevent duplicate waiting entries
     std::unordered_map<int, int> allocatedSeats;
     stack<int> cancelledSeats;
     int totalSeats ;
 public:
 
-    SeatAllocator(const int& totalSeats = 10);
+    SeatAllocator( int totalSeats = 10);
     // for copying
     std::unique_ptr<SeatAllocator> clone() const;
     SeatAllocator(const SeatAllocator& other);
     SeatAllocator& operator=(const SeatAllocator& other);
 
-    void freeSeat(const int& seatNumber);
-    int allocateSeat(const int& passengerId);
+    void addSeats(int seats);
+    void changeTotalSeats(int newTotalSeats);
+
+    int freeSeat( int seatNumber);
+    int allocateSeat( int passengerId);
+    int processWaitingList(int seatsToAdd, std::function<void(int)> bookCallback) ;
+
+
     int getAvailableSeatCount() const;
+    int getAllocatedSeatCount() const;
+    int getTotalSeats() const;
+    int getWaitingListSize()const;
+
+    std::queue<int> getWaitingList()const;
+
     bool hasAvailableSeats() const;
-    void printStatus() const ;
+
+    void printStatus() const;
 
 };
 #endif //RMS_SEATALLOCATOR_H

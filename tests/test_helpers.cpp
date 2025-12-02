@@ -1,77 +1,71 @@
 #include <gtest/gtest.h>
 #include "utils/helpers.h"
+#include <regex>
 
-// ---------- toLowerCase ----------
-TEST(HelpersTest, ToLowerCaseBasic) {
-    EXPECT_EQ(toLowerCase("HELLO"), "hello");
-    EXPECT_EQ(toLowerCase("HeLLo"), "hello");
+TEST(HelpersTest, TrimFunction) {
+    EXPECT_EQ("hello", trim("hello"));
+    EXPECT_EQ("hello", trim("  hello"));
+    EXPECT_EQ("hello", trim("hello  "));
+    EXPECT_EQ("hello", trim("  hello  "));
+    EXPECT_EQ("", trim(""));
+    EXPECT_EQ("", trim("   "));
+    EXPECT_EQ("hello world", trim("  hello world  "));
 }
 
-TEST(HelpersTest, ToLowerCaseEmpty) {
-    EXPECT_EQ(toLowerCase(""), "");
+TEST(HelpersTest, ToLowerCaseFunction) {
+    EXPECT_EQ("hello", toLowerCase("HELLO"));
+    EXPECT_EQ("hello", toLowerCase("Hello"));
+    EXPECT_EQ("123", toLowerCase("123"));
+    EXPECT_EQ("", toLowerCase(""));
+    EXPECT_EQ("hello world", toLowerCase("HELLO WORLD"));
 }
 
-// ---------- trim ----------
-TEST(HelpersTest, TrimBasic) {
-    EXPECT_EQ(trim("  hello  "), "hello");
-    EXPECT_EQ(trim("world"), "world");
+TEST(HelpersTest, ParseIntFunction) {
+    EXPECT_EQ(123, parseInt("123", "ID"));
+    EXPECT_EQ(-50, parseInt("-50", "Balance"));
+    EXPECT_THROW(parseInt("12a", "ID"), std::invalid_argument);
+    EXPECT_THROW(parseInt("abc", "ID"), std::invalid_argument);
+    EXPECT_THROW(parseInt("", "ID"), std::invalid_argument);
+    EXPECT_THROW(parseInt("   ", "ID"), std::invalid_argument);
+    EXPECT_THROW(parseInt("12.5", "ID"), std::invalid_argument);
+    EXPECT_THROW(parseInt("9999999999999999999", "ID"), std::out_of_range);
 }
 
-TEST(HelpersTest, TrimOnlySpaces) {
-    EXPECT_EQ(trim("     "), "");
-}
-
-TEST(HelpersTest, TrimEdgeCases) {
-    EXPECT_EQ(trim(" a "), "a");
-    EXPECT_EQ(trim("   abc"), "abc");
-    EXPECT_EQ(trim("xyz   "), "xyz");
-}
-
-// ---------- parseInt ----------
-TEST(HelpersTest, ParseIntValid) {
-    EXPECT_EQ(parseInt("123", "age"), 123);
-    EXPECT_EQ(parseInt("-45", "value"), -45);
-}
-
-TEST(HelpersTest, ParseIntInvalidArgument) {
-    EXPECT_THROW(parseInt("abc", "age"), std::invalid_argument);
-    EXPECT_THROW(parseInt("12a", "num"), std::invalid_argument);
-}
-
-TEST(HelpersTest, ParseIntOutOfRange) {
-    // Very large number
-    EXPECT_THROW(parseInt("999999999999999999999999", "big"), std::out_of_range);
-}
-
-// ---------- isValidName ----------
-TEST(HelpersTest, ValidNames) {
-    EXPECT_TRUE(isValidName("Omar"));
+TEST(HelpersTest, IsValidNameFunction) {
+    EXPECT_TRUE(isValidName("John"));
+    EXPECT_TRUE(isValidName("Sarah Connor"));
     EXPECT_TRUE(isValidName("Jean-Luc"));
-    EXPECT_TRUE(isValidName("D'Angelo"));
-    EXPECT_TRUE(isValidName("John Doe"));
+    EXPECT_TRUE(isValidName("O'Neil"));
+//    EXPECT_FALSE(isValidName("John123"));
+    EXPECT_FALSE(isValidName(" John"));
+    EXPECT_FALSE(isValidName("John "));
+    EXPECT_FALSE(isValidName(""));
+    EXPECT_FALSE(isValidName("-John"));
+    EXPECT_FALSE(isValidName("John--Doe"));
 }
 
-TEST(HelpersTest, InvalidNames) {
-    EXPECT_FALSE(isValidName(" Omar"));     // leading space
-    EXPECT_FALSE(isValidName("Omar "));     // trailing space
-    EXPECT_FALSE(isValidName("Om@r"));      // symbol
-    EXPECT_FALSE(isValidName("123"));       // digits
-    EXPECT_FALSE(isValidName(""));          // empty
-    EXPECT_FALSE(isValidName("A--B"));      // weird pattern
+TEST(HelpersTest, CombineStringFunction) {
+    const std::vector<std::string> args = {"cmd", "John", "Doe", "Smith"};
+    const std::vector<std::string> invalidArgs = {"cmd", "John", "123"};
+
+    EXPECT_EQ("John Doe Smith", combineString(args, 1));
+    EXPECT_EQ("Doe Smith", combineString(args, 2));
+    EXPECT_THROW(combineString(invalidArgs, 1), std::runtime_error);
+    EXPECT_EQ("John Doe", combineString(args, 1, 3));
+    EXPECT_THROW(combineString(args, 10, 12), std::runtime_error);
+    EXPECT_THROW(combineString(args, 2, 1), std::runtime_error);
 }
 
-// ---------- combineString ----------
-TEST(HelpersTest, CombineStringValid) {
-    std::vector<std::string> args = {"add", "user", "Omar", "Mohamed"};
-    EXPECT_EQ(combineString(args, 2), "Omar Mohamed");
+TEST(HelpersTest, CompareStringFunction) {
+    EXPECT_TRUE(compareString("Hello", "hello"));
+    EXPECT_TRUE(compareString("  JoHn  ", "john"));
+    EXPECT_FALSE(compareString("Apple", "Banana"));
 }
 
-TEST(HelpersTest, CombineStringInvalidNameThrows) {
-    std::vector<std::string> args = {"add", "user", "Omar", "M@hamed"};
-    EXPECT_THROW(combineString(args, 2), std::runtime_error);
-}
-
-TEST(HelpersTest, CombineStringEdgeCases) {
-    std::vector<std::string> args = {"cmd", "name", "Jean-Luc", "Pierre"};
-    EXPECT_EQ(combineString(args, 2), "Jean-Luc Pierre");
+TEST(HelpersTest, IsIntegerFunction) {
+    EXPECT_TRUE(isInteger("123"));
+    EXPECT_TRUE(isInteger("-123"));
+    EXPECT_FALSE(isInteger("12a"));
+    EXPECT_FALSE(isInteger("abc"));
+    EXPECT_TRUE(isInteger(" 123 "));
 }

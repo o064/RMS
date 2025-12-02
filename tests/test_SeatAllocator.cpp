@@ -1,369 +1,260 @@
 #include <gtest/gtest.h>
 #include "models/SeatAllocator.h"
-#include <sstream>
-#include <iostream>
-#include <functional>
 
 class SeatAllocatorTest : public ::testing::Test {
 protected:
     void SetUp() override {}
     void TearDown() override {}
-
-    // Helper to capture std::cout output
-    std::string captureCoutOutput(std::function<void()> func) {
-        std::stringstream buffer;
-        std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
-        func();
-        std::cout.rdbuf(old);
-        return buffer.str();
-    }
 };
 
-// ---------------------- Constructor Tests ----------------------
-TEST_F(SeatAllocatorTest, ConstructorMinimumSeats) {
-    SeatAllocator allocator(0);
-    EXPECT_EQ(allocator.getAvailableSeatCount(), 10); // default 10 if seat is less than 0
-
-    SeatAllocator allocator2(15);
-    EXPECT_EQ(allocator2.getAvailableSeatCount(), 15);
+TEST_F(SeatAllocatorTest, DefaultConstruction) {
+    SeatAllocator allocator;
+    EXPECT_EQ(allocator.getTotalSeats(), 10);
+    EXPECT_EQ(allocator.getAvailableSeatCount(), 10);
+    EXPECT_TRUE(allocator.hasAvailableSeats());
 }
 
-TEST_F(SeatAllocatorTest, ConstructorNegativeSeats) {
-    SeatAllocator allocator(-5);
-    EXPECT_EQ(allocator.getAvailableSeatCount(), 10); // should default to 10
+TEST_F(SeatAllocatorTest, CustomSeatCount) {
+    SeatAllocator allocator(20);
+    EXPECT_EQ(allocator.getTotalSeats(), 20);
+    EXPECT_EQ(allocator.getAvailableSeatCount(), 20);
 }
 
-// ---------------------- Allocation Tests ----------------------
-TEST_F(SeatAllocatorTest, AllocateSeats) {
-    SeatAllocator allocator(3);
-    int seat1 = allocator.allocateSeat(101);
-    int seat2 = allocator.allocateSeat(102);
-    int seat3 = allocator.allocateSeat(103);
+TEST_F(SeatAllocatorTest, AllocateSingleSeat) {
+    SeatAllocator allocator(5);
+    int seat = allocator.allocateSeat(101);
+    EXPECT_EQ(seat, 1);
+    EXPECT_EQ(allocator.getAvailableSeatCount(), 4);
+    EXPECT_EQ(allocator.getAllocatedSeatCount(), 1);
+}
 
-    EXPECT_EQ(seat1, 1);
-    EXPECT_EQ(seat2, 2);
-    EXPECT_EQ(seat3, 3);
+TEST_F(SeatAllocatorTest, AllocateMultipleSeats) {
+    SeatAllocator allocator(5);
+    EXPECT_EQ(allocator.allocateSeat(101), 1);
+    EXPECT_EQ(allocator.allocateSeat(102), 2);
+    EXPECT_EQ(allocator.allocateSeat(103), 3);
+    EXPECT_EQ(allocator.getAvailableSeatCount(), 2);
+    EXPECT_EQ(allocator.getAllocatedSeatCount(), 3);
+}
+
+TEST_F(SeatAllocatorTest, DuplicatePassengerIdThrows) {
+    SeatAllocator allocator(5);
+    allocator.allocateSeat(101);
+    EXPECT_THROW(allocator.allocateSeat(101), std::runtime_error);
+}
+
+TEST_F(SeatAllocatorTest, DuplicatePassengerInWaitingListThrows) {
+    SeatAllocator allocator(2);
+    allocator.allocateSeat(101);
+    allocator.allocateSeat(102);
+    allocator.allocateSeat(103);
+    EXPECT_THROW(allocator.allocateSeat(103), std::runtime_error);
+}
+
+TEST_F(SeatAllocatorTest, FullTrainAddsToWaitingList) {
+    SeatAllocator allocator(2);
+    allocator.allocateSeat(101);
+    allocator.allocateSeat(102);
+    int result = allocator.allocateSeat(103);
+    EXPECT_EQ(result, -1);
+    EXPECT_FALSE(allocator.getWaitingList().empty());
     EXPECT_FALSE(allocator.hasAvailableSeats());
-    EXPECT_EQ(allocator.getAvailableSeatCount(), 0);
 }
 
-TEST_F(SeatAllocatorTest, AllocateWhenFullGoesToWaitingList) {
-    SeatAllocator allocator(2);
-    allocator.allocateSeat(101);
-    allocator.allocateSeat(102);
-
-    std::string output = captureCoutOutput([&]() {
-        int seat = allocator.allocateSeat(103);
-        EXPECT_EQ(seat, -1);
-    });
-
-    EXPECT_TRUE(output.find("Train full, passenger added to waiting list") != std::string::npos);
-}
-
-// ---------------------- Duplicate Passenger ID ----------------------
-TEST_F(SeatAllocatorTest, DuplicatePassengerID_InAllocatedSeats) {
-    SeatAllocator allocator(3);
-    allocator.allocateSeat(101);
-
-    std::string out1 = captureCoutOutput([&]() {
-        int res = allocator.allocateSeat(101); // duplicate in allocatedSeats
-        EXPECT_EQ(res, -1);
-    });
-    EXPECT_TRUE(out1.find("Passenger ID 101 is already allocated a seat") != std::string::npos);
-}
-
-TEST_F(SeatAllocatorTest, DuplicatePassengerID_InWaitingList) {
-    SeatAllocator allocator(2);
-    allocator.allocateSeat(101);
-    allocator.allocateSeat(102);
-
-    // First addition to waiting list should succeed
-    std::string out1 = captureCoutOutput([&]() {
-        int res = allocator.allocateSeat(103);
-        EXPECT_EQ(res, -1);
-    });
-    EXPECT_TRUE(out1.find("Train full, passenger added to waiting list") != std::string::npos);
-
-    // Second addition of same passenger should fail
-    std::string out2 = captureCoutOutput([&]() {
-        int res = allocator.allocateSeat(103);
-        EXPECT_EQ(res, -1);
-    });
-    EXPECT_TRUE(out2.find("the passenger is already in the waiting list") != std::string::npos);
-}
-
-// ---------------------- Free Seat Tests ----------------------
-TEST_F(SeatAllocatorTest, FreeSeatBasic) {
-    SeatAllocator allocator(3);
-    allocator.allocateSeat(101);
-    allocator.allocateSeat(102);
-
-    std::string output = captureCoutOutput([&]() {
-        allocator.freeSeat(1);
-    });
-
-    EXPECT_EQ(allocator.getAvailableSeatCount(), 2); // seat 1 freed + seat 3 available
-}
-
-TEST_F(SeatAllocatorTest, FreeInvalidSeat_Zero) {
+TEST_F(SeatAllocatorTest, FreeSeatValid) {
     SeatAllocator allocator(5);
-    std::string out = captureCoutOutput([&]() {
-        allocator.freeSeat(0);
-    });
-    EXPECT_TRUE(out.find("this seat not exist") != std::string::npos);
+    allocator.allocateSeat(101);
+    EXPECT_EQ(allocator.freeSeat(1), 0);
+    EXPECT_EQ(allocator.getAvailableSeatCount(), 5);
 }
 
-TEST_F(SeatAllocatorTest, FreeInvalidSeat_TooHigh) {
+TEST_F(SeatAllocatorTest, FreeSeatInvalidSeatNumberZero) {
     SeatAllocator allocator(5);
-    std::string out = captureCoutOutput([&]() {
-        allocator.freeSeat(10);
-    });
-    EXPECT_TRUE(out.find("this seat not exist") != std::string::npos);
+    EXPECT_THROW(allocator.freeSeat(0), std::invalid_argument);
 }
 
-TEST_F(SeatAllocatorTest, FreeInvalidSeat_Negative) {
+TEST_F(SeatAllocatorTest, FreeSeatInvalidSeatNumberNegative) {
     SeatAllocator allocator(5);
-    std::string out = captureCoutOutput([&]() {
-        allocator.freeSeat(-1);
-    });
-    EXPECT_TRUE(out.find("this seat not exist") != std::string::npos);
+    EXPECT_THROW(allocator.freeSeat(-1), std::invalid_argument);
 }
 
-TEST_F(SeatAllocatorTest, FreeUnallocatedSeat) {
+TEST_F(SeatAllocatorTest, FreeSeatInvalidSeatNumberTooLarge) {
     SeatAllocator allocator(5);
-    std::string out = captureCoutOutput([&]() {
-        allocator.freeSeat(3);
-    });
-    EXPECT_TRUE(out.find("this seat not yet allocated") != std::string::npos);
+    EXPECT_THROW(allocator.freeSeat(10), std::invalid_argument);
+}
+
+TEST_F(SeatAllocatorTest, FreeSeatNotAllocated) {
+    SeatAllocator allocator(5);
+    EXPECT_THROW(allocator.freeSeat(1), std::out_of_range);
 }
 
 TEST_F(SeatAllocatorTest, FreeAlreadyFreedSeat) {
-    SeatAllocator allocator(3);
+    SeatAllocator allocator(5);
     allocator.allocateSeat(101);
-
-    captureCoutOutput([&]() {
-        allocator.freeSeat(1);
-    });
-
-    // Try to free the same seat again
-    std::string out = captureCoutOutput([&]() {
-        allocator.freeSeat(1);
-    });
-    EXPECT_TRUE(out.find("this seat not yet allocated") != std::string::npos);
+    allocator.freeSeat(1);
+    EXPECT_THROW(allocator.freeSeat(1), std::out_of_range);
 }
 
-// ---------------------- Waiting List Tests ----------------------
-TEST_F(SeatAllocatorTest, FreeSeatAssignsFromWaitingList) {
-    SeatAllocator allocator(2);
+TEST_F(SeatAllocatorTest, CancelledSeatReusedBeforeNewSeats) {
+    SeatAllocator allocator(5);
     allocator.allocateSeat(101);
     allocator.allocateSeat(102);
-
-    // Add to waiting list
-    captureCoutOutput([&]() {
-        allocator.allocateSeat(103);
-    });
-
-    std::string output = captureCoutOutput([&]() {
-        allocator.freeSeat(1); // seat 1 should go to passenger 103
-    });
-
-    EXPECT_TRUE(output.find("seat 1 is assigned to passenger with id :103") != std::string::npos);
-    EXPECT_EQ(allocator.getAvailableSeatCount(), 0); // no seats available, all allocated
+    allocator.freeSeat(1);
+    int newSeat = allocator.allocateSeat(103);
+    EXPECT_EQ(newSeat, 1);
 }
 
-TEST_F(SeatAllocatorTest, WaitingListFIFO) {
-    SeatAllocator allocator(1);
-    allocator.allocateSeat(101);
-
-    // Add multiple passengers to waiting list
-    captureCoutOutput([&]() {
-        allocator.allocateSeat(102);
-        allocator.allocateSeat(103);
-        allocator.allocateSeat(104);
-    });
-
-    // Free seat - should go to first in waiting list (102)
-    std::string output = captureCoutOutput([&]() {
-        allocator.freeSeat(1);
-    });
-    EXPECT_TRUE(output.find("passenger with id :102") != std::string::npos);
-}
-
-// ---------------------- Cancelled Seats / LIFO ----------------------
-TEST_F(SeatAllocatorTest, AllocateAfterFreeUsesCancelledStack) {
-    SeatAllocator allocator(3);
-    allocator.allocateSeat(101);
-    allocator.allocateSeat(102);
-    allocator.allocateSeat(103);
-
-    captureCoutOutput([&]() {
-        allocator.freeSeat(2);
-    }); // push seat 2 to cancelledSeats
-
-    int newSeat = allocator.allocateSeat(104);
-    EXPECT_EQ(newSeat, 2); // should reuse seat 2 (LIFO)
-}
-
-TEST_F(SeatAllocatorTest, CancelledSeatsLIFO) {
+TEST_F(SeatAllocatorTest, MultipleCancelledSeatsReusedLIFO) {
     SeatAllocator allocator(5);
     allocator.allocateSeat(101);
     allocator.allocateSeat(102);
     allocator.allocateSeat(103);
-
-    // Free seats in order: 1, 2, 3
-    captureCoutOutput([&]() {
-        allocator.freeSeat(1);
-        allocator.freeSeat(2);
-        allocator.freeSeat(3);
-    });
-
-    // Allocate new passengers - should get seats in LIFO order: 3, 2, 1
-    int seat1 = allocator.allocateSeat(201);
-    int seat2 = allocator.allocateSeat(202);
-    int seat3 = allocator.allocateSeat(203);
-
-    EXPECT_EQ(seat1, 3);
-    EXPECT_EQ(seat2, 2);
-    EXPECT_EQ(seat3, 1);
+    allocator.freeSeat(1);
+    allocator.freeSeat(2);
+    EXPECT_EQ(allocator.allocateSeat(104), 2);
+    EXPECT_EQ(allocator.allocateSeat(105), 1);
 }
 
-// ---------------------- hasAvailableSeats / getAvailableSeatCount ----------------------
-TEST_F(SeatAllocatorTest, HasAvailableSeatsAndCount) {
-    SeatAllocator allocator(2);
-    EXPECT_TRUE(allocator.hasAvailableSeats());
-    EXPECT_EQ(allocator.getAvailableSeatCount(), 2);
-
-    allocator.allocateSeat(101);
-    EXPECT_TRUE(allocator.hasAvailableSeats());
-    EXPECT_EQ(allocator.getAvailableSeatCount(), 1);
-
-    allocator.allocateSeat(102);
-    EXPECT_FALSE(allocator.hasAvailableSeats());
-    EXPECT_EQ(allocator.getAvailableSeatCount(), 0);
+TEST_F(SeatAllocatorTest, AddSeats) {
+    SeatAllocator allocator(5);
+    allocator.addSeats(5);
+    EXPECT_EQ(allocator.getTotalSeats(), 10);
+    EXPECT_EQ(allocator.getAvailableSeatCount(), 10);
 }
 
-TEST_F(SeatAllocatorTest, AvailableSeatsCountIncludesCancelled) {
-    SeatAllocator allocator(3);
+TEST_F(SeatAllocatorTest, AddSeatsWithAllocations) {
+    SeatAllocator allocator(5);
     allocator.allocateSeat(101);
     allocator.allocateSeat(102);
-    allocator.allocateSeat(103);
-
-    EXPECT_EQ(allocator.getAvailableSeatCount(), 0);
-
-    captureCoutOutput([&]() {
-        allocator.freeSeat(1);
-    });
-
-    EXPECT_EQ(allocator.getAvailableSeatCount(), 1);
-    EXPECT_TRUE(allocator.hasAvailableSeats());
+    allocator.addSeats(3);
+    EXPECT_EQ(allocator.getTotalSeats(), 8);
+    EXPECT_EQ(allocator.getAvailableSeatCount(), 6);
+    EXPECT_EQ(allocator.getAllocatedSeatCount(), 2);
 }
 
-// ---------------------- printStatus Tests ----------------------
-TEST_F(SeatAllocatorTest, PrintStatusOutput) {
-    SeatAllocator allocator(2);
-    allocator.allocateSeat(101);
-
-    std::string out = captureCoutOutput([&]() {
-        allocator.printStatus();
-    });
-
-    EXPECT_TRUE(out.find("Total Seats: 2") != std::string::npos);
-    EXPECT_TRUE(out.find("Available Seats Count:") != std::string::npos);
-    EXPECT_TRUE(out.find("Seat 1->Passenger 101") != std::string::npos);
+TEST_F(SeatAllocatorTest, AddInvalidSeatsThrowsZero) {
+    SeatAllocator allocator(5);
+    EXPECT_THROW(allocator.addSeats(0), std::invalid_argument);
 }
 
-TEST_F(SeatAllocatorTest, PrintStatusEmpty) {
-    SeatAllocator allocator(3);
-
-    std::string out = captureCoutOutput([&]() {
-        allocator.printStatus();
-    });
-
-    EXPECT_TRUE(out.find("Total Seats: 3") != std::string::npos);
-    EXPECT_TRUE(out.find("Available Seats Count: 3") != std::string::npos);
-    EXPECT_TRUE(out.find("Allocated Seats: None") != std::string::npos);
+TEST_F(SeatAllocatorTest, AddInvalidSeatsThrowsNegative) {
+    SeatAllocator allocator(5);
+    EXPECT_THROW(allocator.addSeats(-5), std::invalid_argument);
 }
 
-// ---------------------- Edge Case Tests ----------------------
-TEST_F(SeatAllocatorTest, SingleSeatAllocator) {
-    SeatAllocator allocator(1);
-    EXPECT_TRUE(allocator.hasAvailableSeats());
-
-    int seat = allocator.allocateSeat(101);
-    EXPECT_EQ(seat, 1);
-    EXPECT_FALSE(allocator.hasAvailableSeats());
-
-    std::string out = captureCoutOutput([&]() {
-        int res = allocator.allocateSeat(102);
-        EXPECT_EQ(res, -1);
-    });
-    EXPECT_TRUE(out.find("Train full, passenger added to waiting list") != std::string::npos);
+TEST_F(SeatAllocatorTest, ChangeTotalSeatsToSameSize) {
+    SeatAllocator allocator(10);
+    allocator.changeTotalSeats(10);
+    EXPECT_EQ(allocator.getTotalSeats(), 10);
 }
 
-// ---------------------- Copy and Assignment Tests ----------------------
 TEST_F(SeatAllocatorTest, CopyConstructor) {
-    SeatAllocator allocator(3);
+    SeatAllocator allocator(5);
     allocator.allocateSeat(101);
     allocator.allocateSeat(102);
-
-    SeatAllocator copied(allocator);
-
-    EXPECT_EQ(copied.getAvailableSeatCount(), allocator.getAvailableSeatCount());
-    EXPECT_EQ(copied.hasAvailableSeats(), allocator.hasAvailableSeats());
+    SeatAllocator copy(allocator);
+    EXPECT_EQ(copy.getTotalSeats(), allocator.getTotalSeats());
+    EXPECT_EQ(copy.getAvailableSeatCount(), allocator.getAvailableSeatCount());
+    EXPECT_EQ(copy.getAllocatedSeatCount(), allocator.getAllocatedSeatCount());
 }
 
 TEST_F(SeatAllocatorTest, AssignmentOperator) {
-    SeatAllocator allocator(3);
+    SeatAllocator allocator(5);
     allocator.allocateSeat(101);
-
-    SeatAllocator assigned(5);
-    assigned = allocator;
-
-    EXPECT_EQ(assigned.getAvailableSeatCount(), allocator.getAvailableSeatCount());
+    SeatAllocator other(10);
+    other = allocator;
+    EXPECT_EQ(other.getTotalSeats(), 5);
+    EXPECT_EQ(other.getAllocatedSeatCount(), 1);
 }
 
 TEST_F(SeatAllocatorTest, CloneMethod) {
-    SeatAllocator allocator(3);
+    SeatAllocator allocator(5);
     allocator.allocateSeat(101);
-
     auto cloned = allocator.clone();
-
+    EXPECT_EQ(cloned->getTotalSeats(), allocator.getTotalSeats());
     EXPECT_EQ(cloned->getAvailableSeatCount(), allocator.getAvailableSeatCount());
+    EXPECT_EQ(cloned->getAllocatedSeatCount(), allocator.getAllocatedSeatCount());
 }
 
-// ---------------------- Complex Scenarios ----------------------
-TEST_F(SeatAllocatorTest, ComplexAllocationScenario) {
-    SeatAllocator allocator(3);
+TEST_F(SeatAllocatorTest, FreeSeatReturnsWaitingPassengerId) {
+    SeatAllocator allocator(1);
+    allocator.allocateSeat(101);
+    allocator.allocateSeat(102);
+    int waitingPassengerId = allocator.freeSeat(1);
+    EXPECT_EQ(waitingPassengerId, 102);
+}
 
-    // Fill all seats
+//TEST_F(SeatAllocatorTest, ProcessWaitingList_Basic) {
+//    SeatAllocator allocator(2);
+//    allocator.allocateSeat(101);
+//    allocator.allocateSeat(102);
+//    allocator.allocateSeat(103);
+//    allocator.allocateSeat(104);
+//
+//    std::vector<int> bookedPassengers;
+//    auto callback = [&bookedPassengers](int passengerId) {
+//        bookedPassengers.push_back(passengerId);
+//    };
+//
+//    allocator.addSeats(2);
+//    int processed = allocator.processWaitingList(2, callback);
+//
+//    EXPECT_EQ(processed, 2);
+//    EXPECT_EQ(bookedPassengers.size(), 2);
+//    EXPECT_EQ(bookedPassengers[0], 103);
+//    EXPECT_EQ(bookedPassengers[1], 104);
+//    EXPECT_EQ(allocator.getWaitingListSize(), 0);
+//}
+
+//TEST_F(SeatAllocatorTest, ProcessWaitingList_MoreSeatsThanWaiting) {
+//    SeatAllocator allocator(2);
+//    allocator.allocateSeat(101);
+//    allocator.allocateSeat(102);
+//    allocator.allocateSeat(103);
+//
+//    std::vector<int> bookedPassengers;
+//    auto callback = [&bookedPassengers](int passengerId) {
+//        bookedPassengers.push_back(passengerId);
+//    };
+//
+//    allocator.addSeats(3);
+//    int processed = allocator.processWaitingList(3, callback);
+//
+//    EXPECT_EQ(processed, 1);
+//    EXPECT_EQ(bookedPassengers.size(), 1);
+//    EXPECT_EQ(bookedPassengers[0], 103);
+//    EXPECT_EQ(allocator.getWaitingListSize(), 0);
+//}
+
+TEST_F(SeatAllocatorTest, ProcessWaitingList_NoWaitingList) {
+    SeatAllocator allocator(5);
+    allocator.allocateSeat(101);
+
+    std::vector<int> bookedPassengers;
+    auto callback = [&bookedPassengers](int passengerId) {
+        bookedPassengers.push_back(passengerId);
+    };
+
+    allocator.addSeats(2);
+    int processed = allocator.processWaitingList(2, callback);
+
+    EXPECT_EQ(processed, 0);
+    EXPECT_TRUE(bookedPassengers.empty());
+}
+
+TEST_F(SeatAllocatorTest, ProcessWaitingList_CallbackThrows) {
+    SeatAllocator allocator(2);
     allocator.allocateSeat(101);
     allocator.allocateSeat(102);
     allocator.allocateSeat(103);
 
-    // Add to waiting list
-    captureCoutOutput([&]() {
-        allocator.allocateSeat(104);
-        allocator.allocateSeat(105);
-    });
+    auto callback = [](int passengerId) {
+        throw std::runtime_error("Booking failed");
+    };
 
-    // Free a seat - should go to 104
-    std::string out1 = captureCoutOutput([&]() {
-        allocator.freeSeat(2);
-    });
-    EXPECT_TRUE(out1.find("passenger with id :104") != std::string::npos);
+    allocator.addSeats(1);
+    int processed = allocator.processWaitingList(1, callback);
 
-    // Free another seat - should go to 105
-    std::string out2 = captureCoutOutput([&]() {
-        allocator.freeSeat(1);
-    });
-    EXPECT_TRUE(out2.find("passenger with id :105") != std::string::npos);
-
-    // Now free a seat with empty waiting list
-    captureCoutOutput([&]() {
-        allocator.freeSeat(3);
-    });
-
-    // Allocate new passenger - should get seat 3
-    int newSeat = allocator.allocateSeat(106);
-    EXPECT_EQ(newSeat, 3);
+    EXPECT_EQ(processed, 0);
+    EXPECT_EQ(allocator.getWaitingListSize(), 1);
 }

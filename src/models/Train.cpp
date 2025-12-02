@@ -1,12 +1,16 @@
 #include "models/Train.h"
+#include "utils/helpers.h"
+
 #include <iostream>
+using std::cout;
+using std::endl;
 
 Train::Train(const int id, const std::string& name, const int totalSeats ){
-    if(id <0 ) throw std::runtime_error("Invalid id");
-    if(name.empty()) throw std::runtime_error("Invalid input name");
-    if(totalSeats < 0) throw std::runtime_error("total seat must be greater than 0");
+    if(id < 0 ) throw std::invalid_argument("Invalid  negative id");
+    if(!isValidName(name)) throw std::invalid_argument("Invalid input name");
+    if(totalSeats < 0) throw std::invalid_argument("total seat must be greater than 0");
     this->id = id;
-    this->name = name;
+    this->name = trim(name);
     this->totalSeats = totalSeats;
     this->seatAllocator = std::make_unique<SeatAllocator>(totalSeats);
 
@@ -21,10 +25,13 @@ std::string Train::getTrainName() const {
 }
 
 void Train::setTrainName(const std::string& name) {
-    this->name = name;
+    if(!isValidName(name) )
+        throw std::invalid_argument("Invalid input name");
+    this->name = trim(name);
 }
 
 void Train::setTrainId(int trainId) {
+    if(trainId <= 0 ) throw std::runtime_error("Invalid id");
     this->id = trainId;
 }
 
@@ -64,5 +71,49 @@ Train &Train::operator=(const Train &other) {
         }
         return *this;
 
+}
+
+void Train::addSeats(int seats) {
+    if(seats <= 0 )
+        throw std::invalid_argument("Seats must be greater than zero");
+    seatAllocator->addSeats(seats);
+
+    this->totalSeats = seatAllocator->getTotalSeats();
+}
+
+void Train::setSeats(int seats) {
+    if(seats <= 0)
+        throw std::invalid_argument("Seats must be greater than zero");
+    seatAllocator->changeTotalSeats(seats);
+
+    totalSeats =seatAllocator->getTotalSeats();
+}
+
+void Train::trainStatus()const {
+    if (!seatAllocator) {
+        cout << "Train " << name << " has no seat allocator initialized.\n";
+        return;
+    }
+
+    int waitingSize = seatAllocator->getWaitingListSize();
+    cout << "\n=========== Train Status ===========\n";
+    cout << "Train ID      : " << id << "\n";
+    cout << "Train Name    : " << name << "\n";
+    cout << "Total Seats   : " << totalSeats << "\n";
+    cout << "Waiting List  : " << waitingSize << "\n";
+    cout << "====================================\n\n";
+
+    seatAllocator->printStatus();
+
+}
+
+void Train::print(const std::string& msg) const{
+    cout << "--------------------------------------------------\n";
+    cout << msg << endl;
+    cout << "Train ID   : " << id<< "\n";
+    cout << "Name   : " << name << "\n";
+    cout << "Seats  : " << totalSeats << "\n";
+    cout << "Availability: " << (hasAvailableSeats() ? "Available" : "full") << "\n";
+    cout << "--------------------------------------------------\n";
 }
 

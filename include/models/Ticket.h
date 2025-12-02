@@ -31,5 +31,7 @@ public:
     int getTrainId() const;
     Passenger getPassenger() const;
     void setId(const int newId);
+    void print(const std::string& msg) const ;
+
 };
 #endif // RMS_TICKET_H

@@ -19,6 +19,7 @@ public:
     std::optional<Passenger> getPassenger(const int& passengerId);
     std::vector<Passenger> getAllPassengers();
     Passenger createPassenger(const std::string& name);
+    Passenger updatePassenger(const int passengerId , const std::string& name);
     bool deletePassenger(const int& passengerId);
     Passenger find_or_create_passenger(const std::string& name);
 };

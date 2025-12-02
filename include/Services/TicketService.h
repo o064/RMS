@@ -21,8 +21,10 @@ public:
     TicketService(ITicketRepository *repo , TrainService* ts,PassengerService* ps);
     std::optional<Ticket> getTicket(const int& ticketId);
     std::vector<Ticket> getAllTickets();
+    Ticket updateTicket(Ticket &t);
+
     std::optional<Ticket> getTicketByTrainAndPassenger(const int& trainId, const int& passengerId);
-    Ticket bookTicket(const int& trainId, const int& passengerId);
+    std::optional<Ticket> bookTicket(const int& trainId, const int& passengerId);
     void cancelTicket(const int& ticketId);
 };
 #endif // RMS_TICKETSERVICE_H

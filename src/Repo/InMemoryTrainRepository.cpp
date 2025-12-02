@@ -27,7 +27,6 @@ void InMemoryTrainRepository::save(Train & newTrain) {
         result.first->second = newTrain;
     }
 
-    std::cout << "Train save successfully\n";
 }
 
 bool InMemoryTrainRepository::deleteTrain(int trainId) {

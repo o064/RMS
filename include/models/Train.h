@@ -3,7 +3,6 @@
 
 #include "SeatAllocator.h"
 #include <string>
-#include <memory>
 
 class Train {
 private:
@@ -33,10 +32,15 @@ public:
 
     void setTrainName(const std::string& name);
     void setTrainId(int trainId);
+    void setSeats(int seats);
+    void addSeats(int seats);
 
     bool hasAvailableSeats() const;
 
     int getTotalSeats() const;
+    void trainStatus() const ;
+    void print(const std::string& msg) const ;
+
 };
 
 #endif //RMS_TRAIN_H

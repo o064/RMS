@@ -7,57 +7,38 @@ protected:
     void TearDown() override {}
 };
 
-// ==================== VALID CONSTRUCTORS ====================
-TEST_F(PassengerTest, ConstructorSetsIdAndName) {
+TEST_F(PassengerTest, ValidConstruction) {
     Passenger p(1, "John Doe");
-    EXPECT_EQ(1, p.getId());
-    EXPECT_EQ("John Doe", p.getName());
+    EXPECT_EQ(p.getId(), 1);
+    EXPECT_EQ(p.getName(), "John Doe");
 }
 
-TEST_F(PassengerTest, SetIdUpdatesId) {
-    Passenger p(1, "Jane Smith");
-    p.setId(42);
-    EXPECT_EQ(42, p.getId());
+TEST_F(PassengerTest, InvalidIdThrowsException) {
+    EXPECT_THROW(Passenger(-1, "John Doe"), std::invalid_argument);
 }
 
-TEST_F(PassengerTest, NameWithSpecialCharacters) {
-    Passenger p(1, "O'Brien-Smith");
-    EXPECT_EQ("O'Brien-Smith", p.getName());
+TEST_F(PassengerTest, EmptyNameThrowsException) {
+    EXPECT_THROW(Passenger(1, ""), std::invalid_argument);
 }
 
-TEST_F(PassengerTest, NameWithSpaces) {
-    Passenger p(1, "John Middle Doe");
-    EXPECT_EQ("John Middle Doe", p.getName());
+TEST_F(PassengerTest, SetValidId) {
+    Passenger p(1, "John Doe");
+    p.setId(2);
+    EXPECT_EQ(p.getId(), 2);
 }
 
-TEST_F(PassengerTest, NameWithNumbers) {
-    Passenger p(1, "Agent007");
-    EXPECT_EQ("Agent007", p.getName());
+TEST_F(PassengerTest, SetInvalidIdThrowsException) {
+    Passenger p(1, "John Doe");
+    EXPECT_THROW(p.setId(-1), std::invalid_argument);
 }
 
-TEST_F(PassengerTest, SetIdMultipleTimes) {
-    Passenger p(1, "Test");
-    p.setId(10);
-    EXPECT_EQ(10, p.getId());
-    p.setId(20);
-    EXPECT_EQ(20, p.getId());
+TEST_F(PassengerTest, SetValidName) {
+    Passenger p(1, "John Doe");
+    p.setName("Jane Smith");
+    EXPECT_EQ(p.getName(), "Jane Smith");
 }
 
-TEST_F(PassengerTest, LongName) {
-    std::string longName = "VeryLongPassengerNameThatExceedsNormalLength";
-    Passenger p(1, longName);
-    EXPECT_EQ(longName, p.getName());
-}
-
-// ==================== INVALID CONSTRUCTORS ====================
-
-// ID < 0 should throw
-
-TEST_F(PassengerTest, ConstructorWithNegativeIdThrows) {
-    EXPECT_THROW(Passenger p(-1, "Invalid Passenger"), std::runtime_error);
-}
-
-// Empty name should throw
-TEST_F(PassengerTest, EmptyNameThrows) {
-    EXPECT_THROW(Passenger p(1, ""), std::runtime_error);
+TEST_F(PassengerTest, SetEmptyNameThrowsException) {
+    Passenger p(1, "John Doe");
+    EXPECT_THROW(p.setName(""), std::invalid_argument);
 }
