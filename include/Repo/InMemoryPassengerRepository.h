@@ -6,16 +6,16 @@
 #define RMS_INMEMORYPASSENGERREPOSITORY_H
 
 #include <vector>
-#include <map>
 #include <optional>
 
 #include "../models/Passenger.h"
+#include "../structures/map.h"
 #include "IPassengerRepository.h"
 
 class InMemoryPassengerRepository : public IPassengerRepository
 {
 private:
-    std::map<int, Passenger> passengers;
+    Map<int, Passenger> passengers;
     int next_id = 1;
 public:
     std::optional<Passenger> getPassenger(const int& passengerId) override;

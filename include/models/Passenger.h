@@ -9,6 +9,7 @@ class Passenger{
     std::string name;
     int id;
 public:
+    Passenger() = default;
     Passenger(const int id, const std::string& name);
     int getId() const;
     std::string getName() const;
