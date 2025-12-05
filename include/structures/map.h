@@ -78,7 +78,7 @@ private:
 public:
     Key first;
     Value second;
-    MapIterator(MapNode<Key, Value>* node): node{node}{ 
+    MapIterator(MapNode<Key, Value>* node): node{node} {
         if(node!= nullptr){
             first = node->data.first;
             second = node->data.second;
@@ -427,10 +427,10 @@ public:
         s = rhs.s;
     }
 
-    MapIterator<Key, Value> begin(){
+    MapIterator<Key, Value> begin() const{
         return MapIterator<Key, Value>(findMin(root));
     }
-    MapIterator<Key, Value> end(){
+    MapIterator<Key, Value> end() const{
         return MapIterator<Key, Value>(nullptr);
     }
 

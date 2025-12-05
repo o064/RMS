@@ -5,12 +5,12 @@
 #include "ITrainRepository.h"
 #include <optional>
 #include <map>
-// #include "../structures/map.h"
+ #include "../structures/map.h"
 
 
 class InMemoryTrainRepository : public ITrainRepository {
 private:
-    std::map<int, Train> trains;
+    Map<int, Train> trains;
     int next_id = 1;
 
 public:

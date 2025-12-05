@@ -1,5 +1,0 @@
-if(EXISTS "/home/ahmad-abdullatif/Coding directory/DSAProject/Github/RMS/build/rms_tests[1]_tests.cmake")
-  include("/home/ahmad-abdullatif/Coding directory/DSAProject/Github/RMS/build/rms_tests[1]_tests.cmake")
-else()
-  add_test(rms_tests_NOT_BUILT rms_tests_NOT_BUILT)
-endif()

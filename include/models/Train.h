@@ -13,6 +13,7 @@ private:
 
 public:
     // Constructor
+    Train() = default;
     Train(const int id, const std::string& name, const int totalSeats = 10);
     ~Train() = default;
 
