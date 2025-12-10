@@ -48,10 +48,10 @@ std::optional<Passenger> RMSFacade::getPassenger(int passengerId)
 
 Passenger RMSFacade::addPassenger(const std::string& name)
 {
-    if (!isValidName(name))
-        throw std::invalid_argument("Passenger name cannot be empty");
     std::string trimmedName = trim(name);
-    
+    if (!isValidName(trimmedName))
+        throw std::invalid_argument("Passenger name is not valid");
+
     return passengerService->createPassenger(trimmedName);
 }
 
@@ -71,13 +71,13 @@ std::optional<Ticket> RMSFacade::bookTicket(int trainId, const std::string &pass
     // input validation
     if (trainId <= 0)
         throw std::invalid_argument("Train ID must be greater than 0");
-
-    if (!isValidName(passengerName))
-        throw std::invalid_argument("Passenger name cannot be empty");
     std::string trimmedName = trim(passengerName);
 
+    if (!isValidName(trimmedName))
+        throw std::invalid_argument("Passenger name cannot be empty");
 
-    Passenger ps = passengerService->find_or_create_passenger(passengerName);
+
+    Passenger ps = passengerService->find_or_create_passenger(trimmedName);
     return ticketService->bookTicket(trainId, ps.getId());
 
 }
@@ -121,7 +121,8 @@ Train RMSFacade::updateTrain(int trainId, const std::string& name, int seats) {
     // process waiting
     int seatsAdded = seats - currentSeats;
     if (seatsAdded > 0) {
-        auto cb =[this, trainId](int passengerId){ // access to this object& trainId + passengerId as argument
+        auto cb =[this,&updatedTrain ,trainId](int passengerId){ // access to this object& trainId + passengerId as argument
+            trainService->save(updatedTrain);
             ticketService->bookTicket(trainId, passengerId);
         };
         updatedTrain.getSeatAllocator()->processWaitingList(seatsAdded,cb);
@@ -145,6 +146,7 @@ Train RMSFacade::addSeats(const std::string &name, int seats)
 
 Passenger RMSFacade::updatePassenger(int passengerId, const std::string &name)
 {
+
     auto passenger = passengerService->getPassenger(passengerId);
     if (!passenger.has_value())
         throw std::out_of_range("passenger with id : " + std::to_string(passengerId) + " does not exist ");
@@ -156,7 +158,7 @@ Passenger RMSFacade::updatePassenger(int passengerId, const std::string &name)
     {
         if (compareString(t.getPassenger().getName(), passenger->getName()))
         {
-            t.getPassenger().setName(name);
+            t.setPassenger(newPassenger);
             ticketService->updateTicket(t);
         }
     }

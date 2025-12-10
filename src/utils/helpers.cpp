@@ -8,33 +8,40 @@
 #include <chrono>
 #include <iomanip>
 
-using std::string;
 using std::cout;
 using std::endl;
+using std::string;
 
-std::string toLowerCase(std::string word){
-    for(char & ch : word){
+std::string toLowerCase(std::string word)
+{
+    for (char &ch : word)
+    {
         ch = (char)tolower(ch);
     }
     return word;
 }
 // Function to trim leading and trailing whitespace
-std::string trim(const std::string &str) {
-    if (str.empty()) return "";
+std::string trim(const std::string &str)
+{
+    if (str.empty())
+        return "";
 
     auto start = 0;
     auto end = str.length() - 1;
 
     // find first char from the left
-    while (start < str.size() && str[start] == ' ') {
+    while (start < str.size() && str[start] == ' ')
+    {
         start++;
     }
 
     // all string is space
-    if (start == str.size()) return "";
+    if (start == str.size())
+        return "";
 
     // find first char from the right
-    while (end > start && str[end] == ' ') {
+    while (end > start && str[end] == ' ')
+    {
         end--;
     }
 
@@ -42,33 +49,43 @@ std::string trim(const std::string &str) {
     return str.substr(start, end - start + 1);
 }
 
-int parseInt(const std::string& arg , const std::string& argName){
-    try{
+int parseInt(const std::string &arg, const std::string &argName)
+{
+    try
+    {
         std::size_t pos; // have the index of non int char
-       int res = stoi(arg,&pos);
-       if(pos == 0 || pos != arg.size()) // to pass 12a and abc
-           throw std::invalid_argument("");
+        int res = stoi(arg, &pos);
+        if (pos == 0 || pos != arg.size()) // to pass 12a and abc
+            throw std::invalid_argument("");
 
-       return res;
-
-    }catch (std::invalid_argument& e) {
-        throw std::invalid_argument( argName +" must be a number");
+        return res;
     }
-    catch ( std::out_of_range& e) {
-        throw std::out_of_range( argName +" value is too large");
+    catch (std::invalid_argument &e)
+    {
+        throw std::invalid_argument(argName + " must be a number");
+    }
+    catch (std::out_of_range &e)
+    {
+        throw std::out_of_range(argName + " value is too large");
     }
 }
 
-bool isValidName(const std::string& name) {
+bool isValidName(const std::string &name)
+{
+
     static const std::regex pattern("^[A-Za-z0-9]+([' -][A-Za-z0-9]+)*$"); // a-z - '
+    // Do NOT trim here: tests expect names with leading/trailing whitespace
+    // to be considered invalid. Validation should be applied to the raw input.
     return std::regex_match(name, pattern);
 }
 
-std::string combineString(const std::vector<std::string>& args, int start) {
-   return combineString(args , start ,args.size()); // not including the end
+std::string combineString(const std::vector<std::string> &args, int start)
+{
+    return combineString(args, start, args.size()); // not including the end
 }
 
-std::string combineString(const std::vector<std::string>& args, int start, int end) {
+std::string combineString(const std::vector<std::string> &args, int start, int end)
+{
     if (start < 0 || start >= args.size())
         throw std::runtime_error("Start index out of range");
 
@@ -79,7 +96,8 @@ std::string combineString(const std::vector<std::string>& args, int start, int e
         throw std::runtime_error("Invalid end index");
 
     std::string text;
-    for (int i = start; i < end; i++) {  // inclusive
+    for (int i = start; i < end; i++)
+    { // inclusive
         if (!isValidName(args[i]) || isInteger(args[i]))
             throw std::runtime_error("invalid name");
         text += args[i] + " ";
@@ -90,29 +108,34 @@ std::string combineString(const std::vector<std::string>& args, int start, int e
 
     return text;
 }
-bool compareString(const std::string& str1 , const std::string& str2){
-    return toLowerCase(trim(str1)) ==toLowerCase(trim(str2));
+bool compareString(const std::string &str1, const std::string &str2)
+{
+    return toLowerCase(trim(str1)) == toLowerCase(trim(str2));
 }
-bool isInteger(const std::string& str) {
-    try{
+bool isInteger(const std::string &str)
+{
+    try
+    {
         std::size_t pos; // have the index of non int char
 
-        stoi(trim(str),&pos);
-        if(pos == 0 || pos != trim(str).size()) // to pass 12a and abc
+        stoi(trim(str), &pos);
+        if (pos == 0 || pos != trim(str).size()) // to pass 12a and abc
             throw std::invalid_argument("");
 
         return true;
-
-    }catch (std::invalid_argument& e) {
+    }
+    catch (std::invalid_argument &e)
+    {
         return false;
     }
-    catch ( std::out_of_range& e) {
-        throw std::out_of_range( str +" value is too large");
+    catch (std::out_of_range &e)
+    {
+        throw std::out_of_range(str + " value is too large");
     }
 }
 
-
-void printCurrentDate(){
+void printCurrentDate()
+{
     auto now = std::chrono::system_clock::now();
     auto time = std::chrono::system_clock::to_time_t(now);
 

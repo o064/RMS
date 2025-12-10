@@ -29,7 +29,7 @@ Passenger PassengerService::createPassenger(const std::string& name) {
 Passenger PassengerService::updatePassenger(const int passengerId , const std::string& name) {
     auto passenger = passengerRepository->getPassenger(passengerId);
     if(!passenger.has_value())
-        throw std::runtime_error("passenger with id: "+ std::to_string(passengerId) + " does not exit \n");
+        throw std::out_of_range("passenger with id: "+ std::to_string(passengerId) + " does not exit \n");
     passenger->setName(name); //update name
     passengerRepository->save(passenger.value());
     return passenger.value();

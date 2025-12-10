@@ -330,12 +330,12 @@ void CLIController::add_train(const vector<string> &args) {
         cout << "Usage: train add  <name> <seats> \n";
         return;
     }
-    const string& seatArgs = args[3];
+    const string& seatArgs = args[args.size()-1];
     string name;
     try {
         const int &seats = parseInt(seatArgs,"seats");
         name = combineString(args,2,-1);
-
+        cout << name << " ";
         auto t = facade->addTrain(name,seats);
         t.print("--- Train Added Successfully ---\n");
 
@@ -400,7 +400,7 @@ void CLIController::update_train(const vector<string> &args) {
     }
 
     const string& tarinIdArg = args[2];
-    const string& seatArg = args[4];
+    const string& seatArg = args[args.size()-1];;
     try {
         int trainId = parseInt(tarinIdArg , "train id");
         int seats = parseInt(seatArg, "seat number");

@@ -60,3 +60,8 @@ void Ticket::print(const std::string &msg) const {
     cout << "--------------------------------------------------\n";
 }
 
+void Ticket::setPassenger(const Passenger &p) {
+    this->passenger =p ;
+
+}
+

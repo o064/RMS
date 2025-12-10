@@ -45,11 +45,8 @@ std::optional<Ticket> TicketService::bookTicket(const int& trainId, const int& p
     }
 
     // 4) assign seat to passenger if avialble
-    int seat_number;
-    if(train->getSeatAllocator() != nullptr){ // if train have seat allocator and seats
-        seat_number=train->getSeatAllocator()->allocateSeat(passengerId);
-        trainService->save(train.value());
-    }
+    int seat_number=train->getSeatAllocator()->allocateSeat(passengerId);
+    trainService->save(train.value());
     if(seat_number == -1) // added to waiting list
         return std::nullopt;
     // 5)  create ticket if available

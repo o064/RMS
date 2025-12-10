@@ -267,8 +267,8 @@ TEST_F(InMemoryTrainRepositoryTest, DeleteTrain) {
     bool deleted = repo.deleteTrain(id);
     EXPECT_TRUE(deleted);
 
-    // Repo implementation throws std::runtime_error if ID not found
-    EXPECT_THROW(repo.getTrainById(id), std::runtime_error);
+    // Repo implementation throws std::out_of_range if ID not found
+    EXPECT_THROW(repo.getTrainById(id), std::out_of_range);
 }
 
 TEST_F(InMemoryTrainRepositoryTest, DeleteNonExistentTrain) {
@@ -307,13 +307,13 @@ TEST_F(InMemoryTrainRepositoryTest, DeleteWithExplicitId) {
     repo.save(t);
 
     EXPECT_TRUE(repo.deleteTrain(42));
-    EXPECT_THROW(repo.getTrainById(42), std::runtime_error);
+    EXPECT_THROW(repo.getTrainById(42), std::out_of_range);
 }
 
 // ===================== GetTrainById Tests =====================
 
 TEST_F(InMemoryTrainRepositoryTest, GetNonExistentTrain) {
-    EXPECT_THROW(repo.getTrainById(999), std::runtime_error);
+    EXPECT_THROW(repo.getTrainById(999), std::out_of_range);
 }
 
 TEST_F(InMemoryTrainRepositoryTest, GetTrainByIdReturnsCorrectTrain) {
@@ -348,7 +348,7 @@ TEST_F(InMemoryTrainRepositoryTest, GetTrainByIdReturnsCopy) {
 
 
 TEST_F(InMemoryTrainRepositoryTest, GetTrainByZeroId) {
-    EXPECT_THROW(repo.getTrainById(0), std::runtime_error);
+    EXPECT_THROW(repo.getTrainById(0), std::out_of_range);
 }
 
 // ===================== GetAllTrains Tests =====================
@@ -611,7 +611,7 @@ TEST_F(InMemoryTrainRepositoryTest, SaveWithNegativeIdThrows) {
 
 TEST_F(InMemoryTrainRepositoryTest, GetTrainWithNegativeIdThrows) {
     // Trying to fetch a train with a negative ID should throw
-    EXPECT_THROW(repo.getTrainById(-10), std::runtime_error);
+    EXPECT_THROW(repo.getTrainById(-10), std::out_of_range);
 }
 
 TEST_F(InMemoryTrainRepositoryTest, SaveEmptyNameTrain) {

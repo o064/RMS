@@ -88,7 +88,7 @@ TEST_F(PassengerServiceTest, UpdatePassenger_Success) {
 }
 
 TEST_F(PassengerServiceTest, UpdatePassenger_ThrowsForNonExistent) {
-    EXPECT_THROW(service->updatePassenger(999, "NewName"), std::runtime_error);
+    EXPECT_THROW(service->updatePassenger(999, "NewName"), std::out_of_range);
 }
 
 TEST_F(PassengerServiceTest, FindOrCreate_CaseInsensitiveComparison) {

@@ -70,10 +70,10 @@ add_executable(rms_tests
         tests/test_helpers.cpp
         tests/test_ticket.cpp
         tests/test_ticktRepo.cpp
-#        tests/test_ticketService.cpp
-#        tests/test_facade.cpp
-#        tests/test_startUpManager.cpp
-#        tests/test_cliController.cpp
+        tests/test_ticketService.cpp
+        tests/test_facade.cpp
+        tests/test_startUpManager.cpp
+        tests/test_cliController.cpp
         tests/structures/test_stack.cpp
         tests/test_models.cpp
 )

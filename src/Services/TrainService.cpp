@@ -7,6 +7,7 @@
 #include <stdexcept> //for run time exception
 
 std::optional<Train> TrainService::getTrain(const int& trainId) {
+
     return trainRepository->getTrainById(trainId);
 }
 
@@ -35,7 +36,7 @@ bool TrainService::deleteTrain(int trainId) {
 bool TrainService::isAvailbleSeat(int trainId) {
     auto train = trainRepository->getTrainById(trainId);
     if(!train.has_value())
-        throw std::runtime_error("train with id : " +  std::to_string(trainId) + "does not exit");
+        throw std::out_of_range("train with id : " +  std::to_string(trainId) + "does not exit");
 
     return train->hasAvailableSeats() ;
 }
@@ -54,8 +55,10 @@ Train TrainService::updateTrain(const int &trainId, const std::string &name, int
     // update seats
     if(seats != 0)
         train->setSeats(seats);
-    trainRepository->save(train.value());
-    return train.value();
+
+    auto& updated =train.value();
+    trainRepository->save(updated);
+    return updated;
 }
 
 Train TrainService::addSeats(const int trainId, const int seats) {

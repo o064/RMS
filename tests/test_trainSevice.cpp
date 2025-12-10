@@ -28,7 +28,7 @@ TEST_F(TrainServiceTest, GetTrain_Exists) {
 }
 
 TEST_F(TrainServiceTest, GetTrain_NotExists) {
-    EXPECT_THROW(service->getTrain(999), std::runtime_error);
+    EXPECT_THROW(service->getTrain(999), std::out_of_range);
 }
 
 TEST_F(TrainServiceTest, GetAllTrains_Empty) {
@@ -54,7 +54,7 @@ TEST_F(TrainServiceTest, UpdateTrain_Success) {
 }
 
 TEST_F(TrainServiceTest, UpdateTrain_NotExists) {
-    EXPECT_THROW(service->updateTrain(999, "Test", 30), std::runtime_error);
+    EXPECT_THROW(service->updateTrain(999, "Test", 30), std::out_of_range);
 }
 
 TEST_F(TrainServiceTest, DeleteTrain_Success) {
@@ -90,5 +90,5 @@ TEST_F(TrainServiceTest, IsAvailableSeat_True) {
 }
 
 TEST_F(TrainServiceTest, IsAvailableSeat_NotExists) {
-    EXPECT_THROW(service->isAvailbleSeat(999), std::runtime_error);
+    EXPECT_THROW(service->isAvailbleSeat(999), std::out_of_range);
 }

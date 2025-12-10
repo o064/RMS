@@ -30,6 +30,7 @@ public:
     void setStatus(const Status& s);
     int getTrainId() const;
     Passenger getPassenger() const;
+    void setPassenger(const Passenger &p);
     void setId(const int newId);
     void print(const std::string& msg) const ;
 
