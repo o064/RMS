@@ -238,7 +238,7 @@ int SeatAllocator::getWaitingListSize() const {
     return waitingList.size();
 }
 
-int SeatAllocator::processWaitingList(int seatsToAdd, std::function<void(int)> bookCallback) {
+int SeatAllocator::processWaitingList(int seatsToAdd, std::function<void(int)> bookCallback)  {
     int processed = 0;
     std::queue<int> waitingCopy = getWaitingList(); // get copy of waiting list
 
@@ -249,11 +249,13 @@ int SeatAllocator::processWaitingList(int seatsToAdd, std::function<void(int)> b
             bookCallback(passengerId);
             seatsToAdd--;
             processed++;
+            waitingSet.erase(passengerId);
         }
         catch (const std::exception& e) {
             std::cerr << "Failed to book ticket for waiting passenger "
                       << passengerId << ": " << e.what() << "\n";
         }
     }
+    waitingList = waitingCopy;
     return processed;
 }

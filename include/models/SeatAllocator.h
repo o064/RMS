@@ -35,7 +35,7 @@ public:
 
     int freeSeat( int seatNumber);
     int allocateSeat( int passengerId);
-    int processWaitingList(int seatsToAdd, std::function<void(int)> bookCallback) ;
+    int processWaitingList(int seatsToAdd, std::function<void(int)> bookCallback)  ;
 
 
     int getAvailableSeatCount() const;

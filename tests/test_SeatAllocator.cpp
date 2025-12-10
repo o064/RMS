@@ -184,47 +184,47 @@ TEST_F(SeatAllocatorTest, FreeSeatReturnsWaitingPassengerId) {
     EXPECT_EQ(waitingPassengerId, 102);
 }
 
-//TEST_F(SeatAllocatorTest, ProcessWaitingList_Basic) {
-//    SeatAllocator allocator(2);
-//    allocator.allocateSeat(101);
-//    allocator.allocateSeat(102);
-//    allocator.allocateSeat(103);
-//    allocator.allocateSeat(104);
-//
-//    std::vector<int> bookedPassengers;
-//    auto callback = [&bookedPassengers](int passengerId) {
-//        bookedPassengers.push_back(passengerId);
-//    };
-//
-//    allocator.addSeats(2);
-//    int processed = allocator.processWaitingList(2, callback);
-//
-//    EXPECT_EQ(processed, 2);
-//    EXPECT_EQ(bookedPassengers.size(), 2);
-//    EXPECT_EQ(bookedPassengers[0], 103);
-//    EXPECT_EQ(bookedPassengers[1], 104);
-//    EXPECT_EQ(allocator.getWaitingListSize(), 0);
-//}
+TEST_F(SeatAllocatorTest, ProcessWaitingList_Basic) {
+    SeatAllocator allocator(2);
+    allocator.allocateSeat(101);
+    allocator.allocateSeat(102);
+    allocator.allocateSeat(103);
+    allocator.allocateSeat(104);
 
-//TEST_F(SeatAllocatorTest, ProcessWaitingList_MoreSeatsThanWaiting) {
-//    SeatAllocator allocator(2);
-//    allocator.allocateSeat(101);
-//    allocator.allocateSeat(102);
-//    allocator.allocateSeat(103);
-//
-//    std::vector<int> bookedPassengers;
-//    auto callback = [&bookedPassengers](int passengerId) {
-//        bookedPassengers.push_back(passengerId);
-//    };
-//
-//    allocator.addSeats(3);
-//    int processed = allocator.processWaitingList(3, callback);
-//
-//    EXPECT_EQ(processed, 1);
-//    EXPECT_EQ(bookedPassengers.size(), 1);
-//    EXPECT_EQ(bookedPassengers[0], 103);
-//    EXPECT_EQ(allocator.getWaitingListSize(), 0);
-//}
+    std::vector<int> bookedPassengers;
+    auto callback = [&bookedPassengers](int passengerId) {
+        bookedPassengers.push_back(passengerId);
+    };
+
+    allocator.addSeats(2);
+    int processed = allocator.processWaitingList(2, callback);
+
+    EXPECT_EQ(processed, 2);
+    EXPECT_EQ(bookedPassengers.size(), 2);
+    EXPECT_EQ(bookedPassengers[0], 103);
+    EXPECT_EQ(bookedPassengers[1], 104);
+    EXPECT_EQ(allocator.getWaitingListSize(), 0);
+}
+
+TEST_F(SeatAllocatorTest, ProcessWaitingList_MoreSeatsThanWaiting) {
+    SeatAllocator allocator(2);
+    allocator.allocateSeat(101);
+    allocator.allocateSeat(102);
+    allocator.allocateSeat(103);
+
+    std::vector<int> bookedPassengers;
+    auto callback = [&bookedPassengers](int passengerId) {
+        bookedPassengers.push_back(passengerId);
+    };
+
+    allocator.addSeats(3);
+    int processed = allocator.processWaitingList(3, callback);
+
+    EXPECT_EQ(processed, 1);
+    EXPECT_EQ(bookedPassengers.size(), 1);
+    EXPECT_EQ(bookedPassengers[0], 103);
+    EXPECT_EQ(allocator.getWaitingListSize(), 0);
+}
 
 TEST_F(SeatAllocatorTest, ProcessWaitingList_NoWaitingList) {
     SeatAllocator allocator(5);
