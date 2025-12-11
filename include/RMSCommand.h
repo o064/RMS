@@ -4,9 +4,8 @@
 #define RMS_RMSCOMMAND_H
 
 #include <string>
-#include <unordered_map>
+#include "structures/unordered_map.h"
 
-using   std::unordered_map;
 using   std::string;
     class RMSCommand {
     public:

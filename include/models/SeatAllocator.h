@@ -6,11 +6,11 @@
 #ifndef RMS_SEATALLOCATOR_H
 #define RMS_SEATALLOCATOR_H
 
-#include <unordered_map>
-#include <vector>
 #include <queue>
 #include <set>
 #include "../structures/stack.h"
+#include "../structures/unordered_map.h"
+
 #include <string>
 #include<memory>
 #include <functional>
@@ -19,7 +19,7 @@ class SeatAllocator{
     std::set<int> availableSeats;
     std::queue<int> waitingList;
     std::set<int> waitingSet;              // prevent duplicate waiting entries
-    std::unordered_map<int, int> allocatedSeats;
+    unordered_map<int, int> allocatedSeats;
     stack<int> cancelledSeats;
     int totalSeats ;
 public:

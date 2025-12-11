@@ -19,7 +19,7 @@ RMSCommand::MainCmd RMSCommand::getMainCmd(const string &cmd){
 
     };
     auto it = table.find(cmd);
-    return (it != table.end()) ? it->second : MainCmd::UNKNOWN;
+    return (it != table.end()) ? (*it).second : MainCmd::UNKNOWN;
 }
 
 RMSCommand::TrainCmd RMSCommand::getTrainCmd(const string &sub) {
@@ -33,7 +33,7 @@ RMSCommand::TrainCmd RMSCommand::getTrainCmd(const string &sub) {
             {"status" , TrainCmd::STATUS}
     };
     auto it = table.find(sub);
-    return (it != table.end()) ? it->second : TrainCmd::UNKNOWN;
+    return (it != table.end()) ? (*it).second : TrainCmd::UNKNOWN;
 }
 RMSCommand::PassengerCmd RMSCommand::getPassengerCmd(const string &sub)  {
     static const unordered_map<string, PassengerCmd> table = {
@@ -43,7 +43,7 @@ RMSCommand::PassengerCmd RMSCommand::getPassengerCmd(const string &sub)  {
             {"update", PassengerCmd::UPDATE}
     };
     auto it = table.find(sub);
-    return (it != table.end()) ? it->second : PassengerCmd::UNKNOWN;
+    return (it != table.end()) ? (*it).second : PassengerCmd::UNKNOWN;
 }
 RMSCommand::TicketCmd RMSCommand::getTicketCmd(const string &sub) {
     static const unordered_map<string, TicketCmd> table = {
@@ -52,7 +52,7 @@ RMSCommand::TicketCmd RMSCommand::getTicketCmd(const string &sub) {
             {"cancel", TicketCmd::CANCEL}
     };
     auto it = table.find(sub);
-    return (it != table.end()) ? it->second : TicketCmd::UNKNOWN;
+    return (it != table.end()) ? (*it).second : TicketCmd::UNKNOWN;
 }
 
 
