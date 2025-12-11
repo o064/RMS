@@ -35,13 +35,13 @@ Train RMSFacade::addTrain(std::string name, int totalSeats)
     return trainService->createTrain(name, totalSeats);
 }
 
-std::optional<Train> RMSFacade::getTrain(int trainId)
+Train RMSFacade::getTrain(int trainId)
 {
     return trainService->getTrain(trainId);
 }
 // ============ Passengers =============
 
-std::optional<Passenger> RMSFacade::getPassenger(int passengerId)
+Passenger RMSFacade::getPassenger(int passengerId)
 {
     return passengerService->getPassenger(passengerId);
 }
@@ -108,11 +108,8 @@ Train RMSFacade::updateTrain(int trainId, const std::string& name, int seats) {
     if (seats < 0) throw std::invalid_argument("Seats cannot be negative");
 
     // current Train
-    auto currentTrainOpt = trainService->getTrain(trainId);
-    if (!currentTrainOpt.has_value())
-        throw std::out_of_range("Train with id " + std::to_string(trainId) + " does not exist");
+    auto currentTrain = trainService->getTrain(trainId);
 
-    Train currentTrain = currentTrainOpt.value();
     int currentSeats = currentTrain.getTotalSeats();
 
     // update train
@@ -148,15 +145,13 @@ Passenger RMSFacade::updatePassenger(int passengerId, const std::string &name)
 {
 
     auto passenger = passengerService->getPassenger(passengerId);
-    if (!passenger.has_value())
-        throw std::out_of_range("passenger with id : " + std::to_string(passengerId) + " does not exist ");
     // update passenger
     auto newPassenger = passengerService->updatePassenger(passengerId, name);
     // update tickets with this id
     auto tickets = ticketService->getAllTickets();
     for (auto &t : tickets)
     {
-        if (compareString(t.getPassenger().getName(), passenger->getName()))
+        if (compareString(t.getPassenger().getName(), passenger.getName()))
         {
             t.setPassenger(newPassenger);
             ticketService->updateTicket(t);
@@ -168,16 +163,14 @@ Passenger RMSFacade::updatePassenger(int passengerId, const std::string &name)
 
 void RMSFacade::deleteTrain(int trainId)
 {
-    bool deleted = trainService->deleteTrain(trainId);
-    if (!deleted)
-        throw std::out_of_range("failed to delete train with id : " + std::to_string(trainId));
+    if (trainId <= 0) throw std::invalid_argument("Train ID must be > 0");
+    trainService->deleteTrain(trainId);
 }
 
 void RMSFacade::deletePassenger(int passengerId)
 {
-    bool deleted = passengerService->deletePassenger(passengerId);
-    if (!deleted)
-        throw std::out_of_range("failed to delete passenger with id : " + std::to_string(passengerId));
+    if (passengerId <= 0) throw std::invalid_argument("Passenger ID must be > 0");
+    passengerService->deletePassenger(passengerId);
 }
 
 void RMSFacade::trainStatus(int trainId) {

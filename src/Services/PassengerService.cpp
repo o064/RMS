@@ -8,17 +8,22 @@ PassengerService::PassengerService(IPassengerRepository *repo) {
     this->passengerRepository =repo;
 }
 
-std::optional<Passenger> PassengerService::getPassenger(const int &passengerId) {
+Passenger PassengerService::getPassenger(const int &passengerId) {
+    auto p = passengerRepository->getPassenger(passengerId);
+    if(!p.has_value())
+        throw std::out_of_range("Passenger with id " + std::to_string(passengerId) + " does not exist");
 
-    return  passengerRepository->getPassenger(passengerId);
+    return  p.value();
 }
 
 vector<Passenger> PassengerService::getAllPassengers() {
     return passengerRepository->getAllPassengers();
 }
 
-bool PassengerService::deletePassenger(const int &passengerId) {
-    return passengerRepository->deletePassenger(passengerId);
+void PassengerService::deletePassenger(const int &passengerId) {
+    bool deleted = passengerRepository->deletePassenger(passengerId);
+    if (!deleted)
+        throw std::out_of_range("failed to delete passenger with id : " + std::to_string(passengerId));
 }
 
 Passenger PassengerService::createPassenger(const std::string& name) {
@@ -27,21 +32,19 @@ Passenger PassengerService::createPassenger(const std::string& name) {
     return p;
 }
 Passenger PassengerService::updatePassenger(const int passengerId , const std::string& name) {
-    auto passenger = passengerRepository->getPassenger(passengerId);
-    if(!passenger.has_value())
-        throw std::out_of_range("passenger with id: "+ std::to_string(passengerId) + " does not exit \n");
-    passenger->setName(name); //update name
-    passengerRepository->save(passenger.value());
-    return passenger.value();
+    auto passenger = this->getPassenger(passengerId);
+    passenger.setName(name); //update name
+    passengerRepository->save(passenger);
+    return passenger;
 }
 
 Passenger PassengerService::find_or_create_passenger(const std::string &name) {
     const vector<Passenger> passengers = passengerRepository->getAllPassengers();
-
+    // search if it is existed
     for(const auto & p : passengers)
-        if(toLowerCase(p.getName()) == toLowerCase(name)){
-            return   passengerRepository->getPassenger(p.getId()).value();
-        }
+        if(toLowerCase(p.getName()) == toLowerCase(name))
+            return   p;
+    //else  create passenger
     Passenger p(0,name);
     passengerRepository->save(p);
     return p;

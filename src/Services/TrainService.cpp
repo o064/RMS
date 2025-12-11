@@ -6,9 +6,12 @@
 #include "utils/helpers.h"
 #include <stdexcept> //for run time exception
 
-std::optional<Train> TrainService::getTrain(const int& trainId) {
+Train TrainService::getTrain(const int& trainId) {
+    auto t =  trainRepository->getTrainById(trainId);
+    if(!t.has_value())
+        throw std::out_of_range("train with id : " +  std::to_string(trainId) + " does not exit");
+    return t.value();
 
-    return trainRepository->getTrainById(trainId);
 }
 
 TrainService::TrainService(ITrainRepository *repo) {
@@ -29,16 +32,15 @@ Train TrainService::createTrain(const std::string& name,int seats) {
     return t;
 }
 
-bool TrainService::deleteTrain(int trainId) {
-    return trainRepository->deleteTrain(trainId);
+void TrainService::deleteTrain(int trainId) {
+    bool deleted = trainRepository->deleteTrain(trainId);
+    if (!deleted)
+        throw std::out_of_range("failed to delete train with id : " + std::to_string(trainId));
 }
 
 bool TrainService::isAvailbleSeat(int trainId) {
-    auto train = trainRepository->getTrainById(trainId);
-    if(!train.has_value())
-        throw std::out_of_range("train with id : " +  std::to_string(trainId) + "does not exit");
-
-    return train->hasAvailableSeats() ;
+    auto train = this->getTrain(trainId);
+    return train.hasAvailableSeats() ;
 }
 
 void TrainService::save(Train &train) {
@@ -46,28 +48,27 @@ void TrainService::save(Train &train) {
 }
 
 Train TrainService::updateTrain(const int &trainId, const std::string &name, int seats) {
-    auto train = trainRepository->getTrainById(trainId);
-    if(!train.has_value())  // not exist
-        throw std::runtime_error("cannot update train because train with id : " +  std::to_string(trainId) + "does not exit") ;
+    auto train = this->getTrain(trainId);
+
     // update name
     if(!name.empty())
-        train->setTrainName(name);
+        train.setTrainName(name);
     // update seats
     if(seats != 0)
-        train->setSeats(seats);
+        train.setSeats(seats);
 
-    auto& updated =train.value();
+    auto& updated =train;
     trainRepository->save(updated);
     return updated;
 }
 
 Train TrainService::addSeats(const int trainId, const int seats) {
-    auto train =trainRepository->getTrainById(trainId);
-    if(!train.has_value())
-        throw std::runtime_error("train with id : " +  std::to_string(trainId) + "does not exit");
-    train->addSeats(seats);
-    trainRepository->save(train.value());
-    return train.value();
+    auto train =this->getTrain(trainId);;
+
+    train.addSeats(seats);
+    trainRepository->save(train);
+
+    return train;
 }
 
 Train TrainService::addSeats(const std::string name, const int seats) {
@@ -87,8 +88,7 @@ Train TrainService::addSeats(const std::string name, const int seats) {
 }
 
 void TrainService::printStatus(int trainId) {
-    auto train = trainRepository->getTrainById(trainId);
-    if(!train.has_value())
-        throw std::runtime_error("train with id : " +  std::to_string(trainId) + "does not exit");
-    train->trainStatus();
+    auto train = this->getTrain(trainId);
+
+    train.trainStatus();
 }

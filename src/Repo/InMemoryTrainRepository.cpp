@@ -43,7 +43,7 @@ std::optional<Train>   InMemoryTrainRepository::getTrainById(const int& trainId)
     if (it != trains.end()) {
         return it->second;
     }
-    throw std::out_of_range("Train not found");
+    return std::nullopt; // not found
 }
 
 void InMemoryTrainRepository::clear() {

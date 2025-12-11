@@ -22,9 +22,11 @@ TEST_F(TrainServiceTest, CreateTrain_Success) {
 
 TEST_F(TrainServiceTest, GetTrain_Exists) {
     Train created = service->createTrain("Test Train", 30);
-    auto retrieved = service->getTrain(created.getTrainId());
-    ASSERT_TRUE(retrieved.has_value());
-    EXPECT_EQ(retrieved->getTrainName(), "Test Train");
+
+    Train retrieved = service->getTrain(created.getTrainId());
+
+    EXPECT_EQ(retrieved.getTrainName(), "Test Train");
+    EXPECT_EQ(retrieved.getTrainId(), created.getTrainId());
 }
 
 TEST_F(TrainServiceTest, GetTrain_NotExists) {
@@ -59,13 +61,14 @@ TEST_F(TrainServiceTest, UpdateTrain_NotExists) {
 
 TEST_F(TrainServiceTest, DeleteTrain_Success) {
     Train created = service->createTrain("Test", 20);
-    bool deleted = service->deleteTrain(created.getTrainId());
-    EXPECT_TRUE(deleted);
+
+    EXPECT_NO_THROW(service->deleteTrain(created.getTrainId()));
+
+    EXPECT_THROW(service->getTrain(created.getTrainId()), std::out_of_range);
 }
 
 TEST_F(TrainServiceTest, DeleteTrain_NotExists) {
-    bool deleted = service->deleteTrain(999);
-    EXPECT_FALSE(deleted);
+    EXPECT_THROW(service->deleteTrain(999), std::out_of_range);
 }
 
 TEST_F(TrainServiceTest, AddSeats_ById_Success) {

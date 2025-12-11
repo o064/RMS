@@ -15,11 +15,11 @@ public:
     TrainService(ITrainRepository* repo) ;
     ~TrainService();
     //crud
-    std::optional<Train> getTrain(const int&);
+    Train getTrain(const int&);
     vector<Train> getAllTrains();
     Train createTrain(const std::string& name,int seats);
     Train updateTrain(const int& id , const std::string& name,int seats = 0);
-    bool deleteTrain(int trainId);
+    void deleteTrain(int trainId);
 
     //seats
     Train addSeats(const int trainId , const int seats);

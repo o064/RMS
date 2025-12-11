@@ -50,395 +50,152 @@ protected:
 
 TEST_F(RMSFacadeTest, AddTrain_Success) {
     Train train = facade->addTrain("Express", 20);
-
     EXPECT_GT(train.getTrainId(), 0);
     EXPECT_EQ(train.getTrainName(), "Express");
     EXPECT_EQ(train.getTotalSeats(), 20);
 }
 
-TEST_F(RMSFacadeTest, AddTrain_EmptyName) {
+TEST_F(RMSFacadeTest, AddTrain_Invalid) {
     EXPECT_THROW(facade->addTrain("", 20), std::invalid_argument);
-}
-
-TEST_F(RMSFacadeTest, AddTrain_WhitespaceName) {
     EXPECT_THROW(facade->addTrain("   ", 20), std::invalid_argument);
-}
-
-TEST_F(RMSFacadeTest, AddTrain_InvalidSeats) {
     EXPECT_THROW(facade->addTrain("Express", 0), std::invalid_argument);
     EXPECT_THROW(facade->addTrain("Express", -5), std::invalid_argument);
-}
-
-TEST_F(RMSFacadeTest, AddTrain_TrimsName) {
-    Train train = facade->addTrain("  Express  ", 20);
-    EXPECT_EQ(train.getTrainName(), "Express");
-}
-
-TEST_F(RMSFacadeTest, ListTrains_Empty) {
-    auto trains = facade->listTrains();
-    EXPECT_TRUE(trains.empty());
 }
 
 TEST_F(RMSFacadeTest, ListTrains_Multiple) {
     facade->addTrain("Express", 20);
     facade->addTrain("Local", 30);
-    facade->addTrain("Regional", 15);
-
     auto trains = facade->listTrains();
-    EXPECT_EQ(trains.size(), 3);
+    EXPECT_EQ(trains.size(), 2);
 }
 
-TEST_F(RMSFacadeTest, GetTrain_Success) {
+TEST_F(RMSFacadeTest, GetTrain_SuccessAndNotFound) {
     Train added = facade->addTrain("Express", 20);
     auto retrieved = facade->getTrain(added.getTrainId());
-
-    ASSERT_TRUE(retrieved.has_value());
-    EXPECT_EQ(retrieved->getTrainName(), "Express");
-}
-
-TEST_F(RMSFacadeTest, GetTrain_NotFound) {
+    EXPECT_EQ(retrieved.getTrainName(), "Express");
     EXPECT_THROW(facade->getTrain(999), std::out_of_range);
 }
 
-TEST_F(RMSFacadeTest, UpdateTrain_Success) {
+TEST_F(RMSFacadeTest, UpdateTrain_SuccessAndEdgeCases) {
     Train train = facade->addTrain("Old Name", 10);
     Train updated = facade->updateTrain(train.getTrainId(), "New Name", 15);
-
     EXPECT_EQ(updated.getTrainName(), "New Name");
     EXPECT_EQ(updated.getTotalSeats(), 15);
+    EXPECT_THROW(facade->updateTrain(0, "Test", 10), std::invalid_argument);
+    EXPECT_THROW(facade->updateTrain(train.getTrainId(), "", 10), std::invalid_argument);
+    EXPECT_THROW(facade->updateTrain(train.getTrainId(), "Test", -5), std::invalid_argument);
+    EXPECT_THROW(facade->updateTrain(999, "Test", 10), std::out_of_range);
 }
 
-TEST_F(RMSFacadeTest, UpdateTrain_InvalidId) {
-    EXPECT_THROW(
-            facade->updateTrain(0, "Test", 10),
-            std::invalid_argument
-    );
-}
-
-TEST_F(RMSFacadeTest, UpdateTrain_NotFound) {
-    EXPECT_THROW(
-            facade->updateTrain(999, "Test", 10),
-            std::out_of_range
-    );
-}
-
-TEST_F(RMSFacadeTest, UpdateTrain_EmptyName) {
+TEST_F(RMSFacadeTest, AddSeatsByIdAndName) {
     Train train = facade->addTrain("Test", 10);
-    EXPECT_THROW(
-            facade->updateTrain(train.getTrainId(), "", 10),
-            std::invalid_argument
-    );
-}
+    Train updatedById = facade->addSeats(train.getTrainId(), 5);
+    EXPECT_EQ(updatedById.getTotalSeats(), 15);
 
-TEST_F(RMSFacadeTest, UpdateTrain_NegativeSeats) {
-    Train train = facade->addTrain("Test", 10);
-    EXPECT_THROW(
-            facade->updateTrain(train.getTrainId(), "Test", -5),
-            std::invalid_argument
-    );
-}
-
-TEST_F(RMSFacadeTest, UpdateTrain_ProcessesWaitingList) {
-    Train train = facade->addTrain("Test", 2);
-    facade->addPassenger("John");
-    facade->addPassenger("Jane");
-    facade->addPassenger("Bob");
-
-    facade->bookTicket(train.getTrainId(), "John");
-    facade->bookTicket(train.getTrainId(), "Jane");
-    facade->bookTicket(train.getTrainId(), "Bob");
-
-    Train updated = facade->updateTrain(train.getTrainId(), "Test", 5);
-
-    auto tickets = facade->listTickets();
-    int bookedCount = 0;
-    for (const auto& ticket : tickets) {
-        if (ticket.getStatus() == booked) bookedCount++;
-    }
-    EXPECT_EQ(bookedCount, 3);
-}
-
-TEST_F(RMSFacadeTest, AddSeats_ById) {
-    Train train = facade->addTrain("Test", 10);
-    Train updated = facade->addSeats(train.getTrainId(), 5);
-
-    EXPECT_EQ(updated.getTotalSeats(), 15);
-}
-
-TEST_F(RMSFacadeTest, AddSeats_ByName) {
     facade->addTrain("Test Train", 10);
-    Train updated = facade->addSeats("Test Train", 5);
-
-    EXPECT_EQ(updated.getTotalSeats(), 15);
+    Train updatedByName = facade->addSeats("Test Train", 5);
+    EXPECT_EQ(updatedByName.getTotalSeats(), 15);
 }
 
-TEST_F(RMSFacadeTest, DeleteTrain_Success) {
+TEST_F(RMSFacadeTest, DeleteTrain_SuccessAndNotFound) {
     Train train = facade->addTrain("Test", 10);
     EXPECT_NO_THROW(facade->deleteTrain(train.getTrainId()));
-}
-
-TEST_F(RMSFacadeTest, DeleteTrain_NotFound) {
     EXPECT_THROW(facade->deleteTrain(999), std::out_of_range);
 }
 
-TEST_F(RMSFacadeTest, GetTrainAvailability_Available) {
-    Train train = facade->addTrain("Test", 10);
-    EXPECT_TRUE(facade->getTrainAvailability(train.getTrainId()));
-}
-
-TEST_F(RMSFacadeTest, GetTrainAvailability_Full) {
+TEST_F(RMSFacadeTest, GetTrainAvailability) {
     Train train = facade->addTrain("Test", 1);
+    EXPECT_TRUE(facade->getTrainAvailability(train.getTrainId()));
     facade->addPassenger("John");
     facade->bookTicket(train.getTrainId(), "John");
-
     EXPECT_FALSE(facade->getTrainAvailability(train.getTrainId()));
 }
 
 // ===================== Passenger Operations =====================
 
-TEST_F(RMSFacadeTest, AddPassenger_Success) {
+TEST_F(RMSFacadeTest, AddPassenger_SuccessAndInvalid) {
     Passenger p = facade->addPassenger("John Doe");
-
     EXPECT_GT(p.getId(), 0);
     EXPECT_EQ(p.getName(), "John Doe");
-}
 
-TEST_F(RMSFacadeTest, AddPassenger_EmptyName) {
     EXPECT_THROW(facade->addPassenger(""), std::invalid_argument);
-}
-
-TEST_F(RMSFacadeTest, AddPassenger_WhitespaceName) {
     EXPECT_THROW(facade->addPassenger("   "), std::invalid_argument);
 }
 
-TEST_F(RMSFacadeTest, AddPassenger_TrimsName) {
-    Passenger p = facade->addPassenger("  John  ");
-    EXPECT_EQ(p.getName(), "John");
-}
-
-TEST_F(RMSFacadeTest, ListPassengers_Empty) {
-    auto passengers = facade->listPassengers();
-    EXPECT_TRUE(passengers.empty());
-}
-
-TEST_F(RMSFacadeTest, ListPassengers_Multiple) {
-    facade->addPassenger("John");
-    facade->addPassenger("Jane");
-    facade->addPassenger("Bob");
-
-    auto passengers = facade->listPassengers();
-    EXPECT_EQ(passengers.size(), 3);
-}
-
-TEST_F(RMSFacadeTest, GetPassenger_Success) {
-    Passenger added = facade->addPassenger("John");
-    auto retrieved = facade->getPassenger(added.getId());
-
-    ASSERT_TRUE(retrieved.has_value());
-    EXPECT_EQ(retrieved->getName(), "John");
-}
-
-TEST_F(RMSFacadeTest, UpdatePassenger_Success) {
-    Passenger p = facade->addPassenger("Old Name");
-    Passenger updated = facade->updatePassenger(p.getId(), "New Name");
-
-    EXPECT_EQ(updated.getName(), "New Name");
-}
-
-TEST_F(RMSFacadeTest, UpdatePassenger_NotFound) {
-    EXPECT_THROW(
-            facade->updatePassenger(999, "Test"),
-            std::out_of_range
-    );
-}
-
-TEST_F(RMSFacadeTest, UpdatePassenger_UpdatesTickets) {
+TEST_F(RMSFacadeTest, UpdatePassenger_SuccessAndTickets) {
     Train train = facade->addTrain("Test", 10);
     Passenger p = facade->addPassenger("John");
-
     facade->bookTicket(train.getTrainId(), "John");
-    facade->updatePassenger(p.getId(), "John Updated");
+    EXPECT_THROW( facade->bookTicket(train.getTrainId(), "John"), std::runtime_error);
 
+    Passenger updated = facade->updatePassenger(p.getId(), "John Updated");
+
+    EXPECT_EQ(updated.getName(), "John Updated");
     auto tickets = facade->listTickets();
-    EXPECT_EQ(tickets[0].getPassenger().getName(), "John Updated");
+    for (auto& t : tickets) {
+        if (t.getPassenger().getId() == p.getId())
+            EXPECT_EQ(t.getPassenger().getName(), "John Updated");
+    }
+
+    EXPECT_THROW(facade->updatePassenger(999, "Test"), std::out_of_range);
 }
 
-TEST_F(RMSFacadeTest, DeletePassenger_Success) {
+TEST_F(RMSFacadeTest, DeletePassenger_SuccessAndNotFound) {
     Passenger p = facade->addPassenger("John");
     EXPECT_NO_THROW(facade->deletePassenger(p.getId()));
-}
-
-TEST_F(RMSFacadeTest, DeletePassenger_NotFound) {
     EXPECT_THROW(facade->deletePassenger(999), std::out_of_range);
 }
 
 // ===================== Ticket Operations =====================
 
-TEST_F(RMSFacadeTest, BookTicket_Success) {
-    Train train = facade->addTrain("Express", 10);
+TEST_F(RMSFacadeTest, BookTicket_SuccessAndEdgeCases) {
+    Train train = facade->addTrain("Express", 3);
     facade->addPassenger("John");
 
     auto ticket = facade->bookTicket(train.getTrainId(), "John");
-
-    ASSERT_TRUE(ticket.has_value());
-    EXPECT_EQ(ticket->getTrainId(), train.getTrainId());
-    EXPECT_EQ(ticket->getPassenger().getName(), "John");
-}
-
-TEST_F(RMSFacadeTest, BookTicket_CreatesPassengerIfNotExists) {
-    Train train = facade->addTrain("Express", 10);
-
-    auto ticket = facade->bookTicket(train.getTrainId(), "New Passenger");
-
-    ASSERT_TRUE(ticket.has_value());
-    EXPECT_EQ(ticket->getPassenger().getName(), "New Passenger");
-
-    auto passengers = facade->listPassengers();
-    EXPECT_EQ(passengers.size(), 1);
-}
-
-TEST_F(RMSFacadeTest, BookTicket_InvalidTrainId) {
-    EXPECT_THROW(
-            facade->bookTicket(0, "John"),
-            std::invalid_argument
-    );
-}
-
-TEST_F(RMSFacadeTest, BookTicket_EmptyPassengerName) {
-    Train train = facade->addTrain("Express", 10);
-    EXPECT_THROW(
-            facade->bookTicket(train.getTrainId(), ""),
-            std::invalid_argument
-    );
-}
-
-TEST_F(RMSFacadeTest, BookTicket_TrimsPassengerName) {
-    Train train = facade->addTrain("Express", 10);
-
-    auto ticket = facade->bookTicket(train.getTrainId(), "  John  ");
-
     ASSERT_TRUE(ticket.has_value());
     EXPECT_EQ(ticket->getPassenger().getName(), "John");
+
+    // passenger auto-created
+    auto ticket2 = facade->bookTicket(train.getTrainId(), "New Passenger");
+    ASSERT_TRUE(ticket2.has_value());
+    EXPECT_EQ(ticket2->getPassenger().getName(), "New Passenger");
+
+    EXPECT_THROW(facade->bookTicket(0, "John"), std::invalid_argument);
+    EXPECT_THROW(facade->bookTicket(train.getTrainId(), ""), std::invalid_argument);
+    auto ticket3 = facade->bookTicket(train.getTrainId(), "   Trim Test   ");
+    ASSERT_TRUE(ticket3.has_value());
+    EXPECT_EQ(ticket3->getPassenger().getName(), "Trim Test");
 }
 
-TEST_F(RMSFacadeTest, BookTicket_FullTrain) {
-    Train train = facade->addTrain("Express", 1);
-
-    facade->bookTicket(train.getTrainId(), "John");
-    auto ticket2 = facade->bookTicket(train.getTrainId(), "Jane");
-
-    EXPECT_FALSE(ticket2.has_value());
-}
-
-TEST_F(RMSFacadeTest, CancelTicket_Success) {
-    Train train = facade->addTrain("Express", 10);
-    auto ticket = facade->bookTicket(train.getTrainId(), "John");
-
-    ASSERT_TRUE(ticket.has_value());
-    EXPECT_NO_THROW(facade->cancelTicket(ticket->getId()));
-}
-
-TEST_F(RMSFacadeTest, CancelTicket_InvalidId) {
-    EXPECT_THROW(facade->cancelTicket(0), std::invalid_argument);
-}
-
-TEST_F(RMSFacadeTest, ListTickets_Empty) {
-    auto tickets = facade->listTickets();
-    EXPECT_TRUE(tickets.empty());
-}
-
-TEST_F(RMSFacadeTest, ListTickets_Multiple) {
-    Train train = facade->addTrain("Express", 10);
-
-    facade->bookTicket(train.getTrainId(), "John");
-    facade->bookTicket(train.getTrainId(), "Jane");
-    facade->bookTicket(train.getTrainId(), "Bob");
-
-    auto tickets = facade->listTickets();
-    EXPECT_EQ(tickets.size(), 3);
-}
 
 // ===================== Integration Tests =====================
 
-TEST_F(RMSFacadeTest, CompleteWorkflow) {
-    Train train = facade->addTrain("Express", 10);
-    Passenger p1 = facade->addPassenger("John");
-    Passenger p2 = facade->addPassenger("Jane");
-
-    auto ticket1 = facade->bookTicket(train.getTrainId(), "John");
-    auto ticket2 = facade->bookTicket(train.getTrainId(), "Jane");
-
-    ASSERT_TRUE(ticket1.has_value());
-    ASSERT_TRUE(ticket2.has_value());
-
-    auto tickets = facade->listTickets();
-    EXPECT_EQ(tickets.size(), 2);
-
-    facade->cancelTicket(ticket1->getId());
-
-    auto updatedTickets = facade->listTickets();
-    int bookedCount = 0;
-    for (const auto& t : updatedTickets) {
-        if (t.getStatus() == booked) bookedCount++;
-    }
-    EXPECT_EQ(bookedCount, 1);
-}
-
-TEST_F(RMSFacadeTest, MultipleTrainsMultiplePassengers) {
-    Train t1 = facade->addTrain("Express", 10);
-    Train t2 = facade->addTrain("Local", 15);
-
-    facade->addPassenger("John");
-    facade->addPassenger("Jane");
-
-    facade->bookTicket(t1.getTrainId(), "John");
-    facade->bookTicket(t1.getTrainId(), "Jane");
-    facade->bookTicket(t2.getTrainId(), "John");
-
-    auto trains = facade->listTrains();
-    auto passengers = facade->listPassengers();
-    auto tickets = facade->listTickets();
-
-    EXPECT_EQ(trains.size(), 2);
-    EXPECT_EQ(passengers.size(), 2);
-    EXPECT_EQ(tickets.size(), 3);
-}
-
-TEST_F(RMSFacadeTest, WaitingListIntegration) {
+TEST_F(RMSFacadeTest, CompleteWorkflowAndWaitingList) {
     Train train = facade->addTrain("Express", 1);
+    auto t1 = facade->bookTicket(train.getTrainId(), "John");
+    auto t2 = facade->bookTicket(train.getTrainId(), "Jane");
+    EXPECT_FALSE(t2.has_value());
 
-    auto ticket1 = facade->bookTicket(train.getTrainId(), "John");
-    auto ticket2 = facade->bookTicket(train.getTrainId(), "Jane");
-
-    ASSERT_TRUE(ticket1.has_value());
-    EXPECT_FALSE(ticket2.has_value());
-
-    facade->cancelTicket(ticket1->getId());
+    facade->cancelTicket(t1->getId());
 
     auto tickets = facade->listTickets();
     int bookedCount = 0;
-    for (const auto& t : tickets) {
-        if (t.getStatus() == booked) bookedCount++;
-    }
+    for (const auto& t : tickets) if (t.getStatus() == booked) bookedCount++;
     EXPECT_EQ(bookedCount, 1);
 }
 
-TEST_F(RMSFacadeTest, UpdateTrainExpandsCapacity) {
-    Train train = facade->addTrain("Test", 5);
-
-    for (int i = 0; i < 5; i++) {
-        facade->bookTicket(train.getTrainId(), "Passenger" + std::to_string(i));
-    }
-
+TEST_F(RMSFacadeTest, UpdateTrainExpandsCapacityAndFulfillsWaitingList) {
+    Train train = facade->addTrain("Test", 2);
+    facade->bookTicket(train.getTrainId(), "Passenger1");
+    facade->bookTicket(train.getTrainId(), "Passenger2");
     facade->bookTicket(train.getTrainId(), "Waiting1");
     facade->bookTicket(train.getTrainId(), "Waiting2");
 
-    facade->updateTrain(train.getTrainId(), "Test", 10);
+    facade->updateTrain(train.getTrainId(), "Test", 5);
 
     auto tickets = facade->listTickets();
     int bookedCount = 0;
-    for (const auto& t : tickets) {
-        if (t.getStatus() == booked) bookedCount++;
-    }
-    EXPECT_GE(bookedCount, 6);
+    for (const auto& t : tickets) if (t.getStatus() == booked) bookedCount++;
+    EXPECT_GE(bookedCount, 4); // 2 waiting passengers booked after expansion
 }

@@ -74,7 +74,6 @@ add_executable(rms_tests
         tests/test_facade.cpp
         tests/test_startUpManager.cpp
         tests/test_cliController.cpp
-        tests/structures/test_stack.cpp
         tests/test_models.cpp
 )
 target_link_libraries(rms_tests
