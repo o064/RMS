@@ -8,7 +8,9 @@
 #include "RMSFacade.h"
 #include <string>
 #include <iostream>
-using namespace std;
+#include "./structures/vector.h"
+using  std::string;
+
 
 class CLIController {
 private:

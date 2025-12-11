@@ -55,7 +55,7 @@ TEST_F(StartupManagerTest, MockData_TrainsExist) {
 
     auto trains = facade->listTrains();
 
-    std::vector<std::string> expectedTrains = {
+    vector<std::string> expectedTrains = {
             "Alex NightLine",
             "Luxor Premium",
             "Cairo Express",
@@ -83,7 +83,7 @@ TEST_F(StartupManagerTest, MockData_PassengersExist) {
 
     auto passengers = facade->listPassengers();
 
-    std::vector<std::string> expectedPassengers = {
+    vector<std::string> expectedPassengers = {
             "Omar", "Sara", "Mohamed", "Nour", "Ali",
             "Mona", "Youssef", "Laila", "Karim", "Dina"
     };

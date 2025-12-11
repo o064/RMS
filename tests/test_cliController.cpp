@@ -89,7 +89,7 @@ TEST_F(CLIControllerTest, ListTrains_InitialState) {
 }
 
 TEST_F(CLIControllerTest, AddTrain_ValidInput) {
-    std::vector<std::string> args = {"train", "add", "TestTrain", "25"};
+    vector<std::string> args = {"train", "add", "TestTrain", "25"};
 
     EXPECT_NO_THROW(controller->add_train(args));
 
@@ -98,7 +98,7 @@ TEST_F(CLIControllerTest, AddTrain_ValidInput) {
 }
 
 TEST_F(CLIControllerTest, AddTrain_InsufficientArgs) {
-    std::vector<std::string> args = {"train", "add", "TestTrain"};
+    vector<std::string> args = {"train", "add", "TestTrain"};
 
     std::ostringstream output;
     std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
@@ -112,7 +112,7 @@ TEST_F(CLIControllerTest, AddTrain_InsufficientArgs) {
 }
 
 TEST_F(CLIControllerTest, AddTrain_InvalidSeats) {
-    std::vector<std::string> args = {"train", "add", "TestTrain", "invalid"};
+    vector<std::string> args = {"train", "add", "TestTrain", "invalid"};
 
     std::ostringstream output;
     std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
@@ -126,7 +126,7 @@ TEST_F(CLIControllerTest, AddTrain_InvalidSeats) {
 }
 
 TEST_F(CLIControllerTest, AddTrain_MultiWordName) {
-    std::vector<std::string> args = {"train", "add", "Super", "Express", "Train", "25"};
+    vector<std::string> args = {"train", "add", "Super", "Express", "Train", "25"};
 
     EXPECT_NO_THROW(controller->add_train(args));
 
@@ -145,7 +145,7 @@ TEST_F(CLIControllerTest, DeleteTrain_ValidId) {
     auto trains = facade->listTrains();
     ASSERT_FALSE(trains.empty());
 
-    std::vector<std::string> args = {
+    vector<std::string> args = {
             "train", "delete", std::to_string(trains[0].getTrainId())
     };
 
@@ -156,7 +156,7 @@ TEST_F(CLIControllerTest, DeleteTrain_ValidId) {
 }
 
 TEST_F(CLIControllerTest, DeleteTrain_InsufficientArgs) {
-    std::vector<std::string> args = {"train", "delete"};
+    vector<std::string> args = {"train", "delete"};
 
     std::ostringstream output;
     std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
@@ -173,7 +173,7 @@ TEST_F(CLIControllerTest, UpdateTrain_ValidInput) {
     auto trains = facade->listTrains();
     ASSERT_FALSE(trains.empty());
 
-    std::vector<std::string> args = {
+    vector<std::string> args = {
             "train", "update", std::to_string(trains[0].getTrainId()),
             "UpdatedName", "30"
     };
@@ -185,7 +185,7 @@ TEST_F(CLIControllerTest, AddSeats_ValidInput) {
     auto trains = facade->listTrains();
     ASSERT_FALSE(trains.empty());
 
-    std::vector<std::string> args = {
+    vector<std::string> args = {
             "train", "seats", std::to_string(trains[0].getTrainId()), "10"
     };
 
@@ -196,7 +196,7 @@ TEST_F(CLIControllerTest, GetTrainAvailability_Available) {
     auto trains = facade->listTrains();
     ASSERT_FALSE(trains.empty());
 
-    std::vector<std::string> args = {
+    vector<std::string> args = {
             "train", "availability", std::to_string(trains[0].getTrainId())
     };
 
@@ -215,7 +215,7 @@ TEST_F(CLIControllerTest, GetTrainStatus_ValidId) {
     auto trains = facade->listTrains();
     ASSERT_FALSE(trains.empty());
 
-    std::vector<std::string> args = {
+    vector<std::string> args = {
             "train", "status", std::to_string(trains[0].getTrainId())
     };
 
@@ -237,7 +237,7 @@ TEST_F(CLIControllerTest, ListPassengers_InitialState) {
 }
 
 TEST_F(CLIControllerTest, AddPassenger_ValidInput) {
-    std::vector<std::string> args = {"passenger", "add", "TestPassenger"};
+    vector<std::string> args = {"passenger", "add", "TestPassenger"};
 
     EXPECT_NO_THROW(controller->add_passenger(args));
 
@@ -246,7 +246,7 @@ TEST_F(CLIControllerTest, AddPassenger_ValidInput) {
 }
 
 TEST_F(CLIControllerTest, AddPassenger_MultiWordName) {
-    std::vector<std::string> args = {"passenger", "add", "John", "Doe"};
+    vector<std::string> args = {"passenger", "add", "John", "Doe"};
 
     EXPECT_NO_THROW(controller->add_passenger(args));
 
@@ -262,7 +262,7 @@ TEST_F(CLIControllerTest, AddPassenger_MultiWordName) {
 }
 
 TEST_F(CLIControllerTest, AddPassenger_InsufficientArgs) {
-    std::vector<std::string> args = {"passenger", "add"};
+    vector<std::string> args = {"passenger", "add"};
 
     std::ostringstream output;
     std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
@@ -279,7 +279,7 @@ TEST_F(CLIControllerTest, UpdatePassenger_ValidInput) {
     auto passengers = facade->listPassengers();
     ASSERT_FALSE(passengers.empty());
 
-    std::vector<std::string> args = {
+    vector<std::string> args = {
             "passenger", "update", std::to_string(passengers[0].getId()),
             "UpdatedName"
     };
@@ -290,7 +290,7 @@ TEST_F(CLIControllerTest, UpdatePassenger_ValidInput) {
 TEST_F(CLIControllerTest, DeletePassenger_ValidId) {
     Passenger temp = facade->addPassenger("TempPassenger");
 
-    std::vector<std::string> args = {
+    vector<std::string> args = {
             "passenger", "delete", std::to_string(temp.getId())
     };
 
@@ -315,7 +315,7 @@ TEST_F(CLIControllerTest, BookTicket_ValidInput) {
     auto trains = facade->listTrains();
     ASSERT_FALSE(trains.empty());
 
-    std::vector<std::string> args = {
+    vector<std::string> args = {
             "ticket", "book", std::to_string(trains[0].getTrainId()),
             "NewPassenger"
     };
@@ -324,7 +324,7 @@ TEST_F(CLIControllerTest, BookTicket_ValidInput) {
 }
 
 TEST_F(CLIControllerTest, BookTicket_InsufficientArgs) {
-    std::vector<std::string> args = {"ticket", "book", "1"};
+    vector<std::string> args = {"ticket", "book", "1"};
 
     std::ostringstream output;
     std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
@@ -338,7 +338,7 @@ TEST_F(CLIControllerTest, BookTicket_InsufficientArgs) {
 }
 
 TEST_F(CLIControllerTest, BookTicket_InvalidTrainId) {
-    std::vector<std::string> args = {"ticket", "book", "invalid", "John"};
+    vector<std::string> args = {"ticket", "book", "invalid", "John"};
 
     std::ostringstream output;
     std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
@@ -355,7 +355,7 @@ TEST_F(CLIControllerTest, CancelTicket_ValidId) {
     auto tickets = facade->listTickets();
     ASSERT_FALSE(tickets.empty());
 
-    std::vector<std::string> args = {
+    vector<std::string> args = {
             "ticket", "cancel", std::to_string(tickets[0].getId())
     };
 
@@ -363,7 +363,7 @@ TEST_F(CLIControllerTest, CancelTicket_ValidId) {
 }
 
 TEST_F(CLIControllerTest, CancelTicket_InsufficientArgs) {
-    std::vector<std::string> args = {"ticket", "cancel"};
+    vector<std::string> args = {"ticket", "cancel"};
 
     std::ostringstream output;
     std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
@@ -393,7 +393,7 @@ TEST_F(CLIControllerTest, ReadLine_ReturnsString) {
 // ===================== Edge Cases =====================
 
 TEST_F(CLIControllerTest, HandleEmptyCommand) {
-    std::vector<std::string> args = {};
+    vector<std::string> args = {};
 
     // Commands with empty args should handle gracefully
     EXPECT_NO_THROW(controller->add_train(args));
@@ -402,7 +402,7 @@ TEST_F(CLIControllerTest, HandleEmptyCommand) {
 }
 
 TEST_F(CLIControllerTest, HandleInvalidNumbers) {
-    std::vector<std::string> args = {"train", "add", "Test", "abc"};
+    vector<std::string> args = {"train", "add", "Test", "abc"};
 
     std::ostringstream output;
     std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
@@ -416,7 +416,7 @@ TEST_F(CLIControllerTest, HandleInvalidNumbers) {
 }
 
 TEST_F(CLIControllerTest, HandleNegativeNumbers) {
-    std::vector<std::string> args = {"train", "add", "Test", "-5"};
+    vector<std::string> args = {"train", "add", "Test", "-5"};
 
     std::ostringstream output;
     std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
@@ -433,11 +433,11 @@ TEST_F(CLIControllerTest, HandleNegativeNumbers) {
 
 TEST_F(CLIControllerTest, CompleteWorkflow) {
     // Add train
-    std::vector<std::string> trainArgs = {"train", "add", "WorkflowTrain", "10"};
+    vector<std::string> trainArgs = {"train", "add", "WorkflowTrain", "10"};
     controller->add_train(trainArgs);
 
     // Add passenger
-    std::vector<std::string> passengerArgs = {"passenger", "add", "WorkflowPassenger"};
+    vector<std::string> passengerArgs = {"passenger", "add", "WorkflowPassenger"};
     controller->add_passenger(passengerArgs);
 
     // Get the train ID
@@ -452,7 +452,7 @@ TEST_F(CLIControllerTest, CompleteWorkflow) {
     ASSERT_GT(trainId, 0);
 
     // Book ticket
-    std::vector<std::string> ticketArgs = {
+    vector<std::string> ticketArgs = {
             "ticket", "book", std::to_string(trainId), "WorkflowPassenger"
     };
     controller->book_ticket(ticketArgs);

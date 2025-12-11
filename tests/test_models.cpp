@@ -1,10 +1,8 @@
 #include <gtest/gtest.h>
 #include "models/Passenger.h"
 #include "models/Train.h"
-#include "models/SeatAllocator.h"
 #include "models/Ticket.h"
-#include <vector>
-
+#include "structures/vector.h"
 class IntegrationTest : public ::testing::Test {
 protected:
     void SetUp() override {}
@@ -27,8 +25,8 @@ TEST_F(IntegrationTest, CompleteBookingFlow) {
 
 TEST_F(IntegrationTest, MultiplePassengersBooking) {
     Train train(1, "Express", 10);
-    std::vector<Passenger> passengers;
-    std::vector<Ticket> tickets;
+    vector<Passenger> passengers;
+    vector<Ticket> tickets;
 
     for (int i = 1; i <= 5; i++) {
         Passenger p(100 + i, "Passenger " + std::to_string(i));
@@ -143,7 +141,7 @@ TEST_F(IntegrationTest, AddSeatsWithActiveBookings) {
 
 TEST_F(IntegrationTest, FullOperationalDay) {
     Train train(1, "Morning Express", 5);
-    std::vector<Ticket> activeTickets;
+    vector<Ticket> activeTickets;
 
     for (int i = 1; i <= 5; i++) {
         Passenger p(100 + i, "Passenger " + std::to_string(i));

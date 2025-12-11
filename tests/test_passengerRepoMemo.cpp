@@ -75,7 +75,7 @@ TEST_F(InMemoryPassengerRepositoryTest, GetPassengerReturnsNulloptWhenNotFound) 
 }
 
 TEST_F(InMemoryPassengerRepositoryTest, GetAllPassengersReturnsEmptyWhenEmpty) {
-    std::vector<Passenger> passengers = repo.getAllPassengers();
+    vector<Passenger> passengers = repo.getAllPassengers();
     EXPECT_TRUE(passengers.empty());
 }
 
@@ -86,7 +86,7 @@ TEST_F(InMemoryPassengerRepositoryTest, GetAllPassengersReturnsAllSavedPassenger
     repo.save(p1);
     repo.save(p2);
     repo.save(p3);
-    std::vector<Passenger> passengers = repo.getAllPassengers();
+    vector<Passenger> passengers = repo.getAllPassengers();
     EXPECT_EQ(3, passengers.size());
 }
 
@@ -121,7 +121,7 @@ TEST_F(InMemoryPassengerRepositoryTest, ClearRemovesAllPassengers) {
     repo.save(p1);
     repo.save(p2);
     repo.clear();
-    std::vector<Passenger> passengers = repo.getAllPassengers();
+    vector<Passenger> passengers = repo.getAllPassengers();
     EXPECT_TRUE(passengers.empty());
 }
 

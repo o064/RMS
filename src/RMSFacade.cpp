@@ -14,7 +14,7 @@ RMSFacade::RMSFacade(TrainService *ts, TicketService *tks, PassengerService *ps)
 }
 
 // ============ Trains =============
-std::vector<Train> RMSFacade::listTrains()
+vector<Train> RMSFacade::listTrains()
 {
     return trainService->getAllTrains();
 }
@@ -55,12 +55,12 @@ Passenger RMSFacade::addPassenger(const std::string& name)
     return passengerService->createPassenger(trimmedName);
 }
 
-std::vector<Ticket> RMSFacade::listTickets()
+vector<Ticket> RMSFacade::listTickets()
 {
     return ticketService->getAllTickets();
 }
 
-std::vector<Passenger> RMSFacade::listPassengers()
+vector<Passenger> RMSFacade::listPassengers()
 {
     return passengerService->getAllPassengers();
 }

@@ -4,7 +4,7 @@
 
 #ifndef RMS_TRAINSERVICE_H
 #define RMS_TRAINSERVICE_H
-
+#include "../structures/vector.h"
 #include "../Repo/ITrainRepository.h"
 #include <optional>
 
@@ -16,7 +16,7 @@ public:
     ~TrainService();
     //crud
     std::optional<Train> getTrain(const int&);
-    std::vector<Train> getAllTrains();
+    vector<Train> getAllTrains();
     Train createTrain(const std::string& name,int seats);
     Train updateTrain(const int& id , const std::string& name,int seats = 0);
     bool deleteTrain(int trainId);

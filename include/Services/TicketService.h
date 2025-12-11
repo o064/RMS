@@ -8,6 +8,7 @@
 #include "../Repo/ITicketRepository.h"
 #include "TrainService.h"
 #include "PassengerService.h"
+#include "../structures/vector.h"
 
 class TicketService
 {
@@ -20,7 +21,7 @@ private:
 public:
     TicketService(ITicketRepository *repo , TrainService* ts,PassengerService* ps);
     std::optional<Ticket> getTicket(const int& ticketId);
-    std::vector<Ticket> getAllTickets();
+    vector<Ticket> getAllTickets();
     Ticket updateTicket(Ticket &t);
 
     std::optional<Ticket> getTicketByTrainAndPassenger(const int& trainId, const int& passengerId);

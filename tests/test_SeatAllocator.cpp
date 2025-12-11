@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include "models/SeatAllocator.h"
-
+#include "structures/vector.h"
 class SeatAllocatorTest : public ::testing::Test {
 protected:
     void SetUp() override {}
@@ -191,7 +191,7 @@ TEST_F(SeatAllocatorTest, ProcessWaitingList_Basic) {
     allocator.allocateSeat(103);
     allocator.allocateSeat(104);
 
-    std::vector<int> bookedPassengers;
+    vector<int> bookedPassengers;
     auto callback = [&bookedPassengers](int passengerId) {
         bookedPassengers.push_back(passengerId);
     };
@@ -212,7 +212,7 @@ TEST_F(SeatAllocatorTest, ProcessWaitingList_MoreSeatsThanWaiting) {
     allocator.allocateSeat(102);
     allocator.allocateSeat(103);
 
-    std::vector<int> bookedPassengers;
+    vector<int> bookedPassengers;
     auto callback = [&bookedPassengers](int passengerId) {
         bookedPassengers.push_back(passengerId);
     };
@@ -230,7 +230,7 @@ TEST_F(SeatAllocatorTest, ProcessWaitingList_NoWaitingList) {
     SeatAllocator allocator(5);
     allocator.allocateSeat(101);
 
-    std::vector<int> bookedPassengers;
+    vector<int> bookedPassengers;
     auto callback = [&bookedPassengers](int passengerId) {
         bookedPassengers.push_back(passengerId);
     };

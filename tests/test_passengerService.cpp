@@ -57,7 +57,7 @@ TEST_F(PassengerServiceTest, GetAllPassengers_OrderIsConsistent) {
     service->createPassenger("A");
     service->createPassenger("B");
     service->createPassenger("C");
-    std::vector<Passenger> all = service->getAllPassengers();
+    vector<Passenger> all = service->getAllPassengers();
     EXPECT_EQ(3, all.size());
 }
 

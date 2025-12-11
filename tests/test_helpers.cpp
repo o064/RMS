@@ -45,8 +45,8 @@ TEST(HelpersTest, IsValidNameFunction) {
 }
 
 TEST(HelpersTest, CombineStringFunction) {
-    const std::vector<std::string> args = {"cmd", "John", "Doe", "Smith"};
-    const std::vector<std::string> invalidArgs = {"cmd", "John", "123"};
+    const vector<std::string> args = {"cmd", "John", "Doe", "Smith"};
+    const vector<std::string> invalidArgs = {"cmd", "John", "123"};
 
     EXPECT_EQ("John Doe Smith", combineString(args, 1));
     EXPECT_EQ("Doe Smith", combineString(args, 2));

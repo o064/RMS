@@ -2,8 +2,8 @@
 #include <iostream>
 #include <stdexcept>
 
-std::vector<Train> InMemoryTrainRepository::getAllTrains() const {
-    std::vector<Train> result;
+vector<Train> InMemoryTrainRepository::getAllTrains() const {
+    vector<Train> result;
     for (const auto& train : trains) {
         result.push_back(train.second);
     }

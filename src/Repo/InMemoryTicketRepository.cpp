@@ -47,9 +47,9 @@ void InMemoryTicketRepository::save( Ticket& ticket)
 
 }
 
-std::vector<Ticket> InMemoryTicketRepository::getAllTickets()
+vector<Ticket> InMemoryTicketRepository::getAllTickets()
 {
-    std::vector<Ticket> results;
+    vector<Ticket> results;
     for (const auto &p : tickets)
     {
         results.push_back(p.second);

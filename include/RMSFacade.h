@@ -5,7 +5,7 @@
 #ifndef RMS_RMSFACADE_H
 #define RMS_RMSFACADE_H
 
-#include <vector>
+#include "./structures/vector.h"
 #include <optional>
 #include "Services/TicketService.h"
 #include "Services/PassengerService.h"
@@ -22,7 +22,7 @@ public:
     RMSFacade(TrainService *ts, TicketService *tks, PassengerService *ps);
 
     // train features
-    std::vector<Train> listTrains();
+    vector<Train> listTrains();
     Train addTrain(std::string name,  int totalSeats);
     std::optional<Train> getTrain(int trainId);
     bool getTrainAvailability(int trainId);
@@ -33,7 +33,7 @@ public:
     void trainStatus(int trainId);
 
     // passenger features
-    std::vector<Passenger> listPassengers();
+    vector<Passenger> listPassengers();
     std::optional<Passenger> getPassenger(int totalSeats);
     Passenger addPassenger( const std::string& name);
     Passenger updatePassenger(int passengerId, const std::string &name);
@@ -41,7 +41,7 @@ public:
 
 
     // ticket features
-    std::vector<Ticket> listTickets();
+    vector<Ticket> listTickets();
     std::optional<Ticket> bookTicket(int trainId, const std::string& passengerName);
     void cancelTicket(int ticketId);
 

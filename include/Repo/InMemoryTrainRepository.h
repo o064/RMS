@@ -17,7 +17,7 @@ public:
     InMemoryTrainRepository() = default;
     ~InMemoryTrainRepository() override = default;
 
-    std::vector<Train> getAllTrains() const override;
+    vector<Train> getAllTrains() const override;
     bool deleteTrain(int trainId) override;
     void  save( Train& newTrain) override;
     std::optional<Train> getTrainById(const int& trainId) const  override;

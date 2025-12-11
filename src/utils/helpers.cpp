@@ -79,12 +79,12 @@ bool isValidName(const std::string &name)
     return std::regex_match(name, pattern);
 }
 
-std::string combineString(const std::vector<std::string> &args, int start)
+std::string combineString(const vector<std::string> &args, int start)
 {
     return combineString(args, start, args.size()); // not including the end
 }
 
-std::string combineString(const std::vector<std::string> &args, int start, int end)
+std::string combineString(const vector<std::string> &args, int start, int end)
 {
     if (start < 0 || start >= args.size())
         throw std::runtime_error("Start index out of range");

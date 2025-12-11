@@ -348,7 +348,7 @@ TEST_F(TicketServiceTest, WaitingListIntegration) {
 TEST_F(TicketServiceTest, BookAllSeatsInTrain) {
     Train train = trainService->createTrain("Express", 3);
 
-    std::vector<Passenger> passengers;
+    vector<Passenger> passengers;
     for (int i = 0; i < 3; i++) {
         passengers.push_back(
                 passengerService->createPassenger("Passenger" + std::to_string(i))

@@ -10,11 +10,14 @@
 #include "CLIController.h"
 #include "utils/helpers.h" // parseInt , trim
 #include "RMSCommand.h"
-
 using std::cout ;
 using std::endl;
 using std::string;
 using std::cin;
+using  std::stringstream;
+using  std::left;
+using  std::setw;
+using  std::exception;
 
 //enums [MainCmd instead of RMSCommand::MainCmd
 using MainCmd = RMSCommand::MainCmd;
@@ -111,7 +114,7 @@ void CLIController::list_trains() {
 
         string status = (seats == 0)
                         ? "Full"
-                        : to_string(seats) + " seats available";
+                        : std::to_string(seats) + " seats available";
 
         cout << left << setw(6)  << train.getTrainId()
              << left << setw(20) << train.getTrainName()

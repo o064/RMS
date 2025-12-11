@@ -13,7 +13,7 @@ std::optional<Passenger> PassengerService::getPassenger(const int &passengerId) 
     return  passengerRepository->getPassenger(passengerId);
 }
 
-std::vector<Passenger> PassengerService::getAllPassengers() {
+vector<Passenger> PassengerService::getAllPassengers() {
     return passengerRepository->getAllPassengers();
 }
 
@@ -36,7 +36,7 @@ Passenger PassengerService::updatePassenger(const int passengerId , const std::s
 }
 
 Passenger PassengerService::find_or_create_passenger(const std::string &name) {
-    const std::vector<Passenger> passengers = passengerRepository->getAllPassengers();
+    const vector<Passenger> passengers = passengerRepository->getAllPassengers();
 
     for(const auto & p : passengers)
         if(toLowerCase(p.getName()) == toLowerCase(name)){

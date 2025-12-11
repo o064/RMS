@@ -12,7 +12,7 @@ std::optional<Ticket> TicketService::getTicket(const int& ticketId)
     return ticketRepository->getTicketById(ticketId);
 }
 
-std::vector<Ticket> TicketService::getAllTickets()
+vector<Ticket> TicketService::getAllTickets()
 {
     return ticketRepository->getAllTickets();
 }

@@ -5,7 +5,7 @@
 #ifndef RMS_HELPERS_H
 #define RMS_HELPERS_H
 #include <string>
-#include <vector>
+#include "../structures/vector.h"
 #include "models/Train.h"
 #include "models/Passenger.h"
 #include "models/Ticket.h"
@@ -15,8 +15,8 @@ std::string toLowerCase(std::string word);
 std::string trim(const std::string &str);
 bool isValidName(const std::string& name);
 // string concat
-std::string combineString(const std::vector<std::string>& args, int start);
-std::string combineString(const std::vector<std::string>& args, int start , int end);
+std::string combineString(const vector<std::string>& args, int start);
+std::string combineString(const vector<std::string>& args, int start , int end);
 bool compareString(const std::string& str1 , const std::string& str2);
 // integer helpers
 bool isInteger(const std::string& str);

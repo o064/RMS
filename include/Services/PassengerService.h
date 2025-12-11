@@ -5,7 +5,7 @@
 #ifndef RMS_PASSENGERSERVICE_H
 #define RMS_PASSENGERSERVICE_H
 
-#include <vector>
+#include "../structures/vector.h"
 #include "../models/Passenger.h"
 #include "../Repo/IPassengerRepository.h"
 
@@ -17,7 +17,7 @@ private:
 public:
     PassengerService(IPassengerRepository *repo);
     std::optional<Passenger> getPassenger(const int& passengerId);
-    std::vector<Passenger> getAllPassengers();
+    vector<Passenger> getAllPassengers();
     Passenger createPassenger(const std::string& name);
     Passenger updatePassenger(const int passengerId , const std::string& name);
     bool deletePassenger(const int& passengerId);

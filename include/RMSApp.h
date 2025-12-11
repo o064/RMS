@@ -9,8 +9,8 @@
 #include "CLIController.h"
 
 class RMSApp {
-    unique_ptr<StartupManager> startupManager;
-    unique_ptr<CLIController> cli;
+    std::unique_ptr<StartupManager> startupManager;
+    std::unique_ptr<CLIController> cli;
 public:
     RMSApp();
     ~RMSApp()= default;

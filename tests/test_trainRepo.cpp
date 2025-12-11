@@ -58,7 +58,7 @@ TEST_F(InMemoryTrainRepositoryTest, AutoIncrementId) {
 }
 
 TEST_F(InMemoryTrainRepositoryTest, AutoIncrementSequential) {
-    std::vector<int> ids;
+    vector<int> ids;
 
     for (int i = 0; i < 10; ++i) {
         Train t(0, "Train" + std::to_string(i), 10);
@@ -363,7 +363,7 @@ TEST_F(InMemoryTrainRepositoryTest, GetAllTrains) {
     auto all = repo.getAllTrains();
     EXPECT_EQ(all.size(), 2);
 
-    std::vector<std::string> names;
+    vector<std::string> names;
     for (const auto& train : all) {
         names.push_back(train.getTrainName());
     }
@@ -543,7 +543,7 @@ TEST_F(InMemoryTrainRepositoryTest, MultipleOperations) {
     all = repo.getAllTrains();
     EXPECT_EQ(all.size(), 2);
 
-    std::vector<std::string> names;
+    vector<std::string> names;
     for (const auto& train : all) {
         names.push_back(train.getTrainName());
     }
@@ -554,7 +554,7 @@ TEST_F(InMemoryTrainRepositoryTest, MultipleOperations) {
 
 TEST_F(InMemoryTrainRepositoryTest, SaveManyTrains) {
     const int COUNT = 100;
-    std::vector<int> ids;
+    vector<int> ids;
 
     for (int i = 0; i < COUNT; ++i) {
         Train t(0, "Train" + std::to_string(i), i + 1);
