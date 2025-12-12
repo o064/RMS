@@ -64,7 +64,7 @@ std::optional<Ticket> InMemoryTicketRepository::getTicketById(int ticketId)
     {
         return it->second;
     }
-    throw std::runtime_error("Ticket not found");
+    return std::nullopt; // not found
 }
 
 void InMemoryTicketRepository::clear()

@@ -45,7 +45,7 @@ TEST_F(TicketRepositoryTest, GetTicketById_Success) {
 
 TEST_F(TicketRepositoryTest, GetTicketById_ThrowsWhenNotFound) {
     // Your implementation explicitly throws runtime_error for ID lookup failures
-    EXPECT_THROW(repo.getTicketById(999), std::runtime_error);
+    EXPECT_THROW(repo.getTicketById(999), std::out_of_range);
 }
 
 TEST_F(TicketRepositoryTest, GetTicketByTrainAndPassenger_Success) {
@@ -74,7 +74,7 @@ TEST_F(TicketRepositoryTest, DeleteTicket_Success) {
     bool deleted = repo.deleteTicket(id);
     EXPECT_TRUE(deleted);
 
-    EXPECT_THROW(repo.getTicketById(id), std::runtime_error);
+    EXPECT_THROW(repo.getTicketById(id), std::out_of_range);
 }
 
 TEST_F(TicketRepositoryTest, GetAllTickets) {
