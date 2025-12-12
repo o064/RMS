@@ -13,7 +13,9 @@ FILE PATH: .\include\CLIController.h
 #include "RMSFacade.h"
 #include <string>
 #include <iostream>
-using namespace std;
+#include "./structures/vector.h"
+using  std::string;
+
 
 class CLIController {
 private:
@@ -73,8 +75,8 @@ FILE PATH: .\include\RMSApp.h
 #include "CLIController.h"
 
 class RMSApp {
-    unique_ptr<StartupManager> startupManager;
-    unique_ptr<CLIController> cli;
+    std::unique_ptr<StartupManager> startupManager;
+    std::unique_ptr<CLIController> cli;
 public:
     RMSApp();
     ~RMSApp()= default;
@@ -93,9 +95,8 @@ FILE PATH: .\include\RMSCommand.h
 #define RMS_RMSCOMMAND_H
 
 #include <string>
-#include <unordered_map>
+#include "structures/unordered_map.h"
 
-using   std::unordered_map;
 using   std::string;
     class RMSCommand {
     public:
@@ -135,7 +136,7 @@ FILE PATH: .\include\RMSFacade.h
 #ifndef RMS_RMSFACADE_H
 #define RMS_RMSFACADE_H
 
-#include <vector>
+#include "./structures/vector.h"
 #include <optional>
 #include "Services/TicketService.h"
 #include "Services/PassengerService.h"
@@ -152,9 +153,9 @@ public:
     RMSFacade(TrainService *ts, TicketService *tks, PassengerService *ps);
 
     // train features
-    std::vector<Train> listTrains();
+    vector<Train> listTrains();
     Train addTrain(std::string name,  int totalSeats);
-    std::optional<Train> getTrain(int trainId);
+    Train getTrain(int trainId);
     bool getTrainAvailability(int trainId);
     Train updateTrain(int trainId, const std::string& name  ,int seats=0);
     Train addSeats(int trainId,int seats=0);
@@ -163,15 +164,15 @@ public:
     void trainStatus(int trainId);
 
     // passenger features
-    std::vector<Passenger> listPassengers();
-    std::optional<Passenger> getPassenger(int totalSeats);
+    vector<Passenger> listPassengers();
+    Passenger getPassenger(int totalSeats);
     Passenger addPassenger( const std::string& name);
     Passenger updatePassenger(int passengerId, const std::string &name);
     void deletePassenger(int passengerId);
 
 
     // ticket features
-    std::vector<Ticket> listTickets();
+    vector<Ticket> listTickets();
     std::optional<Ticket> bookTicket(int trainId, const std::string& passengerName);
     void cancelTicket(int ticketId);
 
@@ -252,11 +253,11 @@ FILE PATH: .\include\models\SeatAllocator.h
 #ifndef RMS_SEATALLOCATOR_H
 #define RMS_SEATALLOCATOR_H
 
-#include <unordered_map>
-#include <vector>
 #include <queue>
 #include <set>
 #include "../structures/stack.h"
+#include "../structures/unordered_map.h"
+
 #include <string>
 #include<memory>
 #include <functional>
@@ -265,7 +266,7 @@ class SeatAllocator{
     std::set<int> availableSeats;
     std::queue<int> waitingList;
     std::set<int> waitingSet;              // prevent duplicate waiting entries
-    std::unordered_map<int, int> allocatedSeats;
+    unordered_map<int, int> allocatedSeats;
     stack<int> cancelledSeats;
     int totalSeats ;
 public:
@@ -335,6 +336,7 @@ public:
     void setStatus(const Status& s);
     int getTrainId() const;
     Passenger getPassenger() const;
+    void setPassenger(const Passenger &p);
     void setId(const int newId);
     void print(const std::string& msg) const ;
 
@@ -405,7 +407,7 @@ FILE PATH: .\include\Repo\InMemoryPassengerRepository.h
 #ifndef RMS_INMEMORYPASSENGERREPOSITORY_H
 #define RMS_INMEMORYPASSENGERREPOSITORY_H
 
-#include <vector>
+#include "../structures/vector.h"
 #include <optional>
 
 #include "../models/Passenger.h"
@@ -421,7 +423,7 @@ public:
     std::optional<Passenger> getPassenger(const int& passengerId) override;
     bool deletePassenger(const int& passengerId) override;
     void save( Passenger& passenger) override;
-    std::vector<Passenger> getAllPassengers() override;
+    vector<Passenger> getAllPassengers() override;
     void clear() override;
 };
 #endif // RMS_INMEMORYPASSENGERREPOSITORY_H
@@ -438,7 +440,7 @@ FILE PATH: .\include\Repo\InMemoryTicketRepository.h
 #ifndef RMS_INMEMORYTICKETREPOSITORY_H
 #define RMS_INMEMORYTICKETREPOSITORY_H
 
-#include <vector>
+#include "../structures/vector.h"
 #include <optional>
 
 #include "../structures/map.h"
@@ -457,7 +459,7 @@ public:
     std::optional<Ticket> getTicketByTrainAndPassenger(int trainId, int passengerId) override;
     bool deleteTicket(int ticketId) override;
     void save(Ticket& ticket) override;
-    std::vector<Ticket> getAllTickets() override;
+    vector<Ticket> getAllTickets() override;
     std::optional<Ticket> getTicketById(int ticketId) override;
     void clear() override;
 };
@@ -487,7 +489,7 @@ public:
     InMemoryTrainRepository() = default;
     ~InMemoryTrainRepository() override = default;
 
-    std::vector<Train> getAllTrains() const override;
+    vector<Train> getAllTrains() const override;
     bool deleteTrain(int trainId) override;
     void  save( Train& newTrain) override;
     std::optional<Train> getTrainById(const int& trainId) const  override;
@@ -507,7 +509,7 @@ FILE PATH: .\include\Repo\IPassengerRepository.h
 #ifndef RMS_IPASSENGERREPOSITORY_H
 #define RMS_IPASSENGERREPOSITORY_H
 
-#include <vector>
+#include "../structures/vector.h"
 #include "../models/Passenger.h"
 #include <optional>
 
@@ -517,7 +519,7 @@ public:
     virtual std::optional<Passenger> getPassenger(const int& passengerId) = 0;
     virtual bool deletePassenger(const int& passengerId) = 0;
     virtual void save( Passenger& passenger) = 0;
-    virtual std::vector<Passenger> getAllPassengers() = 0;
+    virtual vector<Passenger> getAllPassengers() = 0;
     virtual void clear() = 0;
 
     virtual ~IPassengerRepository() = default;
@@ -536,7 +538,7 @@ FILE PATH: .\include\Repo\ITicketRepository.h
 #ifndef RMS_ITICKETREPOSITORY_H
 #define RMS_ITICKETREPOSITORY_H
 
-#include <vector>
+#include "../structures/vector.h"
 #include <optional>
 
 #include "../models/Ticket.h"
@@ -547,7 +549,7 @@ public:
     virtual std::optional<Ticket> getTicketByTrainAndPassenger(int trainId, int passengerId) = 0;
     virtual bool deleteTicket(int ticketId) = 0;
     virtual void save(Ticket& ticket) = 0;
-    virtual std::vector<Ticket> getAllTickets() = 0;
+    virtual vector<Ticket> getAllTickets() = 0;
     virtual std::optional<Ticket> getTicketById(int) = 0;
     virtual void clear() = 0;
 
@@ -564,12 +566,12 @@ FILE PATH: .\include\Repo\ITrainRepository.h
 #define RMS_ITRAINREPOSITORY_H
 
 #include "../models/Train.h"
-#include <vector>
+#include "../structures/vector.h"
 #include <optional>
 
 class ITrainRepository {
 public:
-    virtual std::vector<Train> getAllTrains() const = 0;
+    virtual vector<Train> getAllTrains() const = 0;
     virtual bool deleteTrain(int) = 0;
     virtual void save(Train&) = 0;
     virtual std::optional<Train> getTrainById(const int& trainId) const   = 0;
@@ -590,7 +592,7 @@ FILE PATH: .\include\Services\PassengerService.h
 #ifndef RMS_PASSENGERSERVICE_H
 #define RMS_PASSENGERSERVICE_H
 
-#include <vector>
+#include "../structures/vector.h"
 #include "../models/Passenger.h"
 #include "../Repo/IPassengerRepository.h"
 
@@ -601,11 +603,11 @@ private:
 
 public:
     PassengerService(IPassengerRepository *repo);
-    std::optional<Passenger> getPassenger(const int& passengerId);
-    std::vector<Passenger> getAllPassengers();
+    Passenger getPassenger(const int& passengerId);
+    vector<Passenger> getAllPassengers();
     Passenger createPassenger(const std::string& name);
     Passenger updatePassenger(const int passengerId , const std::string& name);
-    bool deletePassenger(const int& passengerId);
+    void deletePassenger(const int& passengerId);
     Passenger find_or_create_passenger(const std::string& name);
 };
 #endif // RMS_PASSENGERSERVICE_H
@@ -625,6 +627,7 @@ FILE PATH: .\include\Services\TicketService.h
 #include "../Repo/ITicketRepository.h"
 #include "TrainService.h"
 #include "PassengerService.h"
+#include "../structures/vector.h"
 
 class TicketService
 {
@@ -636,11 +639,10 @@ private:
 
 public:
     TicketService(ITicketRepository *repo , TrainService* ts,PassengerService* ps);
-    std::optional<Ticket> getTicket(const int& ticketId);
-    std::vector<Ticket> getAllTickets();
+    Ticket getTicket(const int& ticketId);
+    vector<Ticket> getAllTickets();
     Ticket updateTicket(Ticket &t);
 
-    std::optional<Ticket> getTicketByTrainAndPassenger(const int& trainId, const int& passengerId);
     std::optional<Ticket> bookTicket(const int& trainId, const int& passengerId);
     void cancelTicket(const int& ticketId);
 };
@@ -657,7 +659,7 @@ FILE PATH: .\include\Services\TrainService.h
 
 #ifndef RMS_TRAINSERVICE_H
 #define RMS_TRAINSERVICE_H
-
+#include "../structures/vector.h"
 #include "../Repo/ITrainRepository.h"
 #include <optional>
 
@@ -668,11 +670,11 @@ public:
     TrainService(ITrainRepository* repo) ;
     ~TrainService();
     //crud
-    std::optional<Train> getTrain(const int&);
-    std::vector<Train> getAllTrains();
+    Train getTrain(const int&);
+    vector<Train> getAllTrains();
     Train createTrain(const std::string& name,int seats);
     Train updateTrain(const int& id , const std::string& name,int seats = 0);
-    bool deleteTrain(int trainId);
+    void deleteTrain(int trainId);
 
     //seats
     Train addSeats(const int trainId , const int seats);
@@ -683,6 +685,329 @@ public:
     void save(Train & train);
 };
 #endif //RMS_TRAINSERVICE_H
+
+
+==================================================
+FILE PATH: .\include\structures\list.h
+==================================================
+
+//
+// Created by Omar on 12/11/2025.
+//
+
+#ifndef RMS_LIST_H
+#define RMS_LIST_H
+#include <iostream>
+#include <functional>
+#include <cassert>
+
+template<typename T>
+class List {
+private:
+    struct Node {
+        T data;
+        Node *prev;
+        Node *next;
+        Node(const T &v) : data(v), prev(nullptr), next(nullptr) {}
+    };
+
+    Node *head;
+    Node *tail;
+    size_t sz;
+
+public:
+    class iterator {
+        friend class List;
+    private:
+        Node *node;
+        explicit iterator(Node *n) : node(n) {}
+    public:
+        iterator() : node(nullptr) {}
+        T& operator*() const { return node->data; }
+        T* operator->() const { return std::addressof(node->data); }
+        iterator& operator++() { if (node) node = node->next; return *this; }
+        iterator operator++(int) { iterator tmp = *this; ++(*this); return tmp; }
+        iterator& operator--() { if (node) node = node->prev; return *this; }
+        iterator operator--(int) { iterator tmp = *this; --(*this); return tmp; }
+        bool operator==(const iterator &o) const { return node == o.node; }
+        bool operator!=(const iterator &o) const { return node != o.node; }
+    };
+
+    class reverse_iterator {
+    private:
+        Node *node;
+        explicit reverse_iterator(Node *n) : node(n) {}
+        friend class List;
+    public:
+        reverse_iterator() : node(nullptr) {}
+        T& operator*() const { return node->data; }
+        reverse_iterator& operator++() { if (node) node = node->prev; return *this; }
+        reverse_iterator operator++(int) { reverse_iterator tmp = *this; ++(*this); return tmp; }
+        bool operator==(const reverse_iterator &o) const { return node == o.node; }
+        bool operator!=(const reverse_iterator &o) const { return node != o.node; }
+    };
+
+    List() : head(nullptr), tail(nullptr), sz(0) {}
+    ~List() { clear(); }
+
+    List(const List&) = delete;
+    List& operator=(const List&) = delete;
+
+    bool empty() const { return sz == 0; }
+    size_t size() const { return sz; }
+
+    T& front() { assert(head); return head->data; }
+    const T& front() const { assert(head); return head->data; }
+    T& back() { assert(tail); return tail->data; }
+    const T& back() const { assert(tail); return tail->data; }
+
+    void push_front(const T &val) {
+        Node *n = new Node(val);
+        n->next = head;
+        if (head) head->prev = n;
+        head = n;
+        if (!tail) tail = head;
+        ++sz;
+    }
+
+    void push_back(const T &val) {
+        Node *n = new Node(val);
+        n->prev = tail;
+        if (tail) tail->next = n;
+        tail = n;
+        if (!head) head = tail;
+        ++sz;
+    }
+
+    void pop_front() {
+        assert(head);
+        Node *n = head;
+        head = head->next;
+        if (head) head->prev = nullptr;
+        else tail = nullptr;
+        delete n;
+        --sz;
+    }
+
+    void pop_back() {
+        assert(tail);
+        Node *n = tail;
+        tail = tail->prev;
+        if (tail) tail->next = nullptr;
+        else head = nullptr;
+        delete n;
+        --sz;
+    }
+
+    iterator insert(iterator pos, const T &val) {
+        Node *posNode = pos.node;
+        if (!posNode) {
+            push_back(val);
+            return iterator(tail);
+        }
+        Node *n = new Node(val);
+        n->next = posNode;
+        n->prev = posNode->prev;
+        posNode->prev = n;
+        if (n->prev) n->prev->next = n;
+        else head = n;
+        ++sz;
+        return iterator(n);
+    }
+
+    iterator erase(iterator pos) {
+        Node *n = pos.node;
+        assert(n);
+        iterator nextIt(n->next);
+        if (n->prev) n->prev->next = n->next;
+        else head = n->next;
+        if (n->next) n->next->prev = n->prev;
+        else tail = n->prev;
+        delete n;
+        --sz;
+        return nextIt;
+    }
+
+    void clear() {
+        Node *cur = head;
+        while (cur) {
+            Node *nx = cur->next;
+            delete cur;
+            cur = nx;
+        }
+        head = tail = nullptr;
+        sz = 0;
+    }
+
+    void resize(size_t new_size, const T &value = T()) {
+        while (sz < new_size) push_back(value);
+        while (sz > new_size) pop_back();
+    }
+
+    void remove(const T &value) {
+        for (auto it = begin(); it != end(); ) {
+            if (*it == value) it = erase(it);
+            else ++it;
+        }
+    }
+
+    iterator begin() { return iterator(head); }
+    iterator end() { return iterator(nullptr); }
+
+    reverse_iterator rbegin() { return reverse_iterator(tail); }
+    reverse_iterator rend() { return reverse_iterator(nullptr); }
+
+    void reverse() {
+        Node *cur = head;
+        Node *tmp = nullptr;
+        while (cur) {
+            tmp = cur->prev;
+            cur->prev = cur->next;
+            cur->next = tmp;
+            cur = cur->prev;
+        }
+        tmp = head;
+        head = tail;
+        tail = tmp;
+    }
+
+    void merge(List &other) {
+        if (this == &other) return;
+        Node dummy(T());
+        Node *last = &dummy;
+        Node *a = head;
+        Node *b = other.head;
+
+        while (a && b) {
+            if (b->data < a->data) {
+                Node *bn = b->next;
+                b->prev = last;
+                last->next = b;
+                b->next = nullptr;
+                last = b;
+                b = bn;
+            } else {
+                Node *an = a->next;
+                a->prev = last;
+                last->next = a;
+                a->next = nullptr;
+                last = a;
+                a = an;
+            }
+        }
+        while (a) {
+            Node *an = a->next;
+            a->prev = last;
+            last->next = a;
+            a->next = nullptr;
+            last = a;
+            a = an;
+        }
+        while (b) {
+            Node *bn = b->next;
+            b->prev = last;
+            last->next = b;
+            b->next = nullptr;
+            last = b;
+            b = bn;
+        }
+
+        Node *newHead = dummy.next;
+        if (newHead) newHead->prev = nullptr;
+        Node *newTail = newHead;
+        while (newTail && newTail->next) newTail = newTail->next;
+
+        head = newHead;
+        tail = newTail;
+
+        sz = 0;
+        for (Node *p = head; p; p = p->next) ++sz;
+
+        other.head = other.tail = nullptr;
+        other.sz = 0;
+    }
+
+private:
+    Node* split(Node* start) {
+        if (!start) return nullptr;
+        Node *slow = start, *fast = start->next;
+        while (fast && fast->next) {
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        Node *second = slow->next;
+        slow->next = nullptr;
+        if (second) second->prev = nullptr;
+        return second;
+    }
+
+    Node* merge_sorted(Node* a, Node* b) {
+        Node dummy(T());
+        Node *tailLocal = &dummy;
+        while (a && b) {
+            if (a->data <= b->data) {
+                tailLocal->next = a;
+                a->prev = tailLocal;
+                a = a->next;
+                tailLocal = tailLocal->next;
+                tailLocal->next = nullptr;
+            } else {
+                tailLocal->next = b;
+                b->prev = tailLocal;
+                b = b->next;
+                tailLocal = tailLocal->next;
+                tailLocal->next = nullptr;
+            }
+        }
+        while (a) {
+            tailLocal->next = a;
+            a->prev = tailLocal;
+            a = a->next;
+            tailLocal = tailLocal->next;
+            tailLocal->next = nullptr;
+        }
+        while (b) {
+            tailLocal->next = b;
+            b->prev = tailLocal;
+            b = b->next;
+            tailLocal = tailLocal->next;
+            tailLocal->next = nullptr;
+        }
+        Node *res = dummy.next;
+        if (res) res->prev = nullptr;
+        return res;
+    }
+
+    Node* merge_sort(Node* start) {
+        if (!start || !start->next) return start;
+        Node *second = split(start);
+        Node *l1 = merge_sort(start);
+        Node *l2 = merge_sort(second);
+        return merge_sorted(l1, l2);
+    }
+
+public:
+    void sort() {
+        if (!head || !head->next) return;
+        head = merge_sort(head);
+        tail = head;
+        while (tail && tail->next) tail = tail->next;
+        sz = 0;
+        for (Node *p = head; p; p = p->next) ++sz;
+    }
+
+    void print_forward() const {
+        for (Node *p = head; p; p = p->next) std::cout << p->data << " ";
+        std::cout << "\n";
+    }
+
+    void print_backward() const {
+        for (Node *p = tail; p; p = p->prev) std::cout << p->data << " ";
+        std::cout << "\n";
+    }
+};
+
+#endif //RMS_LIST_H
 
 
 ==================================================
@@ -1229,6 +1554,96 @@ public:
 #endif
 
 ==================================================
+FILE PATH: .\include\structures\minHeap.h
+==================================================
+
+//
+// Created by Omar on 12/11/2025.
+//
+
+#ifndef RMS_MINHEAP_H
+#define RMS_MINHEAP_H
+#include <vector>
+template <class T>
+class MinHeap {
+private:
+    std::vector<T> h;
+
+    void up(int i){
+        while(i > 0){
+            int p = (i-1)/2;
+            if(h[i] < h[p]){
+                swap(h[i], h[p]);
+                i = p;
+            } else break;
+        }
+    }
+
+    void down(int i){
+        int n = h.size();
+        while(true){
+            int l = 2*i+1, r = 2*i+2;
+            int s = i;
+
+            if(l < n && h[l] < h[s]) s = l;
+            if(r < n && h[r] < h[s]) s = r;
+
+            if(s != i){
+                swap(h[i], h[s]);
+                i = s;
+            } else break;
+        }
+    }
+
+    int findIdx(const T& v){
+        for(int i=0;i<h.size();i++){
+            if(h[i] == v) return i;
+        }
+        return -1;
+    }
+
+public:
+    void push(T v){
+        h.push_back(v);
+        up(h.size()-1);
+    }
+
+    T top(){
+        return h[0];
+    }
+
+    T pop(){
+        T x = h[0];
+        h[0] = h.back();
+        h.pop_back();
+        if(!h.empty()) down(0);
+        return x;
+    }
+
+    bool remove(const T& v){
+        int i = findIdx(v);
+        if(i == -1) return false;
+
+        h[i] = h.back();
+        h.pop_back();
+
+        if(i < h.size()){
+            up(i);
+            down(i);
+        }
+
+        return true;
+    }
+
+    bool empty(){
+        return h.empty();
+    }
+};
+
+#endif //RMS_MINHEAP_H
+
+
+==================================================
 FILE PATH: .\include\structures\stack.h
 ==================================================
 
@@ -1345,6 +1760,617 @@ stack<T>& stack<T>::operator=(stack<T> other) {
 
 
 ==================================================
+FILE PATH: .\include\structures\unordered_map.h
+==================================================
+
+//
+// Created by Omar on 12/11/2025.
+//
+
+#ifndef RMS_UNORDERED_MAP_H
+#define RMS_UNORDERED_MAP_H
+#include <vector>
+#include <list>
+#include <functional>
+#include <utility>
+#include <stdexcept>
+#include <cstddef>
+#include <limits>
+template <typename Key, typename Value>
+class unordered_map
+{
+private:
+    struct Node
+    {
+        Key key;
+        Value value;
+        Node(const Key &k, const Value &v) : key(k), value(v) {}
+        Node(Key &&k, Value &&v) : key(std::move(k)), value(std::move(v)) {}
+    };
+
+    std::vector<std::list<Node>> buckets;
+    size_t elements = 0;
+    float maxLoadFactor = 0.75f;
+
+    size_t bucket_index(const Key &k) const
+    {
+        return std::hash<Key>{}(k) % buckets.size();
+    }
+
+    void check_rehash()
+    {
+        if (buckets.empty())
+        {
+            buckets.resize(8);
+            return;
+        }
+        if ((float)(elements + 1) / buckets.size() > maxLoadFactor)
+        {
+            rehash(buckets.size() * 2);
+        }
+    }
+
+public:
+    // ITERATOR
+    class iterator
+    {
+        using BucketList = std::list<Node>;
+        unordered_map *map = nullptr;
+        size_t bucketIdx = 0;
+        typename BucketList::iterator listIt;
+        friend class unordered_map;
+
+        iterator(unordered_map *m, size_t b, typename BucketList::iterator it)
+                : map(m), bucketIdx(b), listIt(it) {}
+
+    public:
+        iterator() = default;
+
+        std::pair<const Key &, Value &> operator*() const
+        {
+            return {listIt->key, listIt->value};
+        }
+
+        iterator &operator++()
+        {
+            if (!map)
+                return *this;
+
+            ++listIt;
+
+            while (bucketIdx < map->buckets.size() &&
+                   listIt == map->buckets[bucketIdx].end())
+            {
+                ++bucketIdx;
+                if (bucketIdx < map->buckets.size())
+                    listIt = map->buckets[bucketIdx].begin();
+            }
+
+            return *this;
+        }
+
+        bool operator==(const iterator &other) const
+        {
+            if (map != other.map)
+                return false;
+
+            if (bucketIdx >= map->buckets.size() &&
+                other.bucketIdx >= other.map->buckets.size())
+                return true;
+
+            if (bucketIdx >= map->buckets.size() ||
+                other.bucketIdx >= other.map->buckets.size())
+                return false;
+
+            return bucketIdx == other.bucketIdx && listIt == other.listIt;
+        }
+
+        bool operator!=(const iterator &other) const
+        {
+            return !(*this == other);
+        }
+    };
+    class const_iterator
+    {
+        using BucketList = std::list<Node>;
+        const unordered_map* map = nullptr;
+        size_t bucketIdx = 0;
+        typename BucketList::const_iterator listIt;
+        friend class unordered_map;
+
+        const_iterator(const unordered_map* m, size_t b, typename BucketList::const_iterator it)
+                : map(m), bucketIdx(b), listIt(it) {}
+
+    public:
+        const_iterator() = default;
+
+        std::pair<const Key&, const Value&> operator*() const
+        {
+            return {listIt->key, listIt->value};
+        }
+
+        const_iterator& operator++()
+        {
+            if (!map) return *this;
+
+            ++listIt;
+
+            while (bucketIdx < map->buckets.size() &&
+                   listIt == map->buckets[bucketIdx].end())
+            {
+                ++bucketIdx;
+                if (bucketIdx < map->buckets.size())
+                    listIt = map->buckets[bucketIdx].begin();
+            }
+
+            return *this;
+        }
+
+        bool operator==(const const_iterator& other) const
+        {
+            if (map != other.map) return false;
+
+            if (bucketIdx >= map->buckets.size() &&
+                other.bucketIdx >= other.map->buckets.size())
+                return true;
+
+            if (bucketIdx >= map->buckets.size() ||
+                other.bucketIdx >= other.map->buckets.size())
+                return false;
+
+            return bucketIdx == other.bucketIdx && listIt == other.listIt;
+        }
+
+        bool operator!=(const const_iterator& other) const
+        {
+            return !(*this == other);
+        }
+    };
+
+    unordered_map() { buckets.resize(8); }
+    ~unordered_map() { clear(); }
+    unordered_map(const unordered_map &other)
+            : buckets(other.buckets), elements(other.elements), maxLoadFactor(other.maxLoadFactor)
+    {
+    }
+
+    unordered_map &operator=(const unordered_map &other)
+    {
+        if (this != &other)
+        {
+            buckets = other.buckets;
+            elements = other.elements;
+            maxLoadFactor = other.maxLoadFactor;
+        }
+        return *this;
+    }
+    //  for = { } assginment
+    unordered_map(std::initializer_list<std::pair<const Key, Value>> init)
+    {
+        buckets.resize(8);
+        for (const auto &kv : init)
+            insert(kv);
+    }
+
+
+    // ELEMENT ACCESS
+
+    Value &operator[](const Key &k)
+    {
+        check_rehash();
+        size_t idx = bucket_index(k);
+        for (auto it = buckets[idx].begin(); it != buckets[idx].end(); ++it)
+        {
+            if (it->key == k)
+                return it->value;
+        }
+        // Not found, insert with default value
+        buckets[idx].emplace_back(k, Value{});
+        ++elements;
+        return buckets[idx].back().value;
+    }
+    unordered_map &operator=(unordered_map &&other) noexcept
+    {
+        if (this != &other)
+        {
+            buckets = std::move(other.buckets);
+            elements = other.elements;
+            maxLoadFactor = other.maxLoadFactor;
+            other.elements = 0;
+        }
+        return *this;
+    }
+
+
+    Value &at(const Key &k)
+    {
+        size_t idx = bucket_index(k);
+        for (auto &node : buckets[idx])
+        {
+            if (node.key == k)
+                return node.value;
+        }
+        throw std::out_of_range("unordered_map::at: key not found");
+    }
+
+    const Value &at(const Key &k) const
+    {
+        size_t idx = bucket_index(k);
+        for (const auto &node : buckets[idx])
+        {
+            if (node.key == k)
+                return node.value;
+        }
+        throw std::out_of_range("unordered_map::at: key not found");
+    }
+    // CAPACITY
+    bool empty() const noexcept { return elements == 0; }
+    size_t size() const noexcept { return elements; }
+    size_t max_size() const noexcept { return std::numeric_limits<size_t>::max() / 2; }
+    // MODIFIERS
+    void clear() noexcept
+    {
+        for (auto &bucket : buckets)
+            bucket.clear();
+        elements = 0;
+    }
+
+    std::pair<iterator, bool> insert(const std::pair<Key, Value> &kv)
+    {
+        check_rehash();
+        size_t idx = bucket_index(kv.first);
+        // Check if key exists
+        for (auto it = buckets[idx].begin(); it != buckets[idx].end(); ++it)
+        {
+            if (it->key == kv.first)
+                return {iterator(this, idx, it), false};
+        }
+        // Insert new element
+        buckets[idx].emplace_back(kv.first, kv.second);
+        ++elements;
+        auto it = buckets[idx].end();
+        --it;
+        return {iterator(this, idx, it), true};
+    }
+
+    std::pair<iterator, bool> insert(std::pair<Key, Value> &&kv)
+    {
+        check_rehash();
+        size_t idx = bucket_index(kv.first);
+        for (auto it = buckets[idx].begin(); it != buckets[idx].end(); ++it)
+        {
+            if (it->key == kv.first)
+                return {iterator(this, idx, it), false};
+        }
+        buckets[idx].emplace_back(std::move(kv.first), std::move(kv.second));
+        ++elements;
+        auto it = buckets[idx].end();
+        --it;
+        return {iterator(this, idx, it), true};
+    }
+
+    template <typename... Args>
+    std::pair<iterator, bool> emplace(Args &&...args)
+    {
+        check_rehash();
+        Node node(std::forward<Args>(args)...);
+        size_t idx = bucket_index(node.key);
+
+        for (auto it = buckets[idx].begin(); it != buckets[idx].end(); ++it)
+        {
+            if (it->key == node.key)
+                return {iterator(this, idx, it), false};
+        }
+
+        buckets[idx].push_back(std::move(node));
+        ++elements;
+        auto it = buckets[idx].end();
+        --it;
+        return {iterator(this, idx, it), true};
+    }
+
+    size_t erase(const Key &k)
+    {
+        size_t idx = bucket_index(k);
+        auto &bucket = buckets[idx];
+        for (auto it = bucket.begin(); it != bucket.end(); ++it)
+        {
+            if (it->key == k)
+            {
+                bucket.erase(it);
+                --elements;
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+    iterator erase(iterator pos)
+    {
+        if (!pos.map || pos.bucketIdx >= buckets.size())
+            return end();
+        auto &bucket = buckets[pos.bucketIdx];
+        auto nextIt = pos.listIt;
+        ++nextIt;
+        bucket.erase(pos.listIt);
+        --elements;
+        return iterator(this, pos.bucketIdx, nextIt);
+    }
+
+    void swap(unordered_map &other)
+    {
+        buckets.swap(other.buckets);
+        std::swap(elements, other.elements);
+        std::swap(maxLoadFactor, other.maxLoadFactor);
+    }
+    // LOOKUP
+    iterator find(const Key &k)
+    {
+        size_t idx = bucket_index(k);
+        auto &bucket = buckets[idx];
+        for (auto it = bucket.begin(); it != bucket.end(); ++it)
+        {
+            if (it->key == k)
+                return iterator(this, idx, it);
+        }
+        return end();
+    }
+    const_iterator find(const Key &k) const
+    {
+        size_t idx = bucket_index(k);
+        const auto &bucket = buckets[idx];
+        for (auto it = bucket.begin(); it != bucket.end(); ++it)
+            if (it->key == k)
+                return const_iterator(this, idx, it);
+        return end();
+    }
+    size_t count(const Key &k) const
+    {
+        size_t idx = bucket_index(k);
+        const auto &bucket = buckets[idx];
+        for (const auto &node : bucket)
+        {
+            if (node.key == k)
+                return 1;
+        }
+        return 0;
+    }
+
+    iterator lower_bound(const Key &k) { return end(); } // unused
+    iterator upper_bound(const Key &k) { return end(); } // unused
+
+    // REHASH
+    void rehash(size_t n)
+    {
+        if (n == 0)
+            return;
+        std::vector<std::list<Node>> newBuckets(n);
+        for (auto &bucket : buckets)
+        {
+            for (auto &node : bucket)
+            {
+                size_t idx = std::hash<Key>{}(node.key) % n;
+                newBuckets[idx].emplace_back(std::move(node.key), std::move(node.value));
+            }
+        }
+        buckets.swap(newBuckets);
+    }
+
+    void reserve(size_t n)
+    {
+        size_t requiredBuckets = static_cast<size_t>(n / maxLoadFactor) + 1;
+        if (requiredBuckets > buckets.size())
+            rehash(requiredBuckets);
+    }
+    // ITERATORS
+    iterator begin()
+    {
+        for (size_t i = 0; i < buckets.size(); ++i)
+            if (!buckets[i].empty())
+                return iterator(this, i, buckets[i].begin());
+        return end();
+    }
+
+    iterator end()
+    {
+        if (buckets.empty())
+            return iterator(this, 0, typename std::list<Node>::iterator{});
+        return iterator(this, buckets.size(), {});
+    }
+    const_iterator begin() const
+    {
+        for (size_t i = 0; i < buckets.size(); ++i)
+            if (!buckets[i].empty())
+                return const_iterator(this, i, buckets[i].cbegin());
+        return end();
+    }
+
+    const_iterator end() const
+    {
+        return const_iterator(this, buckets.size(), {});
+    }
+
+};
+#endif //RMS_UNORDERED_MAP_H
+
+
+==================================================
+FILE PATH: .\include\structures\vector.h
+==================================================
+
+//
+// Created by Omar on 12/11/2025.
+//
+
+#ifndef RMS_VECTOR_H
+#define RMS_VECTOR_H
+
+#include <iostream>
+#include <algorithm> // for std::copy
+#include <stdexcept> // for std::out_of_range
+#include <initializer_list>
+
+template <typename T>
+class vector{
+private:
+    T* data;
+    size_t current_size;
+    size_t current_capacity;
+
+    void resize(size_t new_capacity){
+        //allocate new memory
+        T* new_data = new T[new_capacity];
+        //copy elements
+        for(size_t i = 0; i < current_size; i++){
+            new_data[i] = data[i];
+        }
+        //delete old memory
+        delete[] data;
+        //point to new mamory
+        data = new_data;
+        current_capacity = new_capacity;
+    }
+public:
+    vector() : data(nullptr), current_size(0), current_capacity(0) {}
+    ~vector(){
+        delete[] data;
+    }
+    //copy constructor(Deep copy)
+    vector(const vector& other)
+            : data(new T[other.current_capacity]),
+              current_size(other.current_size),
+              current_capacity(other.current_capacity) {
+        std::copy(other.data, other.data + current_size, data);
+    }
+    // initializer_list constructor
+    vector(std::initializer_list<T> init)
+            : data(new T[init.size()]),
+              current_size(init.size()),
+              current_capacity(init.size())
+    {
+        size_t i = 0;
+        for (const T& val : init) {
+            data[i++] = val;
+        }
+    }
+
+    //copy assignment operator(Deep copy)
+    vector& operator=(const vector& other){
+        if(this != &other){
+            delete[] data;
+            current_size = other.current_size;
+            current_capacity = other.current_capacity;
+            data = new T[current_capacity];
+            std::copy(other.data, other.data + current_size, data);
+        }
+        return *this;
+    }
+    //move constructor
+    vector(vector&& other) noexcept
+            : data(other.data), current_size(other.current_size), current_capacity(other.current_capacity){
+        other.data = nullptr;
+        other.current_size = 0;
+        other.current_capacity = 0;
+    }
+    //move assignment constructor
+    vector& operator=(vector&& other) noexcept{
+        if(this != &other){
+            delete[] data;
+            data = other.data;
+            current_size = other.current_size;
+            current_capacity = other.current_capacity;
+            other.data = nullptr;
+            other.current_size = 0;
+            other.current_capacity = 0;
+        }
+        return *this;
+    }
+
+    void push_back(const T& value){
+        if (current_size == current_capacity){
+            size_t new_capacity = (current_capacity == 0) ? 1 : current_capacity * 2;
+            resize(new_capacity);
+        }
+        data[current_size] = value;
+        current_size++;
+    }
+
+    void pop_back(){
+        if (current_size > 0) {
+            current_size--;
+        }
+    }
+
+    size_t size() const{return current_size;}
+    size_t capacity() const {return current_capacity;}
+
+    T& operator[](size_t index){
+        if (index >= current_size) {
+            throw std::out_of_range("Index out of bounds");
+        }
+        return data[index];
+    }
+
+    const T& operator[](size_t index) const{
+        if (index >= current_size) {
+            throw std::out_of_range("Index out of bounds");
+        }
+        return data[index];
+    }
+
+    T* begin(){return data;}
+    T* end(){return data + current_size;}
+
+    const T* begin() const{return data;}
+    const T* end() const {return data + current_size;}
+
+    T& front(){
+        if(current_size == 0) throw std::out_of_range("Vector is empty");
+        return data[0];
+    }
+    T& back(){
+        if(current_size == 0) throw std::out_of_range("Vector is empty");
+        return data[current_size - 1];
+    }
+    bool empty() const{
+        return current_size == 0;
+    }
+    void clear(){
+        current_size = 0;
+    }
+
+    void insert(size_t index, const T& value){
+        if(index > current_size){
+            throw std::out_of_range("Index out of bounds");
+        }
+        if(current_size == current_capacity){
+            size_t new_capacity = (current_capacity == 0) ? 1 : current_capacity * 2;
+            resize(new_capacity);
+        }
+        for(size_t i = current_size; i > index; --i){
+            data[i] = data[i - 1];
+        }
+        data[index] = value;
+        current_size++;
+    }
+
+    void erase(size_t index){
+        if(index >= current_size){
+            throw std::out_of_range("Index out of bounds");
+        }
+        for(size_t i = index; i < current_size - 1; ++i){
+            data[i] = data[i + 1];
+        }
+        current_size--;
+    }
+
+
+};
+
+#endif //RMS_VECTOR_H
+
+
+==================================================
 FILE PATH: .\include\utils\helpers.h
 ==================================================
 
@@ -1355,7 +2381,7 @@ FILE PATH: .\include\utils\helpers.h
 #ifndef RMS_HELPERS_H
 #define RMS_HELPERS_H
 #include <string>
-#include <vector>
+#include "../structures/vector.h"
 #include "models/Train.h"
 #include "models/Passenger.h"
 #include "models/Ticket.h"
@@ -1365,8 +2391,8 @@ std::string toLowerCase(std::string word);
 std::string trim(const std::string &str);
 bool isValidName(const std::string& name);
 // string concat
-std::string combineString(const std::vector<std::string>& args, int start);
-std::string combineString(const std::vector<std::string>& args, int start , int end);
+std::string combineString(const vector<std::string>& args, int start);
+std::string combineString(const vector<std::string>& args, int start , int end);
 bool compareString(const std::string& str1 , const std::string& str2);
 // integer helpers
 bool isInteger(const std::string& str);
@@ -1395,11 +2421,14 @@ FILE PATH: .\src\CLIController.cpp
 #include "CLIController.h"
 #include "utils/helpers.h" // parseInt , trim
 #include "RMSCommand.h"
-
 using std::cout ;
 using std::endl;
 using std::string;
 using std::cin;
+using  std::stringstream;
+using  std::left;
+using  std::setw;
+using  std::exception;
 
 //enums [MainCmd instead of RMSCommand::MainCmd
 using MainCmd = RMSCommand::MainCmd;
@@ -1496,7 +2525,7 @@ void CLIController::list_trains() {
 
         string status = (seats == 0)
                         ? "Full"
-                        : to_string(seats) + " seats available";
+                        : std::to_string(seats) + " seats available";
 
         cout << left << setw(6)  << train.getTrainId()
              << left << setw(20) << train.getTrainName()
@@ -1715,12 +2744,12 @@ void CLIController::add_train(const vector<string> &args) {
         cout << "Usage: train add  <name> <seats> \n";
         return;
     }
-    const string& seatArgs = args[3];
+    const string& seatArgs = args[args.size()-1];
     string name;
     try {
         const int &seats = parseInt(seatArgs,"seats");
         name = combineString(args,2,-1);
-
+        cout << name << " ";
         auto t = facade->addTrain(name,seats);
         t.print("--- Train Added Successfully ---\n");
 
@@ -1785,7 +2814,7 @@ void CLIController::update_train(const vector<string> &args) {
     }
 
     const string& tarinIdArg = args[2];
-    const string& seatArg = args[4];
+    const string& seatArg = args[args.size()-1];;
     try {
         int trainId = parseInt(tarinIdArg , "train id");
         int seats = parseInt(seatArg, "seat number");
@@ -1966,7 +2995,7 @@ RMSCommand::MainCmd RMSCommand::getMainCmd(const string &cmd){
 
     };
     auto it = table.find(cmd);
-    return (it != table.end()) ? it->second : MainCmd::UNKNOWN;
+    return (it != table.end()) ? (*it).second : MainCmd::UNKNOWN;
 }
 
 RMSCommand::TrainCmd RMSCommand::getTrainCmd(const string &sub) {
@@ -1980,7 +3009,7 @@ RMSCommand::TrainCmd RMSCommand::getTrainCmd(const string &sub) {
             {"status" , TrainCmd::STATUS}
     };
     auto it = table.find(sub);
-    return (it != table.end()) ? it->second : TrainCmd::UNKNOWN;
+    return (it != table.end()) ? (*it).second : TrainCmd::UNKNOWN;
 }
 RMSCommand::PassengerCmd RMSCommand::getPassengerCmd(const string &sub)  {
     static const unordered_map<string, PassengerCmd> table = {
@@ -1990,7 +3019,7 @@ RMSCommand::PassengerCmd RMSCommand::getPassengerCmd(const string &sub)  {
             {"update", PassengerCmd::UPDATE}
     };
     auto it = table.find(sub);
-    return (it != table.end()) ? it->second : PassengerCmd::UNKNOWN;
+    return (it != table.end()) ? (*it).second : PassengerCmd::UNKNOWN;
 }
 RMSCommand::TicketCmd RMSCommand::getTicketCmd(const string &sub) {
     static const unordered_map<string, TicketCmd> table = {
@@ -1999,7 +3028,7 @@ RMSCommand::TicketCmd RMSCommand::getTicketCmd(const string &sub) {
             {"cancel", TicketCmd::CANCEL}
     };
     auto it = table.find(sub);
-    return (it != table.end()) ? it->second : TicketCmd::UNKNOWN;
+    return (it != table.end()) ? (*it).second : TicketCmd::UNKNOWN;
 }
 
 
@@ -2032,7 +3061,7 @@ RMSFacade::RMSFacade(TrainService *ts, TicketService *tks, PassengerService *ps)
 }
 
 // ============ Trains =============
-std::vector<Train> RMSFacade::listTrains()
+vector<Train> RMSFacade::listTrains()
 {
     return trainService->getAllTrains();
 }
@@ -2053,32 +3082,32 @@ Train RMSFacade::addTrain(std::string name, int totalSeats)
     return trainService->createTrain(name, totalSeats);
 }
 
-std::optional<Train> RMSFacade::getTrain(int trainId)
+Train RMSFacade::getTrain(int trainId)
 {
     return trainService->getTrain(trainId);
 }
 // ============ Passengers =============
 
-std::optional<Passenger> RMSFacade::getPassenger(int passengerId)
+Passenger RMSFacade::getPassenger(int passengerId)
 {
     return passengerService->getPassenger(passengerId);
 }
 
 Passenger RMSFacade::addPassenger(const std::string& name)
 {
-    if (!isValidName(name))
-        throw std::invalid_argument("Passenger name cannot be empty");
     std::string trimmedName = trim(name);
-    
+    if (!isValidName(trimmedName))
+        throw std::invalid_argument("Passenger name is not valid");
+
     return passengerService->createPassenger(trimmedName);
 }
 
-std::vector<Ticket> RMSFacade::listTickets()
+vector<Ticket> RMSFacade::listTickets()
 {
     return ticketService->getAllTickets();
 }
 
-std::vector<Passenger> RMSFacade::listPassengers()
+vector<Passenger> RMSFacade::listPassengers()
 {
     return passengerService->getAllPassengers();
 }
@@ -2089,13 +3118,13 @@ std::optional<Ticket> RMSFacade::bookTicket(int trainId, const std::string &pass
     // input validation
     if (trainId <= 0)
         throw std::invalid_argument("Train ID must be greater than 0");
-
-    if (!isValidName(passengerName))
-        throw std::invalid_argument("Passenger name cannot be empty");
     std::string trimmedName = trim(passengerName);
 
+    if (!isValidName(trimmedName))
+        throw std::invalid_argument("Passenger name cannot be empty");
 
-    Passenger ps = passengerService->find_or_create_passenger(passengerName);
+
+    Passenger ps = passengerService->find_or_create_passenger(trimmedName);
     return ticketService->bookTicket(trainId, ps.getId());
 
 }
@@ -2126,11 +3155,8 @@ Train RMSFacade::updateTrain(int trainId, const std::string& name, int seats) {
     if (seats < 0) throw std::invalid_argument("Seats cannot be negative");
 
     // current Train
-    auto currentTrainOpt = trainService->getTrain(trainId);
-    if (!currentTrainOpt.has_value())
-        throw std::out_of_range("Train with id " + std::to_string(trainId) + " does not exist");
+    auto currentTrain = trainService->getTrain(trainId);
 
-    Train currentTrain = currentTrainOpt.value();
     int currentSeats = currentTrain.getTotalSeats();
 
     // update train
@@ -2139,7 +3165,8 @@ Train RMSFacade::updateTrain(int trainId, const std::string& name, int seats) {
     // process waiting
     int seatsAdded = seats - currentSeats;
     if (seatsAdded > 0) {
-        auto cb =[this, trainId](int passengerId){ // access to this object& trainId + passengerId as argument
+        auto cb =[this,&updatedTrain ,trainId](int passengerId){ // access to this object& trainId + passengerId as argument
+            trainService->save(updatedTrain);
             ticketService->bookTicket(trainId, passengerId);
         };
         updatedTrain.getSeatAllocator()->processWaitingList(seatsAdded,cb);
@@ -2163,18 +3190,17 @@ Train RMSFacade::addSeats(const std::string &name, int seats)
 
 Passenger RMSFacade::updatePassenger(int passengerId, const std::string &name)
 {
+
     auto passenger = passengerService->getPassenger(passengerId);
-    if (!passenger.has_value())
-        throw std::out_of_range("passenger with id : " + std::to_string(passengerId) + " does not exist ");
     // update passenger
     auto newPassenger = passengerService->updatePassenger(passengerId, name);
     // update tickets with this id
     auto tickets = ticketService->getAllTickets();
     for (auto &t : tickets)
     {
-        if (compareString(t.getPassenger().getName(), passenger->getName()))
+        if (compareString(t.getPassenger().getName(), passenger.getName()))
         {
-            t.getPassenger().setName(name);
+            t.setPassenger(newPassenger);
             ticketService->updateTicket(t);
         }
     }
@@ -2184,16 +3210,14 @@ Passenger RMSFacade::updatePassenger(int passengerId, const std::string &name)
 
 void RMSFacade::deleteTrain(int trainId)
 {
-    bool deleted = trainService->deleteTrain(trainId);
-    if (!deleted)
-        throw std::out_of_range("failed to delete train with id : " + std::to_string(trainId));
+    if (trainId <= 0) throw std::invalid_argument("Train ID must be > 0");
+    trainService->deleteTrain(trainId);
 }
 
 void RMSFacade::deletePassenger(int passengerId)
 {
-    bool deleted = passengerService->deletePassenger(passengerId);
-    if (!deleted)
-        throw std::out_of_range("failed to delete passenger with id : " + std::to_string(passengerId));
+    if (passengerId <= 0) throw std::invalid_argument("Passenger ID must be > 0");
+    passengerService->deletePassenger(passengerId);
 }
 
 void RMSFacade::trainStatus(int trainId) {
@@ -2338,22 +3362,22 @@ FILE PATH: .\src\models\SeatAllocator.cpp
 #include <iostream>
 #include <functional>
 
-SeatAllocator::SeatAllocator(int totalSeats){
-    if(totalSeats <= 0 )
-        this->totalSeats = 10 ;
+SeatAllocator::SeatAllocator(int totalSeats)
+{
+    if (totalSeats <= 0)
+        this->totalSeats = 10;
     else
         this->totalSeats = totalSeats;
-//    add the seats to the set
-    for(int seat = 1 ; seat <= this->totalSeats; seat++ )
+    //    add the seats to the set
+    for (int seat = 1; seat <= this->totalSeats; seat++)
         availableSeats.insert(seat);
 }
 
-
-
-
-int SeatAllocator::allocateSeat(int passengerId) {
+int SeatAllocator::allocateSeat(int passengerId)
+{
     // prevent duplicate passenger allocation
-    for (const auto& p : allocatedSeats) {
+    for (const auto &p : allocatedSeats)
+    {
         if (p.second == passengerId)
             throw std::runtime_error("Passenger " + std::to_string(passengerId) + " already has a seat.\n");
     }
@@ -2363,7 +3387,8 @@ int SeatAllocator::allocateSeat(int passengerId) {
         throw std::runtime_error("Passenger " + std::to_string(passengerId) + " already in waiting list.\n");
 
     // No available seats , push to waiting list
-    if (!hasAvailableSeats()) {
+    if (!hasAvailableSeats())
+    {
         waitingList.push(passengerId);
         waitingSet.insert(passengerId);
         std::cout << "Train full, passenger added to waiting list.\n";
@@ -2373,22 +3398,25 @@ int SeatAllocator::allocateSeat(int passengerId) {
     int seatNumber;
 
     // prefer reusing cancelled seats first
-    if (!cancelledSeats.empty()) {
+    if (!cancelledSeats.empty())
+    {
         seatNumber = cancelledSeats.top();
         cancelledSeats.pop();
-    } else {
+    }
+    else
+    {
         // smallest seat in the set
         seatNumber = *availableSeats.begin();
         availableSeats.erase(availableSeats.begin());
-        std::cout <<"seat : " <<seatNumber;
+        std::cout << "seat : " << seatNumber;
     }
 
     allocatedSeats[seatNumber] = passengerId;
     return seatNumber;
 }
 
-
-int SeatAllocator::freeSeat(int seatNumber) {
+int SeatAllocator::freeSeat(int seatNumber)
+{
     if (seatNumber <= 0 || seatNumber > totalSeats)
         throw std::invalid_argument("Invalid seat number.\n");
 
@@ -2401,15 +3429,11 @@ int SeatAllocator::freeSeat(int seatNumber) {
     cancelledSeats.push(seatNumber);
 
     // assign to waiting passenger if any
-    if (!waitingList.empty()) {
+    if (!waitingList.empty())
+    {
         int firstPassenger = waitingList.front();
         waitingList.pop();
         waitingSet.erase(firstPassenger);
-        std::queue<int> temp = waitingList;
-        while (!temp.empty()) {
-            std::cout << temp.front() << " ";
-            temp.pop();
-        }
         std::cout << "\n";
         std::cout << "Seat " << seatNumber
                   << " freed and assigned to waiting passenger "
@@ -2418,10 +3442,11 @@ int SeatAllocator::freeSeat(int seatNumber) {
         return firstPassenger;
     }
 
-    return 0;  // no waiting passengers
+    return 0; // no waiting passengers
 }
 
-void SeatAllocator::addSeats(int seats) {
+void SeatAllocator::addSeats(int seats)
+{
     if (seats <= 0)
         throw std::invalid_argument("Seats must be greater than zero.\n");
 
@@ -2432,23 +3457,27 @@ void SeatAllocator::addSeats(int seats) {
         availableSeats.insert(i);
 }
 
-
-void SeatAllocator::changeTotalSeats(int newTotalSeats) {
+void SeatAllocator::changeTotalSeats(int newTotalSeats)
+{
     if (newTotalSeats < getAllocatedSeatCount())
         throw std::out_of_range("Cannot shrink below allocated count.\n");
 
-    if (newTotalSeats > totalSeats) {
+    if (newTotalSeats > totalSeats)
+    {
         // expand
         for (int i = totalSeats + 1; i <= newTotalSeats; i++)
             availableSeats.insert(i);
-    } else {
+    }
+    else
+    {
         // shrink
         int seatsToRemove = totalSeats - newTotalSeats;
 
-        if ( availableSeats.size() < seatsToRemove)
+        if (availableSeats.size() < seatsToRemove)
             throw std::runtime_error("Cannot shrink: not enough free seats.\n");
 
-        while (seatsToRemove-- > 0) {
+        while (seatsToRemove-- > 0)
+        {
             auto it = std::prev(availableSeats.end());
             availableSeats.erase(it);
         }
@@ -2457,8 +3486,8 @@ void SeatAllocator::changeTotalSeats(int newTotalSeats) {
     totalSeats = newTotalSeats;
 }
 
-
-void SeatAllocator::printStatus() const {
+void SeatAllocator::printStatus() const
+{
     std::cout << "\n========== Seat Allocation Status ==========\n";
 
     std::cout << "Total Seats          : " << totalSeats << "\n";
@@ -2467,10 +3496,14 @@ void SeatAllocator::printStatus() const {
 
     // ---- Allocated Seats ----
     std::cout << "--- Allocated Seats (Seat -> Passenger ID) ---\n";
-    if (allocatedSeats.empty()) {
+    if (allocatedSeats.empty())
+    {
         std::cout << "No seats allocated.\n";
-    } else {
-        for (const auto &p : allocatedSeats) {
+    }
+    else
+    {
+        for (const auto &p : allocatedSeats)
+        {
             if (p.second != -1)
                 std::cout << "Seat " << p.first << " -> Passenger " << p.second << "\n";
         }
@@ -2479,9 +3512,12 @@ void SeatAllocator::printStatus() const {
 
     // ---- Available Seats ----
     std::cout << "--- Available Seats ---\n";
-    if (availableSeats.empty()) {
+    if (availableSeats.empty())
+    {
         std::cout << "No free seats.\n";
-    } else {
+    }
+    else
+    {
         for (int s : availableSeats)
             std::cout << s << " ";
         std::cout << "\n";
@@ -2490,11 +3526,15 @@ void SeatAllocator::printStatus() const {
 
     // ---- Cancelled Seats Stack ----
     std::cout << "--- Cancelled Seats Stack (top to bottom) ---\n";
-    if (cancelledSeats.empty()) {
+    if (cancelledSeats.empty())
+    {
         std::cout << "Empty\n";
-    } else {
+    }
+    else
+    {
         stack<int> temp = cancelledSeats;
-        while (!temp.empty()) {
+        while (!temp.empty())
+        {
             std::cout << temp.top() << " ";
             temp.pop();
         }
@@ -2504,11 +3544,15 @@ void SeatAllocator::printStatus() const {
 
     // ---- Waiting List ----
     std::cout << "--- Waiting List (front -> back) ---\n";
-    if (waitingList.empty()) {
+    if (waitingList.empty())
+    {
         std::cout << "No passengers in waiting list.\n";
-    } else {
+    }
+    else
+    {
         std::queue<int> temp = waitingList;
-        while (!temp.empty()) {
+        while (!temp.empty())
+        {
             std::cout << temp.front() << " ";
             temp.pop();
         }
@@ -2518,31 +3562,34 @@ void SeatAllocator::printStatus() const {
     std::cout << "=============================================\n\n";
 }
 
-
-
-bool SeatAllocator::hasAvailableSeats() const {
+bool SeatAllocator::hasAvailableSeats() const
+{
     // if the is seat in cancelled tickets or minHeap
-//   return avaiable(true) if availableSeats or cancelledSeats is not  empty
+    //   return avaiable(true) if availableSeats or cancelledSeats is not  empty
     return !availableSeats.empty() || !cancelledSeats.empty();
 }
-int SeatAllocator::getAvailableSeatCount() const {
-//    return the numbers of seats in the heap and the cancelled seats
-    return availableSeats.size() + cancelledSeats.size() ;
+int SeatAllocator::getAvailableSeatCount() const
+{
+    //    return the numbers of seats in the heap and the cancelled seats
+    return availableSeats.size() + cancelledSeats.size();
 }
-std::unique_ptr<SeatAllocator> SeatAllocator::clone() const {
+std::unique_ptr<SeatAllocator> SeatAllocator::clone() const
+{
     return std::make_unique<SeatAllocator>(*this);
 }
 
-SeatAllocator::SeatAllocator(const SeatAllocator& other)
-        : availableSeats(other.availableSeats),
-          waitingList(other.waitingList),
-          allocatedSeats(other.allocatedSeats),
-          cancelledSeats(other.cancelledSeats),
-          waitingSet(other.waitingSet),
-          totalSeats(other.totalSeats) {}
+SeatAllocator::SeatAllocator(const SeatAllocator &other)
+    : availableSeats(other.availableSeats),
+      waitingList(other.waitingList),
+      allocatedSeats(other.allocatedSeats),
+      cancelledSeats(other.cancelledSeats),
+      waitingSet(other.waitingSet),
+      totalSeats(other.totalSeats) {}
 
-SeatAllocator& SeatAllocator::operator=(const SeatAllocator& other) {
-    if (this != &other) {
+SeatAllocator &SeatAllocator::operator=(const SeatAllocator &other)
+{
+    if (this != &other)
+    {
         availableSeats = other.availableSeats;
         waitingList = other.waitingList;
         allocatedSeats = other.allocatedSeats;
@@ -2553,42 +3600,64 @@ SeatAllocator& SeatAllocator::operator=(const SeatAllocator& other) {
     return *this;
 }
 
-
-int SeatAllocator::getAllocatedSeatCount() const {
+int SeatAllocator::getAllocatedSeatCount() const
+{
     return allocatedSeats.size();
 }
 
-std::queue<int> SeatAllocator::getWaitingList() const {
+std::queue<int> SeatAllocator::getWaitingList() const
+{
     return waitingList;
 }
 
-int SeatAllocator::getTotalSeats() const {
+int SeatAllocator::getTotalSeats() const
+{
     return totalSeats;
 }
 
-int SeatAllocator::getWaitingListSize() const {
+int SeatAllocator::getWaitingListSize() const
+{
     return waitingList.size();
 }
 
-int SeatAllocator::processWaitingList(int seatsToAdd, std::function<void(int)> bookCallback)  {
+int SeatAllocator::processWaitingList(int seatsToAdd, std::function<void(int)> bookCallback)
+{
     int processed = 0;
-    std::queue<int> waitingCopy = getWaitingList(); // get copy of waiting list
 
-    while (!waitingCopy.empty() && seatsToAdd > 0) {
-        int passengerId = waitingCopy.front();
-        waitingCopy.pop();
-        try {
-            bookCallback(passengerId);
-            seatsToAdd--;
-            processed++;
-            waitingSet.erase(passengerId);
+    std::queue<int> newWaitingList;
+    std::set<int> newWaitingset;
+
+    while (!waitingList.empty())
+    {
+        int passengerId = waitingList.front();
+        waitingList.pop();
+        waitingSet.erase(passengerId); // remove from set
+
+        if (seatsToAdd > 0)
+        {
+            try
+            {
+                bookCallback(passengerId);
+                seatsToAdd--;
+                processed++;
+                continue;                      // do NOT add to new list
+            }
+            catch (const std::exception &e)
+            {
+                std::cout << "Failed to book ticket for waiting passenger "
+                          << passengerId << ": " << e.what() << "\n";
+                // Booking failed , keep in waiting list
+            }
         }
-        catch (const std::exception& e) {
-            std::cerr << "Failed to book ticket for waiting passenger "
-                      << passengerId << ": " << e.what() << "\n";
-        }
+
+        // Either no seats left OR booking failed ,so  keep them
+        newWaitingList.push(passengerId);
+        newWaitingset.insert(passengerId);
     }
-    waitingList = waitingCopy;
+
+    waitingList = std::move(newWaitingList); //  update the existing waiting list
+    waitingSet = std::move(newWaitingset); //  update the existing waiting set
+
     return processed;
 }
 
@@ -2657,6 +3726,11 @@ void Ticket::print(const std::string &msg) const {
     cout << "Passenger: " << passenger.getName() << "\n";
     cout << "Status : " << ((status == Status::booked) ? "Booked" : "Cancelled") << "\n";
     cout << "--------------------------------------------------\n";
+}
+
+void Ticket::setPassenger(const Passenger &p) {
+    this->passenger =p ;
+
 }
 
 
@@ -2807,8 +3881,8 @@ std::optional<Passenger> InMemoryPassengerRepository::getPassenger(const int &pa
     return std::nullopt; // not found
 }
 
-std::vector<Passenger> InMemoryPassengerRepository::getAllPassengers() {
-    std::vector<Passenger> results ;
+vector<Passenger> InMemoryPassengerRepository::getAllPassengers() {
+    vector<Passenger> results ;
     for(const auto & ps : passengers){
         results.push_back(ps.second);
     }
@@ -2902,9 +3976,9 @@ void InMemoryTicketRepository::save( Ticket& ticket)
 
 }
 
-std::vector<Ticket> InMemoryTicketRepository::getAllTickets()
+vector<Ticket> InMemoryTicketRepository::getAllTickets()
 {
-    std::vector<Ticket> results;
+    vector<Ticket> results;
     for (const auto &p : tickets)
     {
         results.push_back(p.second);
@@ -2939,8 +4013,8 @@ FILE PATH: .\src\Repo\InMemoryTrainRepository.cpp
 #include <iostream>
 #include <stdexcept>
 
-std::vector<Train> InMemoryTrainRepository::getAllTrains() const {
-    std::vector<Train> result;
+vector<Train> InMemoryTrainRepository::getAllTrains() const {
+    vector<Train> result;
     for (const auto& train : trains) {
         result.push_back(train.second);
     }
@@ -2980,7 +4054,7 @@ std::optional<Train>   InMemoryTrainRepository::getTrainById(const int& trainId)
     if (it != trains.end()) {
         return it->second;
     }
-    throw std::runtime_error("Train not found");
+    return std::nullopt; // not found
 }
 
 void InMemoryTrainRepository::clear() {
@@ -3004,17 +4078,22 @@ PassengerService::PassengerService(IPassengerRepository *repo) {
     this->passengerRepository =repo;
 }
 
-std::optional<Passenger> PassengerService::getPassenger(const int &passengerId) {
+Passenger PassengerService::getPassenger(const int &passengerId) {
+    auto p = passengerRepository->getPassenger(passengerId);
+    if(!p.has_value())
+        throw std::out_of_range("Passenger with id " + std::to_string(passengerId) + " does not exist");
 
-    return  passengerRepository->getPassenger(passengerId);
+    return  p.value();
 }
 
-std::vector<Passenger> PassengerService::getAllPassengers() {
+vector<Passenger> PassengerService::getAllPassengers() {
     return passengerRepository->getAllPassengers();
 }
 
-bool PassengerService::deletePassenger(const int &passengerId) {
-    return passengerRepository->deletePassenger(passengerId);
+void PassengerService::deletePassenger(const int &passengerId) {
+    bool deleted = passengerRepository->deletePassenger(passengerId);
+    if (!deleted)
+        throw std::out_of_range("failed to delete passenger with id : " + std::to_string(passengerId));
 }
 
 Passenger PassengerService::createPassenger(const std::string& name) {
@@ -3023,21 +4102,19 @@ Passenger PassengerService::createPassenger(const std::string& name) {
     return p;
 }
 Passenger PassengerService::updatePassenger(const int passengerId , const std::string& name) {
-    auto passenger = passengerRepository->getPassenger(passengerId);
-    if(!passenger.has_value())
-        throw std::runtime_error("passenger with id: "+ std::to_string(passengerId) + " does not exit \n");
-    passenger->setName(name); //update name
-    passengerRepository->save(passenger.value());
-    return passenger.value();
+    auto passenger = this->getPassenger(passengerId);
+    passenger.setName(name); //update name
+    passengerRepository->save(passenger);
+    return passenger;
 }
 
 Passenger PassengerService::find_or_create_passenger(const std::string &name) {
-    const std::vector<Passenger> passengers = passengerRepository->getAllPassengers();
-
+    const vector<Passenger> passengers = passengerRepository->getAllPassengers();
+    // search if it is existed
     for(const auto & p : passengers)
-        if(toLowerCase(p.getName()) == toLowerCase(name)){
-            return   passengerRepository->getPassenger(p.getId()).value();
-        }
+        if(toLowerCase(p.getName()) == toLowerCase(name))
+            return   p;
+    //else  create passenger
     Passenger p(0,name);
     passengerRepository->save(p);
     return p;
@@ -3058,36 +4135,31 @@ TicketService::TicketService(ITicketRepository *repo, TrainService *ts, Passenge
 }
 
 
-std::optional<Ticket> TicketService::getTicket(const int& ticketId)
+Ticket TicketService::getTicket(const int& ticketId)
 {
-    return ticketRepository->getTicketById(ticketId);
+    auto t =ticketRepository->getTicketById(ticketId);
+    if(!t.has_value())
+        throw std::out_of_range("ticket with id : " +  std::to_string(ticketId) + " does not exit");
+
+    return t.value();
 }
 
-std::vector<Ticket> TicketService::getAllTickets()
+vector<Ticket> TicketService::getAllTickets()
 {
     return ticketRepository->getAllTickets();
 }
 
-std::optional<Ticket> TicketService::getTicketByTrainAndPassenger(const int& trainId, const int& passengerId)
-{
 
-    return ticketRepository->getTicketByTrainAndPassenger(trainId, passengerId);
-}
 
 std::optional<Ticket> TicketService::bookTicket(const int& trainId, const int& passengerId)
 {
 
     // 1) get train by id if exist
     auto train = trainService->getTrain(trainId);
-    if(!train.has_value()){// not found
-        throw std::runtime_error("train with id : " +  std::to_string(trainId) + "does not exit");
-    }
+
 
     // 2) get passenger by id if exist
     auto  passenger = passengerService->getPassenger(passengerId);
-    if(!passenger.has_value()){// not found
-        throw std::runtime_error("passenger with id : " +  std::to_string(passengerId) + "does not exit");
-    }
 
     // 3) check if passenger has already ticket for this train
     auto  existTicket = ticketRepository->getTicketByTrainAndPassenger(trainId,passengerId);
@@ -3096,15 +4168,12 @@ std::optional<Ticket> TicketService::bookTicket(const int& trainId, const int& p
     }
 
     // 4) assign seat to passenger if avialble
-    int seat_number;
-    if(train->getSeatAllocator() != nullptr){ // if train have seat allocator and seats
-        seat_number=train->getSeatAllocator()->allocateSeat(passengerId);
-        trainService->save(train.value());
-    }
+    int seat_number=train.getSeatAllocator()->allocateSeat(passengerId);
+    trainService->save(train);
     if(seat_number == -1) // added to waiting list
         return std::nullopt;
     // 5)  create ticket if available
-    Ticket t(0,seat_number,trainId , passenger.value());
+    Ticket t(0,seat_number,trainId , passenger);
     ticketRepository->save(t);
     return t;
 }
@@ -3112,32 +4181,30 @@ std::optional<Ticket> TicketService::bookTicket(const int& trainId, const int& p
 void TicketService::cancelTicket(const int& ticketId)
 {
 
-    // get train
-    auto ticket =ticketRepository->getTicketById(ticketId);
-    if(!ticket.has_value()){ //not found
-        throw std::runtime_error("ticket with id : " +  std::to_string(ticketId) + " does not exit");
-    }
+    // get ticket
+    auto ticket =this->getTicket(ticketId);
+
 
     // return error if it is already cancelled
-    if(ticket->getStatus() == cancelled){
+    if(ticket.getStatus() == cancelled){
         throw std::runtime_error("ticket with id : " +  std::to_string(ticketId) + " is already cancelled");
     }
 
     //find train
-    auto train = trainService->getTrain(ticket->getTrainId());
-    if(!train.has_value() || train->getSeatAllocator() == nullptr){
-        throw std::runtime_error("train is not exist or not has seat allocator");
+    auto train = trainService->getTrain(ticket.getTrainId());
+    if(train.getSeatAllocator() == nullptr){
+        throw std::runtime_error("train  not has seat allocator");
     }
 
     // pass seat to waiting list
-    auto waitingPassengerId  = train->getSeatAllocator()->freeSeat(ticket->getSeat());
+    auto waitingPassengerId  = train.getSeatAllocator()->freeSeat(ticket.getSeat());
     if(waitingPassengerId  == -1)
         throw std::runtime_error("fail to free the seat \n");
-    trainService->save(train.value());
+    trainService->save(train);
     // book seat to another passenger from waiting list if available
     if (waitingPassengerId > 0)   // >0 means there was a waiting passenger
         try {
-            auto t = bookTicket(train->getTrainId(), waitingPassengerId);
+            auto t = bookTicket(train.getTrainId(), waitingPassengerId);
             if(t.has_value())
                 t->print("======Ticket booked to passenger " + std::to_string(waitingPassengerId) + " Successfully ========== \n" );
         } catch (const std::exception &e) {
@@ -3148,8 +4215,8 @@ void TicketService::cancelTicket(const int& ticketId)
 
 
     // cancel ticket
-    ticket->setStatus(cancelled);
-    ticketRepository->save(ticket.value());
+    ticket.setStatus(cancelled);
+    ticketRepository->save(ticket);
 }
 
 Ticket TicketService::updateTicket(Ticket &t) {
@@ -3172,8 +4239,12 @@ FILE PATH: .\src\Services\TrainService.cpp
 #include "utils/helpers.h"
 #include <stdexcept> //for run time exception
 
-std::optional<Train> TrainService::getTrain(const int& trainId) {
-    return trainRepository->getTrainById(trainId);
+Train TrainService::getTrain(const int& trainId) {
+    auto t =  trainRepository->getTrainById(trainId);
+    if(!t.has_value())
+        throw std::out_of_range("train with id : " +  std::to_string(trainId) + " does not exit");
+    return t.value();
+
 }
 
 TrainService::TrainService(ITrainRepository *repo) {
@@ -3184,7 +4255,7 @@ TrainService::~TrainService() {
     // do not delete repo because service is not owning the  repo it just use it
 }
 
-std::vector<Train> TrainService::getAllTrains() {
+vector<Train> TrainService::getAllTrains() {
     return trainRepository->getAllTrains();
 }
 
@@ -3194,16 +4265,15 @@ Train TrainService::createTrain(const std::string& name,int seats) {
     return t;
 }
 
-bool TrainService::deleteTrain(int trainId) {
-    return trainRepository->deleteTrain(trainId);
+void TrainService::deleteTrain(int trainId) {
+    bool deleted = trainRepository->deleteTrain(trainId);
+    if (!deleted)
+        throw std::out_of_range("failed to delete train with id : " + std::to_string(trainId));
 }
 
 bool TrainService::isAvailbleSeat(int trainId) {
-    auto train = trainRepository->getTrainById(trainId);
-    if(!train.has_value())
-        throw std::runtime_error("train with id : " +  std::to_string(trainId) + "does not exit");
-
-    return train->hasAvailableSeats() ;
+    auto train = this->getTrain(trainId);
+    return train.hasAvailableSeats() ;
 }
 
 void TrainService::save(Train &train) {
@@ -3211,26 +4281,27 @@ void TrainService::save(Train &train) {
 }
 
 Train TrainService::updateTrain(const int &trainId, const std::string &name, int seats) {
-    auto train = trainRepository->getTrainById(trainId);
-    if(!train.has_value())  // not exist
-        throw std::runtime_error("cannot update train because train with id : " +  std::to_string(trainId) + "does not exit") ;
+    auto train = this->getTrain(trainId);
+
     // update name
     if(!name.empty())
-        train->setTrainName(name);
+        train.setTrainName(name);
     // update seats
     if(seats != 0)
-        train->setSeats(seats);
-    trainRepository->save(train.value());
-    return train.value();
+        train.setSeats(seats);
+
+    auto& updated =train;
+    trainRepository->save(updated);
+    return updated;
 }
 
 Train TrainService::addSeats(const int trainId, const int seats) {
-    auto train =trainRepository->getTrainById(trainId);
-    if(!train.has_value())
-        throw std::runtime_error("train with id : " +  std::to_string(trainId) + "does not exit");
-    train->addSeats(seats);
-    trainRepository->save(train.value());
-    return train.value();
+    auto train =this->getTrain(trainId);;
+
+    train.addSeats(seats);
+    trainRepository->save(train);
+
+    return train;
 }
 
 Train TrainService::addSeats(const std::string name, const int seats) {
@@ -3250,10 +4321,9 @@ Train TrainService::addSeats(const std::string name, const int seats) {
 }
 
 void TrainService::printStatus(int trainId) {
-    auto train = trainRepository->getTrainById(trainId);
-    if(!train.has_value())
-        throw std::runtime_error("train with id : " +  std::to_string(trainId) + "does not exit");
-    train->trainStatus();
+    auto train = this->getTrain(trainId);
+
+    train.trainStatus();
 }
 
 
@@ -3271,33 +4341,40 @@ FILE PATH: .\src\utils\helpers.cpp
 #include <chrono>
 #include <iomanip>
 
-using std::string;
 using std::cout;
 using std::endl;
+using std::string;
 
-std::string toLowerCase(std::string word){
-    for(char & ch : word){
+std::string toLowerCase(std::string word)
+{
+    for (char &ch : word)
+    {
         ch = (char)tolower(ch);
     }
     return word;
 }
 // Function to trim leading and trailing whitespace
-std::string trim(const std::string &str) {
-    if (str.empty()) return "";
+std::string trim(const std::string &str)
+{
+    if (str.empty())
+        return "";
 
     auto start = 0;
     auto end = str.length() - 1;
 
     // find first char from the left
-    while (start < str.size() && str[start] == ' ') {
+    while (start < str.size() && str[start] == ' ')
+    {
         start++;
     }
 
     // all string is space
-    if (start == str.size()) return "";
+    if (start == str.size())
+        return "";
 
     // find first char from the right
-    while (end > start && str[end] == ' ') {
+    while (end > start && str[end] == ' ')
+    {
         end--;
     }
 
@@ -3305,33 +4382,43 @@ std::string trim(const std::string &str) {
     return str.substr(start, end - start + 1);
 }
 
-int parseInt(const std::string& arg , const std::string& argName){
-    try{
+int parseInt(const std::string &arg, const std::string &argName)
+{
+    try
+    {
         std::size_t pos; // have the index of non int char
-       int res = stoi(arg,&pos);
-       if(pos == 0 || pos != arg.size()) // to pass 12a and abc
-           throw std::invalid_argument("");
+        int res = stoi(arg, &pos);
+        if (pos == 0 || pos != arg.size()) // to pass 12a and abc
+            throw std::invalid_argument("");
 
-       return res;
-
-    }catch (std::invalid_argument& e) {
-        throw std::invalid_argument( argName +" must be a number");
+        return res;
     }
-    catch ( std::out_of_range& e) {
-        throw std::out_of_range( argName +" value is too large");
+    catch (std::invalid_argument &e)
+    {
+        throw std::invalid_argument(argName + " must be a number");
+    }
+    catch (std::out_of_range &e)
+    {
+        throw std::out_of_range(argName + " value is too large");
     }
 }
 
-bool isValidName(const std::string& name) {
+bool isValidName(const std::string &name)
+{
+
     static const std::regex pattern("^[A-Za-z0-9]+([' -][A-Za-z0-9]+)*$"); // a-z - '
+    // Do NOT trim here: tests expect names with leading/trailing whitespace
+    // to be considered invalid. Validation should be applied to the raw input.
     return std::regex_match(name, pattern);
 }
 
-std::string combineString(const std::vector<std::string>& args, int start) {
-   return combineString(args , start ,args.size()); // not including the end
+std::string combineString(const vector<std::string> &args, int start)
+{
+    return combineString(args, start, args.size()); // not including the end
 }
 
-std::string combineString(const std::vector<std::string>& args, int start, int end) {
+std::string combineString(const vector<std::string> &args, int start, int end)
+{
     if (start < 0 || start >= args.size())
         throw std::runtime_error("Start index out of range");
 
@@ -3342,7 +4429,8 @@ std::string combineString(const std::vector<std::string>& args, int start, int e
         throw std::runtime_error("Invalid end index");
 
     std::string text;
-    for (int i = start; i < end; i++) {  // inclusive
+    for (int i = start; i < end; i++)
+    { // inclusive
         if (!isValidName(args[i]) || isInteger(args[i]))
             throw std::runtime_error("invalid name");
         text += args[i] + " ";
@@ -3353,35 +4441,723 @@ std::string combineString(const std::vector<std::string>& args, int start, int e
 
     return text;
 }
-bool compareString(const std::string& str1 , const std::string& str2){
-    return toLowerCase(trim(str1)) ==toLowerCase(trim(str2));
+bool compareString(const std::string &str1, const std::string &str2)
+{
+    return toLowerCase(trim(str1)) == toLowerCase(trim(str2));
 }
-bool isInteger(const std::string& str) {
-    try{
+bool isInteger(const std::string &str)
+{
+    try
+    {
         std::size_t pos; // have the index of non int char
 
-        stoi(trim(str),&pos);
-        if(pos == 0 || pos != trim(str).size()) // to pass 12a and abc
+        stoi(trim(str), &pos);
+        if (pos == 0 || pos != trim(str).size()) // to pass 12a and abc
             throw std::invalid_argument("");
 
         return true;
-
-    }catch (std::invalid_argument& e) {
+    }
+    catch (std::invalid_argument &e)
+    {
         return false;
     }
-    catch ( std::out_of_range& e) {
-        throw std::out_of_range( str +" value is too large");
+    catch (std::out_of_range &e)
+    {
+        throw std::out_of_range(str + " value is too large");
     }
 }
 
-
-void printCurrentDate(){
+void printCurrentDate()
+{
     auto now = std::chrono::system_clock::now();
     auto time = std::chrono::system_clock::to_time_t(now);
 
     std::cout << "Current Date & Time: "
               << std::put_time(std::localtime(&time), "%Y-%m-%d %H:%M:%S")
               << "\n";
+}
+
+
+==================================================
+FILE PATH: .\tests\test_cliController.cpp
+==================================================
+
+#include <gtest/gtest.h>
+#include "CLIController.h"
+#include "RMSFacade.h"
+#include "StartupManager.h"
+#include <sstream>
+
+class CLIControllerTest : public ::testing::Test {
+protected:
+    std::unique_ptr<StartupManager> startupManager;
+    RMSFacade* facade;
+    std::unique_ptr<CLIController> controller;
+
+    void SetUp() override {
+        startupManager = std::make_unique<StartupManager>();
+        facade = startupManager->buildFacade();
+        controller = std::make_unique<CLIController>(facade);
+    }
+
+    void TearDown() override {
+        // Cleanup handled by unique_ptr
+    }
+};
+
+// ===================== Tokenize Tests =====================
+
+TEST_F(CLIControllerTest, Tokenize_SingleWord) {
+    auto tokens = CLIController::tokenize("help");
+    ASSERT_EQ(tokens.size(), 1);
+    EXPECT_EQ(tokens[0], "help");
+}
+
+TEST_F(CLIControllerTest, Tokenize_MultipleWords) {
+    auto tokens = CLIController::tokenize("train add Express 20");
+    ASSERT_EQ(tokens.size(), 4);
+    EXPECT_EQ(tokens[0], "train");
+    EXPECT_EQ(tokens[1], "add");
+    EXPECT_EQ(tokens[2], "Express");
+    EXPECT_EQ(tokens[3], "20");
+}
+
+TEST_F(CLIControllerTest, Tokenize_ExtraSpaces) {
+    auto tokens = CLIController::tokenize("  train   list  ");
+    ASSERT_EQ(tokens.size(), 2);
+    EXPECT_EQ(tokens[0], "train");
+    EXPECT_EQ(tokens[1], "list");
+}
+
+TEST_F(CLIControllerTest, Tokenize_EmptyString) {
+    auto tokens = CLIController::tokenize("");
+    EXPECT_TRUE(tokens.empty());
+}
+
+TEST_F(CLIControllerTest, Tokenize_OnlySpaces) {
+    auto tokens = CLIController::tokenize("     ");
+    EXPECT_TRUE(tokens.empty());
+}
+
+TEST_F(CLIControllerTest, Tokenize_WithNumbers) {
+    auto tokens = CLIController::tokenize("ticket book 1 John");
+    ASSERT_EQ(tokens.size(), 4);
+    EXPECT_EQ(tokens[0], "ticket");
+    EXPECT_EQ(tokens[1], "book");
+    EXPECT_EQ(tokens[2], "1");
+    EXPECT_EQ(tokens[3], "John");
+}
+
+TEST_F(CLIControllerTest, Tokenize_CommandWithName) {
+    auto tokens = CLIController::tokenize("passenger add John Doe");
+    ASSERT_EQ(tokens.size(), 4);
+    EXPECT_EQ(tokens[0], "passenger");
+    EXPECT_EQ(tokens[1], "add");
+    EXPECT_EQ(tokens[2], "John");
+    EXPECT_EQ(tokens[3], "Doe");
+}
+
+// ===================== Train Command Tests =====================
+
+TEST_F(CLIControllerTest, ListTrains_InitialState) {
+    // Should list the 5 mock trains loaded by StartupManager
+    std::ostringstream output;
+    std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
+
+    controller->list_trains();
+
+    std::cout.rdbuf(oldCout);
+
+    std::string result = output.str();
+    EXPECT_NE(result.find("Trains"), std::string::npos);
+}
+
+TEST_F(CLIControllerTest, AddTrain_ValidInput) {
+    vector<std::string> args = {"train", "add", "TestTrain", "25"};
+
+    EXPECT_NO_THROW(controller->add_train(args));
+
+    auto trains = facade->listTrains();
+    EXPECT_EQ(trains.size(), 6); // 5 mock + 1 new
+}
+
+TEST_F(CLIControllerTest, AddTrain_InsufficientArgs) {
+    vector<std::string> args = {"train", "add", "TestTrain"};
+
+    std::ostringstream output;
+    std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
+
+    controller->add_train(args);
+
+    std::cout.rdbuf(oldCout);
+
+    std::string result = output.str();
+    EXPECT_NE(result.find("Usage"), std::string::npos);
+}
+
+TEST_F(CLIControllerTest, AddTrain_InvalidSeats) {
+    vector<std::string> args = {"train", "add", "TestTrain", "invalid"};
+
+    std::ostringstream output;
+    std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
+
+    controller->add_train(args);
+
+    std::cout.rdbuf(oldCout);
+
+    std::string result = output.str();
+    EXPECT_NE(result.find("ERROR"), std::string::npos);
+}
+
+TEST_F(CLIControllerTest, AddTrain_MultiWordName) {
+    vector<std::string> args = {"train", "add", "Super", "Express", "Train", "25"};
+
+    EXPECT_NO_THROW(controller->add_train(args));
+
+    auto trains = facade->listTrains();
+    bool found = false;
+    for (const auto& train : trains) {
+        if (train.getTrainName() == "Super Express Train") {
+            found = true;
+            break;
+        }
+    }
+    EXPECT_TRUE(found);
+}
+
+TEST_F(CLIControllerTest, DeleteTrain_ValidId) {
+    auto trains = facade->listTrains();
+    ASSERT_FALSE(trains.empty());
+
+    vector<std::string> args = {
+            "train", "delete", std::to_string(trains[0].getTrainId())
+    };
+
+    EXPECT_NO_THROW(controller->delete_train(args));
+
+    auto updatedTrains = facade->listTrains();
+    EXPECT_EQ(updatedTrains.size(), trains.size() - 1);
+}
+
+TEST_F(CLIControllerTest, DeleteTrain_InsufficientArgs) {
+    vector<std::string> args = {"train", "delete"};
+
+    std::ostringstream output;
+    std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
+
+    controller->delete_train(args);
+
+    std::cout.rdbuf(oldCout);
+
+    std::string result = output.str();
+    EXPECT_NE(result.find("Usage"), std::string::npos);
+}
+
+TEST_F(CLIControllerTest, UpdateTrain_ValidInput) {
+    auto trains = facade->listTrains();
+    ASSERT_FALSE(trains.empty());
+
+    vector<std::string> args = {
+            "train", "update", std::to_string(trains[0].getTrainId()),
+            "UpdatedName", "30"
+    };
+
+    EXPECT_NO_THROW(controller->update_train(args));
+}
+
+TEST_F(CLIControllerTest, AddSeats_ValidInput) {
+    auto trains = facade->listTrains();
+    ASSERT_FALSE(trains.empty());
+
+    vector<std::string> args = {
+            "train", "seats", std::to_string(trains[0].getTrainId()), "10"
+    };
+
+    EXPECT_NO_THROW(controller->add_seats(args));
+}
+
+TEST_F(CLIControllerTest, GetTrainAvailability_Available) {
+    auto trains = facade->listTrains();
+    ASSERT_FALSE(trains.empty());
+
+    vector<std::string> args = {
+            "train", "availability", std::to_string(trains[0].getTrainId())
+    };
+
+    std::ostringstream output;
+    std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
+
+    controller->get_train_availability(args);
+
+    std::cout.rdbuf(oldCout);
+
+    std::string result = output.str();
+    EXPECT_NE(result.find("available"), std::string::npos);
+}
+
+TEST_F(CLIControllerTest, GetTrainStatus_ValidId) {
+    auto trains = facade->listTrains();
+    ASSERT_FALSE(trains.empty());
+
+    vector<std::string> args = {
+            "train", "status", std::to_string(trains[0].getTrainId())
+    };
+
+    EXPECT_NO_THROW(controller->get_train_status(args));
+}
+
+// ===================== Passenger Command Tests =====================
+
+TEST_F(CLIControllerTest, ListPassengers_InitialState) {
+    std::ostringstream output;
+    std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
+
+    controller->list_passengers();
+
+    std::cout.rdbuf(oldCout);
+
+    std::string result = output.str();
+    EXPECT_NE(result.find("Passengers"), std::string::npos);
+}
+
+TEST_F(CLIControllerTest, AddPassenger_ValidInput) {
+    vector<std::string> args = {"passenger", "add", "TestPassenger"};
+
+    EXPECT_NO_THROW(controller->add_passenger(args));
+
+    auto passengers = facade->listPassengers();
+    EXPECT_EQ(passengers.size(), 11); // 10 mock + 1 new
+}
+
+TEST_F(CLIControllerTest, AddPassenger_MultiWordName) {
+    vector<std::string> args = {"passenger", "add", "John", "Doe"};
+
+    EXPECT_NO_THROW(controller->add_passenger(args));
+
+    auto passengers = facade->listPassengers();
+    bool found = false;
+    for (const auto& p : passengers) {
+        if (p.getName() == "John Doe") {
+            found = true;
+            break;
+        }
+    }
+    EXPECT_TRUE(found);
+}
+
+TEST_F(CLIControllerTest, AddPassenger_InsufficientArgs) {
+    vector<std::string> args = {"passenger", "add"};
+
+    std::ostringstream output;
+    std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
+
+    controller->add_passenger(args);
+
+    std::cout.rdbuf(oldCout);
+
+    std::string result = output.str();
+    EXPECT_NE(result.find("Usage"), std::string::npos);
+}
+
+TEST_F(CLIControllerTest, UpdatePassenger_ValidInput) {
+    auto passengers = facade->listPassengers();
+    ASSERT_FALSE(passengers.empty());
+
+    vector<std::string> args = {
+            "passenger", "update", std::to_string(passengers[0].getId()),
+            "UpdatedName"
+    };
+
+    EXPECT_NO_THROW(controller->update_passenger(args));
+}
+
+TEST_F(CLIControllerTest, DeletePassenger_ValidId) {
+    Passenger temp = facade->addPassenger("TempPassenger");
+
+    vector<std::string> args = {
+            "passenger", "delete", std::to_string(temp.getId())
+    };
+
+    EXPECT_NO_THROW(controller->delete_passenger(args));
+}
+
+// ===================== Ticket Command Tests =====================
+
+TEST_F(CLIControllerTest, ListTickets_InitialState) {
+    std::ostringstream output;
+    std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
+
+    controller->list_tickets();
+
+    std::cout.rdbuf(oldCout);
+
+    std::string result = output.str();
+    EXPECT_NE(result.find("Tickets"), std::string::npos);
+}
+
+TEST_F(CLIControllerTest, BookTicket_ValidInput) {
+    auto trains = facade->listTrains();
+    ASSERT_FALSE(trains.empty());
+
+    vector<std::string> args = {
+            "ticket", "book", std::to_string(trains[0].getTrainId()),
+            "NewPassenger"
+    };
+
+    EXPECT_NO_THROW(controller->book_ticket(args));
+}
+
+TEST_F(CLIControllerTest, BookTicket_InsufficientArgs) {
+    vector<std::string> args = {"ticket", "book", "1"};
+
+    std::ostringstream output;
+    std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
+
+    controller->book_ticket(args);
+
+    std::cout.rdbuf(oldCout);
+
+    std::string result = output.str();
+    EXPECT_NE(result.find("Usage"), std::string::npos);
+}
+
+TEST_F(CLIControllerTest, BookTicket_InvalidTrainId) {
+    vector<std::string> args = {"ticket", "book", "invalid", "John"};
+
+    std::ostringstream output;
+    std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
+
+    controller->book_ticket(args);
+
+    std::cout.rdbuf(oldCout);
+
+    std::string result = output.str();
+    EXPECT_NE(result.find("ERROR"), std::string::npos);
+}
+
+TEST_F(CLIControllerTest, CancelTicket_ValidId) {
+    auto tickets = facade->listTickets();
+    ASSERT_FALSE(tickets.empty());
+
+    vector<std::string> args = {
+            "ticket", "cancel", std::to_string(tickets[0].getId())
+    };
+
+    EXPECT_NO_THROW(controller->cancel_ticket(args));
+}
+
+TEST_F(CLIControllerTest, CancelTicket_InsufficientArgs) {
+    vector<std::string> args = {"ticket", "cancel"};
+
+    std::ostringstream output;
+    std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
+
+    controller->cancel_ticket(args);
+
+    std::cout.rdbuf(oldCout);
+
+    std::string result = output.str();
+    EXPECT_NE(result.find("Usage"), std::string::npos);
+}
+
+// ===================== Helper Function Tests =====================
+
+TEST_F(CLIControllerTest, ReadLine_ReturnsString) {
+    // Simulate stdin
+    std::istringstream input("test input\n");
+    std::streambuf* oldCin = std::cin.rdbuf(input.rdbuf());
+
+    std::string result = CLIController::readLine();
+
+    std::cin.rdbuf(oldCin);
+
+    EXPECT_EQ(result, "test input");
+}
+
+// ===================== Edge Cases =====================
+
+TEST_F(CLIControllerTest, HandleEmptyCommand) {
+    vector<std::string> args = {};
+
+    // Commands with empty args should handle gracefully
+    EXPECT_NO_THROW(controller->add_train(args));
+    EXPECT_NO_THROW(controller->add_passenger(args));
+    EXPECT_NO_THROW(controller->book_ticket(args));
+}
+
+TEST_F(CLIControllerTest, HandleInvalidNumbers) {
+    vector<std::string> args = {"train", "add", "Test", "abc"};
+
+    std::ostringstream output;
+    std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
+
+    controller->add_train(args);
+
+    std::cout.rdbuf(oldCout);
+
+    std::string result = output.str();
+    EXPECT_NE(result.find("ERROR"), std::string::npos);
+}
+
+TEST_F(CLIControllerTest, HandleNegativeNumbers) {
+    vector<std::string> args = {"train", "add", "Test", "-5"};
+
+    std::ostringstream output;
+    std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
+
+    controller->add_train(args);
+
+    std::cout.rdbuf(oldCout);
+
+    std::string result = output.str();
+    EXPECT_NE(result.find("ERROR"), std::string::npos);
+}
+
+// ===================== Integration Tests =====================
+
+TEST_F(CLIControllerTest, CompleteWorkflow) {
+    // Add train
+    vector<std::string> trainArgs = {"train", "add", "WorkflowTrain", "10"};
+    controller->add_train(trainArgs);
+
+    // Add passenger
+    vector<std::string> passengerArgs = {"passenger", "add", "WorkflowPassenger"};
+    controller->add_passenger(passengerArgs);
+
+    // Get the train ID
+    auto trains = facade->listTrains();
+    int trainId = -1;
+    for (const auto& train : trains) {
+        if (train.getTrainName() == "WorkflowTrain") {
+            trainId = train.getTrainId();
+            break;
+        }
+    }
+    ASSERT_GT(trainId, 0);
+
+    // Book ticket
+    vector<std::string> ticketArgs = {
+            "ticket", "book", std::to_string(trainId), "WorkflowPassenger"
+    };
+    controller->book_ticket(ticketArgs);
+
+    // Verify
+    auto tickets = facade->listTickets();
+    bool found = false;
+    for (const auto& ticket : tickets) {
+        if (ticket.getTrainId() == trainId &&
+            ticket.getPassenger().getName() == "WorkflowPassenger") {
+            found = true;
+            break;
+        }
+    }
+    EXPECT_TRUE(found);
+}
+
+==================================================
+FILE PATH: .\tests\test_facade.cpp
+==================================================
+
+#include <gtest/gtest.h>
+#include "RMSFacade.h"
+#include "Services/TrainService.h"
+#include "Services/PassengerService.h"
+#include "Services/TicketService.h"
+#include "Repo/InMemoryTrainRepository.h"
+#include "Repo/InMemoryPassengerRepository.h"
+#include "Repo/InMemoryTicketRepository.h"
+
+class RMSFacadeTest : public ::testing::Test {
+protected:
+    std::unique_ptr<InMemoryTrainRepository> trainRepo;
+    std::unique_ptr<InMemoryPassengerRepository> passengerRepo;
+    std::unique_ptr<InMemoryTicketRepository> ticketRepo;
+
+    std::unique_ptr<TrainService> trainService;
+    std::unique_ptr<PassengerService> passengerService;
+    std::unique_ptr<TicketService> ticketService;
+
+    std::unique_ptr<RMSFacade> facade;
+
+    void SetUp() override {
+        trainRepo = std::make_unique<InMemoryTrainRepository>();
+        passengerRepo = std::make_unique<InMemoryPassengerRepository>();
+        ticketRepo = std::make_unique<InMemoryTicketRepository>();
+
+        trainService = std::make_unique<TrainService>(trainRepo.get());
+        passengerService = std::make_unique<PassengerService>(passengerRepo.get());
+        ticketService = std::make_unique<TicketService>(
+                ticketRepo.get(),
+                trainService.get(),
+                passengerService.get()
+        );
+
+        facade = std::make_unique<RMSFacade>(
+                trainService.get(),
+                ticketService.get(),
+                passengerService.get()
+        );
+    }
+
+    void TearDown() override {
+        trainRepo->clear();
+        passengerRepo->clear();
+        ticketRepo->clear();
+    }
+};
+
+// ===================== Train Operations =====================
+
+TEST_F(RMSFacadeTest, AddTrain_Success) {
+    Train train = facade->addTrain("Express", 20);
+    EXPECT_GT(train.getTrainId(), 0);
+    EXPECT_EQ(train.getTrainName(), "Express");
+    EXPECT_EQ(train.getTotalSeats(), 20);
+}
+
+TEST_F(RMSFacadeTest, AddTrain_Invalid) {
+    EXPECT_THROW(facade->addTrain("", 20), std::invalid_argument);
+    EXPECT_THROW(facade->addTrain("   ", 20), std::invalid_argument);
+    EXPECT_THROW(facade->addTrain("Express", 0), std::invalid_argument);
+    EXPECT_THROW(facade->addTrain("Express", -5), std::invalid_argument);
+}
+
+TEST_F(RMSFacadeTest, ListTrains_Multiple) {
+    facade->addTrain("Express", 20);
+    facade->addTrain("Local", 30);
+    auto trains = facade->listTrains();
+    EXPECT_EQ(trains.size(), 2);
+}
+
+TEST_F(RMSFacadeTest, GetTrain_SuccessAndNotFound) {
+    Train added = facade->addTrain("Express", 20);
+    auto retrieved = facade->getTrain(added.getTrainId());
+    EXPECT_EQ(retrieved.getTrainName(), "Express");
+    EXPECT_THROW(facade->getTrain(999), std::out_of_range);
+}
+
+TEST_F(RMSFacadeTest, UpdateTrain_SuccessAndEdgeCases) {
+    Train train = facade->addTrain("Old Name", 10);
+    Train updated = facade->updateTrain(train.getTrainId(), "New Name", 15);
+    EXPECT_EQ(updated.getTrainName(), "New Name");
+    EXPECT_EQ(updated.getTotalSeats(), 15);
+    EXPECT_THROW(facade->updateTrain(0, "Test", 10), std::invalid_argument);
+    EXPECT_THROW(facade->updateTrain(train.getTrainId(), "", 10), std::invalid_argument);
+    EXPECT_THROW(facade->updateTrain(train.getTrainId(), "Test", -5), std::invalid_argument);
+    EXPECT_THROW(facade->updateTrain(999, "Test", 10), std::out_of_range);
+}
+
+TEST_F(RMSFacadeTest, AddSeatsByIdAndName) {
+    Train train = facade->addTrain("Test", 10);
+    Train updatedById = facade->addSeats(train.getTrainId(), 5);
+    EXPECT_EQ(updatedById.getTotalSeats(), 15);
+
+    facade->addTrain("Test Train", 10);
+    Train updatedByName = facade->addSeats("Test Train", 5);
+    EXPECT_EQ(updatedByName.getTotalSeats(), 15);
+}
+
+TEST_F(RMSFacadeTest, DeleteTrain_SuccessAndNotFound) {
+    Train train = facade->addTrain("Test", 10);
+    EXPECT_NO_THROW(facade->deleteTrain(train.getTrainId()));
+    EXPECT_THROW(facade->deleteTrain(999), std::out_of_range);
+}
+
+TEST_F(RMSFacadeTest, GetTrainAvailability) {
+    Train train = facade->addTrain("Test", 1);
+    EXPECT_TRUE(facade->getTrainAvailability(train.getTrainId()));
+    facade->addPassenger("John");
+    facade->bookTicket(train.getTrainId(), "John");
+    EXPECT_FALSE(facade->getTrainAvailability(train.getTrainId()));
+}
+
+// ===================== Passenger Operations =====================
+
+TEST_F(RMSFacadeTest, AddPassenger_SuccessAndInvalid) {
+    Passenger p = facade->addPassenger("John Doe");
+    EXPECT_GT(p.getId(), 0);
+    EXPECT_EQ(p.getName(), "John Doe");
+
+    EXPECT_THROW(facade->addPassenger(""), std::invalid_argument);
+    EXPECT_THROW(facade->addPassenger("   "), std::invalid_argument);
+}
+
+TEST_F(RMSFacadeTest, UpdatePassenger_SuccessAndTickets) {
+    Train train = facade->addTrain("Test", 10);
+    Passenger p = facade->addPassenger("John");
+    facade->bookTicket(train.getTrainId(), "John");
+    EXPECT_THROW( facade->bookTicket(train.getTrainId(), "John"), std::runtime_error);
+
+    Passenger updated = facade->updatePassenger(p.getId(), "John Updated");
+
+    EXPECT_EQ(updated.getName(), "John Updated");
+    auto tickets = facade->listTickets();
+    for (auto& t : tickets) {
+        if (t.getPassenger().getId() == p.getId())
+            EXPECT_EQ(t.getPassenger().getName(), "John Updated");
+    }
+
+    EXPECT_THROW(facade->updatePassenger(999, "Test"), std::out_of_range);
+}
+
+TEST_F(RMSFacadeTest, DeletePassenger_SuccessAndNotFound) {
+    Passenger p = facade->addPassenger("John");
+    EXPECT_NO_THROW(facade->deletePassenger(p.getId()));
+    EXPECT_THROW(facade->deletePassenger(999), std::out_of_range);
+}
+
+// ===================== Ticket Operations =====================
+
+TEST_F(RMSFacadeTest, BookTicket_SuccessAndEdgeCases) {
+    Train train = facade->addTrain("Express", 3);
+    facade->addPassenger("John");
+
+    auto ticket = facade->bookTicket(train.getTrainId(), "John");
+    ASSERT_TRUE(ticket.has_value());
+    EXPECT_EQ(ticket->getPassenger().getName(), "John");
+
+    // passenger auto-created
+    auto ticket2 = facade->bookTicket(train.getTrainId(), "New Passenger");
+    ASSERT_TRUE(ticket2.has_value());
+    EXPECT_EQ(ticket2->getPassenger().getName(), "New Passenger");
+
+    EXPECT_THROW(facade->bookTicket(0, "John"), std::invalid_argument);
+    EXPECT_THROW(facade->bookTicket(train.getTrainId(), ""), std::invalid_argument);
+    auto ticket3 = facade->bookTicket(train.getTrainId(), "   Trim Test   ");
+    ASSERT_TRUE(ticket3.has_value());
+    EXPECT_EQ(ticket3->getPassenger().getName(), "Trim Test");
+}
+
+
+// ===================== Integration Tests =====================
+
+TEST_F(RMSFacadeTest, CompleteWorkflowAndWaitingList) {
+    Train train = facade->addTrain("Express", 1);
+    auto t1 = facade->bookTicket(train.getTrainId(), "John");
+    auto t2 = facade->bookTicket(train.getTrainId(), "Jane");
+    EXPECT_FALSE(t2.has_value());
+
+    facade->cancelTicket(t1->getId());
+
+    auto tickets = facade->listTickets();
+    int bookedCount = 0;
+    for (const auto& t : tickets) if (t.getStatus() == booked) bookedCount++;
+    EXPECT_EQ(bookedCount, 1);
+}
+
+TEST_F(RMSFacadeTest, UpdateTrainExpandsCapacityAndFulfillsWaitingList) {
+    Train train = facade->addTrain("Test", 2);
+    facade->bookTicket(train.getTrainId(), "Passenger1");
+    facade->bookTicket(train.getTrainId(), "Passenger2");
+    facade->bookTicket(train.getTrainId(), "Waiting1");
+    facade->bookTicket(train.getTrainId(), "Waiting2");
+
+    facade->updateTrain(train.getTrainId(), "Test", 5);
+
+    auto tickets = facade->listTickets();
+    int bookedCount = 0;
+    for (const auto& t : tickets) if (t.getStatus() == booked) bookedCount++;
+    EXPECT_GE(bookedCount, 4); // 2 waiting passengers booked after expansion
 }
 
 
@@ -3436,8 +5212,8 @@ TEST(HelpersTest, IsValidNameFunction) {
 }
 
 TEST(HelpersTest, CombineStringFunction) {
-    const std::vector<std::string> args = {"cmd", "John", "Doe", "Smith"};
-    const std::vector<std::string> invalidArgs = {"cmd", "John", "123"};
+    const vector<std::string> args = {"cmd", "John", "Doe", "Smith"};
+    const vector<std::string> invalidArgs = {"cmd", "John", "123"};
 
     EXPECT_EQ("John Doe Smith", combineString(args, 1));
     EXPECT_EQ("Doe Smith", combineString(args, 2));
@@ -3468,10 +5244,8 @@ FILE PATH: .\tests\test_models.cpp
 #include <gtest/gtest.h>
 #include "models/Passenger.h"
 #include "models/Train.h"
-#include "models/SeatAllocator.h"
 #include "models/Ticket.h"
-#include <vector>
-
+#include "structures/vector.h"
 class IntegrationTest : public ::testing::Test {
 protected:
     void SetUp() override {}
@@ -3494,8 +5268,8 @@ TEST_F(IntegrationTest, CompleteBookingFlow) {
 
 TEST_F(IntegrationTest, MultiplePassengersBooking) {
     Train train(1, "Express", 10);
-    std::vector<Passenger> passengers;
-    std::vector<Ticket> tickets;
+    vector<Passenger> passengers;
+    vector<Ticket> tickets;
 
     for (int i = 1; i <= 5; i++) {
         Passenger p(100 + i, "Passenger " + std::to_string(i));
@@ -3610,7 +5384,7 @@ TEST_F(IntegrationTest, AddSeatsWithActiveBookings) {
 
 TEST_F(IntegrationTest, FullOperationalDay) {
     Train train(1, "Morning Express", 5);
-    std::vector<Ticket> activeTickets;
+    vector<Ticket> activeTickets;
 
     for (int i = 1; i <= 5; i++) {
         Passenger p(100 + i, "Passenger " + std::to_string(i));
@@ -3783,7 +5557,7 @@ TEST_F(InMemoryPassengerRepositoryTest, GetPassengerReturnsNulloptWhenNotFound) 
 }
 
 TEST_F(InMemoryPassengerRepositoryTest, GetAllPassengersReturnsEmptyWhenEmpty) {
-    std::vector<Passenger> passengers = repo.getAllPassengers();
+    vector<Passenger> passengers = repo.getAllPassengers();
     EXPECT_TRUE(passengers.empty());
 }
 
@@ -3794,7 +5568,7 @@ TEST_F(InMemoryPassengerRepositoryTest, GetAllPassengersReturnsAllSavedPassenger
     repo.save(p1);
     repo.save(p2);
     repo.save(p3);
-    std::vector<Passenger> passengers = repo.getAllPassengers();
+    vector<Passenger> passengers = repo.getAllPassengers();
     EXPECT_EQ(3, passengers.size());
 }
 
@@ -3829,7 +5603,7 @@ TEST_F(InMemoryPassengerRepositoryTest, ClearRemovesAllPassengers) {
     repo.save(p1);
     repo.save(p2);
     repo.clear();
-    std::vector<Passenger> passengers = repo.getAllPassengers();
+    vector<Passenger> passengers = repo.getAllPassengers();
     EXPECT_TRUE(passengers.empty());
 }
 
@@ -3851,7 +5625,7 @@ FILE PATH: .\tests\test_passengerService.cpp
 #include "Repo/InMemoryPassengerRepository.h"
 #include "Services/PassengerService.h"
 #include "utils/helpers.h"
-#include <optional>
+#include <set>
 
 class PassengerServiceTest : public ::testing::Test {
 protected:
@@ -3869,6 +5643,10 @@ protected:
     }
 };
 
+//
+// CREATE PASSENGER TESTS
+//
+
 TEST_F(PassengerServiceTest, CreatePassenger_AssignsUniqueIds) {
     Passenger a = service->createPassenger("A");
     Passenger b = service->createPassenger("B");
@@ -3880,94 +5658,129 @@ TEST_F(PassengerServiceTest, CreatePassenger_TrimsName) {
     EXPECT_EQ("Omar", p.getName());
 }
 
-TEST_F(PassengerServiceTest, CreatePassenger_ValidatesName) {
+TEST_F(PassengerServiceTest, CreatePassenger_EmptyNameThrows) {
     EXPECT_THROW(service->createPassenger(""), std::invalid_argument);
 }
 
-TEST_F(PassengerServiceTest, GetPassenger_ReturnsNulloptForNegativeId) {
-    EXPECT_FALSE(service->getPassenger(-1).has_value());
+//
+// GET PASSENGER TESTS
+//
+
+TEST_F(PassengerServiceTest, GetPassenger_ThrowsForNegativeId) {
+    EXPECT_THROW(service->getPassenger(-1), std::out_of_range);
 }
 
-TEST_F(PassengerServiceTest, GetPassenger_AfterMultipleCreates) {
+TEST_F(PassengerServiceTest, GetPassenger_ReturnsCorrectPassenger) {
     Passenger a = service->createPassenger("A");
     Passenger b = service->createPassenger("B");
-    auto retrieved = service->getPassenger(b.getId());
-    ASSERT_TRUE(retrieved.has_value());
-    EXPECT_EQ("B", retrieved->getName());
+
+    Passenger retrieved = service->getPassenger(b.getId());
+    EXPECT_EQ("B", retrieved.getName());
 }
 
-TEST_F(PassengerServiceTest, GetPassenger_ReturnsNulloptForNonExistent) {
+TEST_F(PassengerServiceTest, GetPassenger_ThrowsForNonExistentId) {
     service->createPassenger("A");
-    EXPECT_FALSE(service->getPassenger(999).has_value());
+    EXPECT_THROW(service->getPassenger(999), std::out_of_range);
 }
 
-TEST_F(PassengerServiceTest, GetAllPassengers_OrderIsConsistent) {
+//
+// GET ALL PASSENGERS
+//
+
+TEST_F(PassengerServiceTest, GetAllPassengers_SizeCorrect) {
     service->createPassenger("A");
     service->createPassenger("B");
     service->createPassenger("C");
-    std::vector<Passenger> all = service->getAllPassengers();
+
+    auto all = service->getAllPassengers();
     EXPECT_EQ(3, all.size());
 }
 
-TEST_F(PassengerServiceTest, DeletePassenger_DoesNotAffectOtherPassengers) {
+//
+// DELETE PASSENGER
+//
+TEST_F(PassengerServiceTest, DeletePassenger_RemovesOnlyTarget) {
     Passenger p1 = service->createPassenger("A");
     Passenger p2 = service->createPassenger("B");
-    service->deletePassenger(p1.getId());
-    EXPECT_EQ(1, service->getAllPassengers().size());
+
+    service->deletePassenger(p1.getId());  // throws on failure
+
+    auto all = service->getAllPassengers();
+    EXPECT_EQ(1, all.size());
+    EXPECT_EQ("B", all[0].getName());
 }
 
-TEST_F(PassengerServiceTest, DeletePassenger_ReturnsFalseForNonExistent) {
-    bool result = service->deletePassenger(999);
-    EXPECT_FALSE(result);
+TEST_F(PassengerServiceTest, DeletePassenger_ThrowsForNonExistent) {
+    EXPECT_THROW(service->deletePassenger(999), std::out_of_range);
 }
 
-TEST_F(PassengerServiceTest, DeletePassenger_ReturnsTrueForSuccess) {
+TEST_F(PassengerServiceTest, DeletePassenger_SuccessDoesNotThrow) {
     Passenger p = service->createPassenger("A");
-    bool result = service->deletePassenger(p.getId());
-    EXPECT_TRUE(result);
+    EXPECT_NO_THROW(service->deletePassenger(p.getId()));
 }
+
+//
+// UPDATE PASSENGER
+//
 
 TEST_F(PassengerServiceTest, UpdatePassenger_Success) {
     Passenger p = service->createPassenger("Original");
     int id = p.getId();
+
     Passenger updated = service->updatePassenger(id, "Updated");
-    EXPECT_EQ(updated.getId(), id);
-    EXPECT_EQ(updated.getName(), "Updated");
+
+    EXPECT_EQ(id, updated.getId());
+    EXPECT_EQ("Updated", updated.getName());
 }
 
 TEST_F(PassengerServiceTest, UpdatePassenger_ThrowsForNonExistent) {
-    EXPECT_THROW(service->updatePassenger(999, "NewName"), std::runtime_error);
+    EXPECT_THROW(service->updatePassenger(999, "Name"), std::out_of_range);
 }
 
-TEST_F(PassengerServiceTest, FindOrCreate_CaseInsensitiveComparison) {
+//
+// FIND OR CREATE PASSENGER
+//
+
+TEST_F(PassengerServiceTest, FindOrCreate_FindsExistingIgnoringCase) {
     service->createPassenger("Omar");
+
     Passenger found = service->find_or_create_passenger("oMaR");
+
     EXPECT_EQ("Omar", found.getName());
     EXPECT_EQ(1, service->getAllPassengers().size());
 }
 
-TEST_F(PassengerServiceTest, FindOrCreate_ReturnsExistingEvenIfExactNameDifferentCase) {
+TEST_F(PassengerServiceTest, FindOrCreate_ReturnsExistingEvenIfCaseDiffers) {
     Passenger p = service->createPassenger("HELLO");
+
     Passenger found = service->find_or_create_passenger("hello");
+
     EXPECT_EQ(p.getId(), found.getId());
     EXPECT_EQ("HELLO", found.getName());
 }
 
-TEST_F(PassengerServiceTest, FindOrCreate_DoesNotMatchSimilarNames) {
+TEST_F(PassengerServiceTest, FindOrCreate_DoesNotMatchDifferentNames) {
     service->createPassenger("John");
+
     Passenger p = service->find_or_create_passenger("Johnny");
+
     EXPECT_EQ("Johnny", p.getName());
     EXPECT_EQ(2, service->getAllPassengers().size());
 }
 
-TEST_F(PassengerServiceTest, Create100Passengers_HaveUniqueIds) {
+
+
+TEST_F(PassengerServiceTest, Create100Passengers_AllIdsUnique) {
     std::set<int> ids;
+
     for (int i = 0; i < 100; i++) {
         Passenger p = service->createPassenger("P" + std::to_string(i));
         ids.insert(p.getId());
     }
+
     EXPECT_EQ(100, ids.size());
 }
+
 
 ==================================================
 FILE PATH: .\tests\test_SeatAllocator.cpp
@@ -3975,7 +5788,7 @@ FILE PATH: .\tests\test_SeatAllocator.cpp
 
 #include <gtest/gtest.h>
 #include "models/SeatAllocator.h"
-
+#include "structures/vector.h"
 class SeatAllocatorTest : public ::testing::Test {
 protected:
     void SetUp() override {}
@@ -4166,7 +5979,7 @@ TEST_F(SeatAllocatorTest, ProcessWaitingList_Basic) {
     allocator.allocateSeat(103);
     allocator.allocateSeat(104);
 
-    std::vector<int> bookedPassengers;
+    vector<int> bookedPassengers;
     auto callback = [&bookedPassengers](int passengerId) {
         bookedPassengers.push_back(passengerId);
     };
@@ -4187,7 +6000,7 @@ TEST_F(SeatAllocatorTest, ProcessWaitingList_MoreSeatsThanWaiting) {
     allocator.allocateSeat(102);
     allocator.allocateSeat(103);
 
-    std::vector<int> bookedPassengers;
+    vector<int> bookedPassengers;
     auto callback = [&bookedPassengers](int passengerId) {
         bookedPassengers.push_back(passengerId);
     };
@@ -4205,7 +6018,7 @@ TEST_F(SeatAllocatorTest, ProcessWaitingList_NoWaitingList) {
     SeatAllocator allocator(5);
     allocator.allocateSeat(101);
 
-    std::vector<int> bookedPassengers;
+    vector<int> bookedPassengers;
     auto callback = [&bookedPassengers](int passengerId) {
         bookedPassengers.push_back(passengerId);
     };
@@ -4232,6 +6045,403 @@ TEST_F(SeatAllocatorTest, ProcessWaitingList_CallbackThrows) {
 
     EXPECT_EQ(processed, 0);
     EXPECT_EQ(allocator.getWaitingListSize(), 1);
+}
+
+==================================================
+FILE PATH: .\tests\test_startUpManager.cpp
+==================================================
+
+#include <gtest/gtest.h>
+#include "StartupManager.h"
+#include "RMSFacade.h"
+
+class StartupManagerTest : public ::testing::Test {
+protected:
+    void SetUp() override {}
+    void TearDown() override {}
+};
+
+// ===================== Basic Tests =====================
+
+TEST_F(StartupManagerTest, BuildFacade_ReturnsValidPointer) {
+    StartupManager manager;
+    RMSFacade* facade = manager.buildFacade();
+
+    ASSERT_NE(facade, nullptr);
+}
+
+TEST_F(StartupManagerTest, BuildFacade_InitializesComponents) {
+    StartupManager manager;
+    RMSFacade* facade = manager.buildFacade();
+
+    ASSERT_NE(facade, nullptr);
+
+    // Test that facade can perform operations
+    EXPECT_NO_THROW({
+                        auto trains = facade->listTrains();
+                        auto passengers = facade->listPassengers();
+                        auto tickets = facade->listTickets();
+                    });
+}
+
+TEST_F(StartupManagerTest, BuildFacade_LoadsMockData) {
+    StartupManager manager;
+    RMSFacade* facade = manager.buildFacade();
+
+    ASSERT_NE(facade, nullptr);
+
+    auto trains = facade->listTrains();
+    auto passengers = facade->listPassengers();
+    auto tickets = facade->listTickets();
+
+    // Mock data loads 5 trains, 10 passengers, and 10+ tickets
+    EXPECT_EQ(trains.size(), 5);
+    EXPECT_EQ(passengers.size(), 10);
+    EXPECT_GE(tickets.size(), 10);
+}
+
+// ===================== Mock Data Verification =====================
+
+TEST_F(StartupManagerTest, MockData_TrainsExist) {
+    StartupManager manager;
+    RMSFacade* facade = manager.buildFacade();
+
+    auto trains = facade->listTrains();
+
+    vector<std::string> expectedTrains = {
+            "Alex NightLine",
+            "Luxor Premium",
+            "Cairo Express",
+            "Aswan Sleeper",
+            "Mediterranean Star"
+    };
+
+    EXPECT_EQ(trains.size(), expectedTrains.size());
+
+    for (const auto& expectedName : expectedTrains) {
+        bool found = false;
+        for (const auto& train : trains) {
+            if (train.getTrainName() == expectedName) {
+                found = true;
+                break;
+            }
+        }
+        EXPECT_TRUE(found) << "Train not found: " << expectedName;
+    }
+}
+
+TEST_F(StartupManagerTest, MockData_PassengersExist) {
+    StartupManager manager;
+    RMSFacade* facade = manager.buildFacade();
+
+    auto passengers = facade->listPassengers();
+
+    vector<std::string> expectedPassengers = {
+            "Omar", "Sara", "Mohamed", "Nour", "Ali",
+            "Mona", "Youssef", "Laila", "Karim", "Dina"
+    };
+
+    EXPECT_EQ(passengers.size(), expectedPassengers.size());
+
+    for (const auto& expectedName : expectedPassengers) {
+        bool found = false;
+        for (const auto& passenger : passengers) {
+            if (passenger.getName() == expectedName) {
+                found = true;
+                break;
+            }
+        }
+        EXPECT_TRUE(found) << "Passenger not found: " << expectedName;
+    }
+}
+
+TEST_F(StartupManagerTest, MockData_TicketsExist) {
+    StartupManager manager;
+    RMSFacade* facade = manager.buildFacade();
+
+    auto tickets = facade->listTickets();
+
+    // Based on loadMockData, should have at least 11 tickets
+    // (some passengers like Omar book multiple tickets)
+    EXPECT_GE(tickets.size(), 10);
+
+    // Verify all tickets are booked status
+    for (const auto& ticket : tickets) {
+        EXPECT_EQ(ticket.getStatus(), booked);
+    }
+}
+
+TEST_F(StartupManagerTest, MockData_TrainsHaveCorrectCapacity) {
+    StartupManager manager;
+    RMSFacade* facade = manager.buildFacade();
+
+    auto trains = facade->listTrains();
+
+    std::map<std::string, int> expectedCapacities = {
+            {"Alex NightLine", 30},
+            {"Luxor Premium", 40},
+            {"Cairo Express", 25},
+            {"Aswan Sleeper", 20},
+            {"Mediterranean Star", 35}
+    };
+
+    for (const auto& train : trains) {
+        auto it = expectedCapacities.find(train.getTrainName());
+        if (it != expectedCapacities.end()) {
+            EXPECT_EQ(train.getTotalSeats(), it->second)
+                                << "Train " << train.getTrainName()
+                                << " has incorrect capacity";
+        }
+    }
+}
+
+// ===================== Facade Functionality Tests =====================
+
+TEST_F(StartupManagerTest, Facade_CanAddNewTrain) {
+    StartupManager manager;
+    RMSFacade* facade = manager.buildFacade();
+
+    Train newTrain = facade->addTrain("New Train", 50);
+
+    EXPECT_GT(newTrain.getTrainId(), 0);
+    EXPECT_EQ(newTrain.getTrainName(), "New Train");
+    EXPECT_EQ(newTrain.getTotalSeats(), 50);
+
+    auto trains = facade->listTrains();
+    EXPECT_EQ(trains.size(), 6); // 5 mock + 1 new
+}
+
+TEST_F(StartupManagerTest, Facade_CanAddNewPassenger) {
+    StartupManager manager;
+    RMSFacade* facade = manager.buildFacade();
+
+    Passenger newPassenger = facade->addPassenger("New Passenger");
+
+    EXPECT_GT(newPassenger.getId(), 0);
+    EXPECT_EQ(newPassenger.getName(), "New Passenger");
+
+    auto passengers = facade->listPassengers();
+    EXPECT_EQ(passengers.size(), 11); // 10 mock + 1 new
+}
+
+TEST_F(StartupManagerTest, Facade_CanBookNewTicket) {
+    StartupManager manager;
+    RMSFacade* facade = manager.buildFacade();
+
+    auto trains = facade->listTrains();
+    ASSERT_FALSE(trains.empty());
+
+    auto ticket = facade->bookTicket(trains[0].getTrainId(), "Test Passenger");
+
+    ASSERT_TRUE(ticket.has_value());
+    EXPECT_EQ(ticket->getTrainId(), trains[0].getTrainId());
+}
+
+TEST_F(StartupManagerTest, Facade_CanCancelTicket) {
+    StartupManager manager;
+    RMSFacade* facade = manager.buildFacade();
+
+    auto tickets = facade->listTickets();
+    ASSERT_FALSE(tickets.empty());
+
+    EXPECT_NO_THROW(facade->cancelTicket(tickets[0].getId()));
+}
+
+TEST_F(StartupManagerTest, Facade_CanUpdateTrain) {
+    StartupManager manager;
+    RMSFacade* facade = manager.buildFacade();
+
+    auto trains = facade->listTrains();
+    ASSERT_FALSE(trains.empty());
+
+    Train updated = facade->updateTrain(
+            trains[0].getTrainId(),
+            "Updated Name",
+            50
+    );
+
+    EXPECT_EQ(updated.getTrainName(), "Updated Name");
+    EXPECT_EQ(updated.getTotalSeats(), 50);
+}
+
+TEST_F(StartupManagerTest, Facade_CanUpdatePassenger) {
+    StartupManager manager;
+    RMSFacade* facade = manager.buildFacade();
+
+    auto passengers = facade->listPassengers();
+    ASSERT_FALSE(passengers.empty());
+
+    Passenger updated = facade->updatePassenger(
+            passengers[0].getId(),
+            "Updated Name"
+    );
+
+    EXPECT_EQ(updated.getName(), "Updated Name");
+}
+
+TEST_F(StartupManagerTest, Facade_CanDeleteTrain) {
+    StartupManager manager;
+    RMSFacade* facade = manager.buildFacade();
+
+    auto trains = facade->listTrains();
+    ASSERT_FALSE(trains.empty());
+    int initialCount = trains.size();
+
+    EXPECT_NO_THROW(facade->deleteTrain(trains[0].getTrainId()));
+
+    auto updatedTrains = facade->listTrains();
+    EXPECT_EQ(updatedTrains.size(), initialCount - 1);
+}
+
+TEST_F(StartupManagerTest, Facade_CanDeletePassenger) {
+    StartupManager manager;
+    RMSFacade* facade = manager.buildFacade();
+
+    auto passengers = facade->listPassengers();
+    ASSERT_FALSE(passengers.empty());
+    int initialCount = passengers.size();
+
+    // Find a passenger without tickets to delete
+    Passenger toDelete = facade->addPassenger("Temp Passenger");
+
+    EXPECT_NO_THROW(facade->deletePassenger(toDelete.getId()));
+
+    auto updatedPassengers = facade->listPassengers();
+    EXPECT_EQ(updatedPassengers.size(), initialCount);
+}
+
+// ===================== Integration Tests =====================
+
+TEST_F(StartupManagerTest, MultipleOperationsOnFacade) {
+    StartupManager manager;
+    RMSFacade* facade = manager.buildFacade();
+
+    // Add new entities
+    Train newTrain = facade->addTrain("Integration Train", 20);
+    Passenger newPassenger = facade->addPassenger("Integration Passenger");
+
+    // Book ticket
+    auto ticket = facade->bookTicket(
+            newTrain.getTrainId(),
+            "Integration Passenger"
+    );
+
+    ASSERT_TRUE(ticket.has_value());
+
+    // Verify all lists
+    auto trains = facade->listTrains();
+    auto passengers = facade->listPassengers();
+    auto tickets = facade->listTickets();
+
+    EXPECT_GE(trains.size(), 6);
+    EXPECT_GE(passengers.size(), 11);
+    EXPECT_GE(tickets.size(), 11);
+}
+
+TEST_F(StartupManagerTest, FacadeStateConsistency) {
+    StartupManager manager;
+    RMSFacade* facade = manager.buildFacade();
+
+    // Get initial state
+    auto initialTrains = facade->listTrains();
+    auto initialPassengers = facade->listPassengers();
+    auto initialTickets = facade->listTickets();
+
+    // Perform operations
+    Train train = facade->addTrain("Test Train", 10);
+    facade->addPassenger("Test Passenger");
+    facade->bookTicket(train.getTrainId(), "Test Passenger");
+
+    // Verify state changed appropriately
+    auto finalTrains = facade->listTrains();
+    auto finalPassengers = facade->listPassengers();
+    auto finalTickets = facade->listTickets();
+
+    EXPECT_EQ(finalTrains.size(), initialTrains.size() + 1);
+    EXPECT_EQ(finalPassengers.size(), initialPassengers.size() + 1);
+    EXPECT_EQ(finalTickets.size(), initialTickets.size() + 1);
+}
+
+// ===================== Memory Management Tests =====================
+
+TEST_F(StartupManagerTest, MultipleStartupManagers) {
+    {
+        StartupManager manager1;
+        RMSFacade* facade1 = manager1.buildFacade();
+        ASSERT_NE(facade1, nullptr);
+
+        auto trains1 = facade1->listTrains();
+        EXPECT_EQ(trains1.size(), 5);
+    }
+
+    {
+        StartupManager manager2;
+        RMSFacade* facade2 = manager2.buildFacade();
+        ASSERT_NE(facade2, nullptr);
+
+        auto trains2 = facade2->listTrains();
+        EXPECT_EQ(trains2.size(), 5);
+    }
+}
+
+TEST_F(StartupManagerTest, FacadeLifetime) {
+    RMSFacade* facade;
+    {
+        StartupManager manager;
+        facade = manager.buildFacade();
+        ASSERT_NE(facade, nullptr);
+
+        // Facade should be valid within StartupManager scope
+        auto trains = facade->listTrains();
+        EXPECT_EQ(trains.size(), 5);
+    }
+    // After StartupManager goes out of scope, facade pointer is invalid
+    // Don't access facade here - it would be undefined behavior
+}
+
+// ===================== Edge Cases =====================
+
+TEST_F(StartupManagerTest, BookTicketToMockTrain) {
+    StartupManager manager;
+    RMSFacade* facade = manager.buildFacade();
+
+    auto trains = facade->listTrains();
+    ASSERT_FALSE(trains.empty());
+
+    auto ticket = facade->bookTicket(trains[0].getTrainId(), "New Passenger");
+
+    ASSERT_TRUE(ticket.has_value());
+    EXPECT_EQ(ticket->getTrainId(), trains[0].getTrainId());
+}
+
+TEST_F(StartupManagerTest, AllMockTrainsHaveAvailability) {
+    StartupManager manager;
+    RMSFacade* facade = manager.buildFacade();
+
+    auto trains = facade->listTrains();
+
+    for (const auto& train : trains) {
+        bool availability = facade->getTrainAvailability(train.getTrainId());
+        EXPECT_TRUE(availability)
+                            << "Train " << train.getTrainName()
+                            << " should have availability";
+    }
+}
+
+TEST_F(StartupManagerTest, MockPassengersHaveTickets) {
+    StartupManager manager;
+    RMSFacade* facade = manager.buildFacade();
+
+    auto passengers = facade->listPassengers();
+    auto tickets = facade->listTickets();
+
+    // Verify that some passengers have tickets
+    std::set<int> passengerIdsWithTickets;
+    for (const auto& ticket : tickets) {
+        passengerIdsWithTickets.insert(ticket.getPassenger().getId());
+    }
+
+    EXPECT_FALSE(passengerIdsWithTickets.empty());
 }
 
 ==================================================
@@ -4392,6 +6602,174 @@ TEST_F(TicketTest, AllMaximumValues) {
     EXPECT_EQ(ticket.getTrainId(), 999999);
     EXPECT_EQ(ticket.getPassenger().getId(), 999999);
 }
+
+==================================================
+FILE PATH: .\tests\test_ticketService.cpp
+==================================================
+
+#include <gtest/gtest.h>
+#include "Services/TicketService.h"
+#include "Services/TrainService.h"
+#include "Services/PassengerService.h"
+#include "Repo/InMemoryTicketRepository.h"
+#include "Repo/InMemoryTrainRepository.h"
+#include "Repo/InMemoryPassengerRepository.h"
+
+class TicketServiceTest : public ::testing::Test {
+protected:
+    std::unique_ptr<InMemoryTicketRepository> ticketRepo;
+    std::unique_ptr<InMemoryTrainRepository> trainRepo;
+    std::unique_ptr<InMemoryPassengerRepository> passengerRepo;
+
+    std::unique_ptr<TrainService> trainService;
+    std::unique_ptr<PassengerService> passengerService;
+    std::unique_ptr<TicketService> ticketService;
+
+    void SetUp() override {
+        ticketRepo = std::make_unique<InMemoryTicketRepository>();
+        trainRepo = std::make_unique<InMemoryTrainRepository>();
+        passengerRepo = std::make_unique<InMemoryPassengerRepository>();
+
+        trainService = std::make_unique<TrainService>(trainRepo.get());
+        passengerService = std::make_unique<PassengerService>(passengerRepo.get());
+        ticketService = std::make_unique<TicketService>(
+                ticketRepo.get(),
+                trainService.get(),
+                passengerService.get()
+        );
+    }
+
+    void TearDown() override {
+        ticketRepo->clear();
+        trainRepo->clear();
+        passengerRepo->clear();
+    }
+};
+
+// ===================== Book Ticket Tests =====================
+
+TEST_F(TicketServiceTest, BookTicket_Success) {
+    Train train = trainService->createTrain("Express", 10);
+    Passenger passenger = passengerService->createPassenger("John");
+
+    auto ticket = ticketService->bookTicket(train.getTrainId(), passenger.getId());
+
+    ASSERT_TRUE(ticket.has_value());
+    EXPECT_GT(ticket->getId(), 0);
+    EXPECT_EQ(ticket->getTrainId(), train.getTrainId());
+    EXPECT_EQ(ticket->getPassenger().getId(), passenger.getId());
+    EXPECT_EQ(ticket->getStatus(), booked);
+    EXPECT_GT(ticket->getSeat(), 0);
+}
+
+TEST_F(TicketServiceTest, BookTicket_TrainNotFound) {
+    Passenger passenger = passengerService->createPassenger("John");
+    EXPECT_THROW(ticketService->bookTicket(999, passenger.getId()), std::out_of_range);
+}
+
+TEST_F(TicketServiceTest, BookTicket_PassengerNotFound) {
+    Train train = trainService->createTrain("Express", 10);
+    EXPECT_THROW(ticketService->bookTicket(train.getTrainId(), 999), std::out_of_range);
+}
+
+TEST_F(TicketServiceTest, BookTicket_DuplicateBooking) {
+    Train train = trainService->createTrain("Express", 10);
+    Passenger passenger = passengerService->createPassenger("John");
+
+    ticketService->bookTicket(train.getTrainId(), passenger.getId());
+    EXPECT_THROW(ticketService->bookTicket(train.getTrainId(), passenger.getId()), std::runtime_error);
+}
+
+TEST_F(TicketServiceTest, BookTicket_FullTrainReturnsNullopt) {
+    Train train = trainService->createTrain("Express", 2);
+    Passenger p1 = passengerService->createPassenger("John");
+    Passenger p2 = passengerService->createPassenger("Jane");
+    Passenger p3 = passengerService->createPassenger("Bob");
+
+    ticketService->bookTicket(train.getTrainId(), p1.getId());
+    ticketService->bookTicket(train.getTrainId(), p2.getId());
+
+    auto ticket = ticketService->bookTicket(train.getTrainId(), p3.getId());
+    EXPECT_FALSE(ticket.has_value());
+}
+
+// ===================== Cancel Ticket Tests =====================
+
+TEST_F(TicketServiceTest, CancelTicket_Success) {
+    Train train = trainService->createTrain("Express", 10);
+    Passenger passenger = passengerService->createPassenger("John");
+
+    auto ticket = ticketService->bookTicket(train.getTrainId(), passenger.getId());
+    ASSERT_TRUE(ticket.has_value());
+
+    EXPECT_NO_THROW(ticketService->cancelTicket(ticket->getId()));
+
+    auto retrieved = ticketService->getTicket(ticket->getId());
+    EXPECT_EQ(retrieved.getStatus(), cancelled);
+}
+
+TEST_F(TicketServiceTest, CancelTicket_AlreadyCancelledThrows) {
+    Train train = trainService->createTrain("Express", 10);
+    Passenger passenger = passengerService->createPassenger("John");
+
+    auto ticket = ticketService->bookTicket(train.getTrainId(), passenger.getId());
+    ticketService->cancelTicket(ticket->getId());
+
+    EXPECT_THROW(ticketService->cancelTicket(ticket->getId()), std::runtime_error);
+}
+
+// ===================== Get Ticket Tests =====================
+
+TEST_F(TicketServiceTest, GetTicket_Success) {
+    Train train = trainService->createTrain("Express", 10);
+    Passenger passenger = passengerService->createPassenger("John");
+
+    auto booked = ticketService->bookTicket(train.getTrainId(), passenger.getId());
+    auto retrieved = ticketService->getTicket(booked->getId());
+
+    EXPECT_EQ(retrieved.getId(), booked->getId());
+}
+
+TEST_F(TicketServiceTest, GetTicket_NotFoundThrows) {
+    EXPECT_THROW(ticketService->getTicket(999), std::out_of_range);
+}
+
+// ===================== Update Ticket Tests =====================
+
+TEST_F(TicketServiceTest, UpdateTicket_Success) {
+    Train train = trainService->createTrain("Express", 10);
+    Passenger passenger = passengerService->createPassenger("John");
+
+    auto ticket = ticketService->bookTicket(train.getTrainId(), passenger.getId());
+    Ticket modified = ticket.value();
+    modified.setStatus(cancelled);
+
+    Ticket updated = ticketService->updateTicket(modified);
+    EXPECT_EQ(updated.getStatus(), cancelled);
+}
+
+// ===================== Waiting List Integration =====================
+
+TEST_F(TicketServiceTest, CancelTicket_FreesSeatAndRebooksWaitingPassenger) {
+    Train train = trainService->createTrain("Express", 1);
+    Passenger p1 = passengerService->createPassenger("John");
+    Passenger p2 = passengerService->createPassenger("Jane");
+
+    auto t1 = ticketService->bookTicket(train.getTrainId(), p1.getId());
+    auto t2 = ticketService->bookTicket(train.getTrainId(), p2.getId());
+
+    EXPECT_FALSE(t2.has_value()); // fully booked
+
+    ticketService->cancelTicket(t1->getId()); // should auto-assign seat to p2
+
+    auto allTickets = ticketService->getAllTickets();
+    int bookedCount = 0;
+    for (auto& t : allTickets) {
+        if (t.getStatus() == booked) bookedCount++;
+    }
+    EXPECT_EQ(bookedCount, 1);
+}
+
 
 ==================================================
 FILE PATH: .\tests\test_ticktRepo.cpp
@@ -5035,7 +7413,7 @@ TEST_F(InMemoryTrainRepositoryTest, AutoIncrementId) {
 }
 
 TEST_F(InMemoryTrainRepositoryTest, AutoIncrementSequential) {
-    std::vector<int> ids;
+    vector<int> ids;
 
     for (int i = 0; i < 10; ++i) {
         Train t(0, "Train" + std::to_string(i), 10);
@@ -5244,8 +7622,7 @@ TEST_F(InMemoryTrainRepositoryTest, DeleteTrain) {
     bool deleted = repo.deleteTrain(id);
     EXPECT_TRUE(deleted);
 
-    // Repo implementation throws std::runtime_error if ID not found
-    EXPECT_THROW(repo.getTrainById(id), std::runtime_error);
+    EXPECT_FALSE(repo.getTrainById(id).has_value());
 }
 
 TEST_F(InMemoryTrainRepositoryTest, DeleteNonExistentTrain) {
@@ -5284,13 +7661,13 @@ TEST_F(InMemoryTrainRepositoryTest, DeleteWithExplicitId) {
     repo.save(t);
 
     EXPECT_TRUE(repo.deleteTrain(42));
-    EXPECT_THROW(repo.getTrainById(42), std::runtime_error);
+    EXPECT_FALSE(repo.getTrainById(42).has_value());
 }
 
 // ===================== GetTrainById Tests =====================
 
 TEST_F(InMemoryTrainRepositoryTest, GetNonExistentTrain) {
-    EXPECT_THROW(repo.getTrainById(999), std::runtime_error);
+    EXPECT_FALSE(repo.getTrainById(999).has_value());
 }
 
 TEST_F(InMemoryTrainRepositoryTest, GetTrainByIdReturnsCorrectTrain) {
@@ -5325,7 +7702,7 @@ TEST_F(InMemoryTrainRepositoryTest, GetTrainByIdReturnsCopy) {
 
 
 TEST_F(InMemoryTrainRepositoryTest, GetTrainByZeroId) {
-    EXPECT_THROW(repo.getTrainById(0), std::runtime_error);
+    EXPECT_FALSE(repo.getTrainById(0).has_value());
 }
 
 // ===================== GetAllTrains Tests =====================
@@ -5340,7 +7717,7 @@ TEST_F(InMemoryTrainRepositoryTest, GetAllTrains) {
     auto all = repo.getAllTrains();
     EXPECT_EQ(all.size(), 2);
 
-    std::vector<std::string> names;
+    vector<std::string> names;
     for (const auto& train : all) {
         names.push_back(train.getTrainName());
     }
@@ -5520,7 +7897,7 @@ TEST_F(InMemoryTrainRepositoryTest, MultipleOperations) {
     all = repo.getAllTrains();
     EXPECT_EQ(all.size(), 2);
 
-    std::vector<std::string> names;
+    vector<std::string> names;
     for (const auto& train : all) {
         names.push_back(train.getTrainName());
     }
@@ -5531,7 +7908,7 @@ TEST_F(InMemoryTrainRepositoryTest, MultipleOperations) {
 
 TEST_F(InMemoryTrainRepositoryTest, SaveManyTrains) {
     const int COUNT = 100;
-    std::vector<int> ids;
+    vector<int> ids;
 
     for (int i = 0; i < COUNT; ++i) {
         Train t(0, "Train" + std::to_string(i), i + 1);
@@ -5586,9 +7963,9 @@ TEST_F(InMemoryTrainRepositoryTest, SaveWithNegativeIdThrows) {
                  }, std::invalid_argument);
 }
 
-TEST_F(InMemoryTrainRepositoryTest, GetTrainWithNegativeIdThrows) {
-    // Trying to fetch a train with a negative ID should throw
-    EXPECT_THROW(repo.getTrainById(-10), std::runtime_error);
+TEST_F(InMemoryTrainRepositoryTest, GetTrainWithNegativeId) {
+    // Trying to fetch a train with a negative ID
+    EXPECT_FALSE(repo.getTrainById(-10).has_value());
 }
 
 TEST_F(InMemoryTrainRepositoryTest, SaveEmptyNameTrain) {
@@ -5632,13 +8009,15 @@ TEST_F(TrainServiceTest, CreateTrain_Success) {
 
 TEST_F(TrainServiceTest, GetTrain_Exists) {
     Train created = service->createTrain("Test Train", 30);
-    auto retrieved = service->getTrain(created.getTrainId());
-    ASSERT_TRUE(retrieved.has_value());
-    EXPECT_EQ(retrieved->getTrainName(), "Test Train");
+
+    Train retrieved = service->getTrain(created.getTrainId());
+
+    EXPECT_EQ(retrieved.getTrainName(), "Test Train");
+    EXPECT_EQ(retrieved.getTrainId(), created.getTrainId());
 }
 
 TEST_F(TrainServiceTest, GetTrain_NotExists) {
-    EXPECT_THROW(service->getTrain(999), std::runtime_error);
+    EXPECT_THROW(service->getTrain(999), std::out_of_range);
 }
 
 TEST_F(TrainServiceTest, GetAllTrains_Empty) {
@@ -5664,18 +8043,19 @@ TEST_F(TrainServiceTest, UpdateTrain_Success) {
 }
 
 TEST_F(TrainServiceTest, UpdateTrain_NotExists) {
-    EXPECT_THROW(service->updateTrain(999, "Test", 30), std::runtime_error);
+    EXPECT_THROW(service->updateTrain(999, "Test", 30), std::out_of_range);
 }
 
 TEST_F(TrainServiceTest, DeleteTrain_Success) {
     Train created = service->createTrain("Test", 20);
-    bool deleted = service->deleteTrain(created.getTrainId());
-    EXPECT_TRUE(deleted);
+
+    EXPECT_NO_THROW(service->deleteTrain(created.getTrainId()));
+
+    EXPECT_THROW(service->getTrain(created.getTrainId()), std::out_of_range);
 }
 
 TEST_F(TrainServiceTest, DeleteTrain_NotExists) {
-    bool deleted = service->deleteTrain(999);
-    EXPECT_FALSE(deleted);
+    EXPECT_THROW(service->deleteTrain(999), std::out_of_range);
 }
 
 TEST_F(TrainServiceTest, AddSeats_ById_Success) {
@@ -5700,77 +8080,6 @@ TEST_F(TrainServiceTest, IsAvailableSeat_True) {
 }
 
 TEST_F(TrainServiceTest, IsAvailableSeat_NotExists) {
-    EXPECT_THROW(service->isAvailbleSeat(999), std::runtime_error);
-}
-
-==================================================
-FILE PATH: .\tests\structures\test_stack.cpp
-==================================================
-
-#include <gtest/gtest.h>
-#include "structures/stack.h"
-
-// Test fixture (optional, but useful if you want multiple tests)
-class StackTest : public ::testing::Test {
-protected:
-    stack<int> s;
-};
-
-// Test that new stack is empty
-TEST_F(StackTest, IsEmptyInitially) {
-EXPECT_TRUE(s.empty());
-EXPECT_EQ(s.size(), 0);
-}
-
-// Test push operation
-TEST_F(StackTest, PushIncreasesSize) {
-s.push(10);
-EXPECT_FALSE(s.empty());
-EXPECT_EQ(s.size(), 1);
-EXPECT_EQ(s.top(), 10);
-
-s.push(20);
-EXPECT_EQ(s.size(), 2);
-EXPECT_EQ(s.top(), 20);
-}
-
-// Test pop operation
-TEST_F(StackTest, PopDecreasesSize) {
-s.push(5);
-s.push(15);
-
-EXPECT_EQ(s.top(), 15);
-s.pop();
-EXPECT_EQ(s.top(), 5);
-EXPECT_EQ(s.size(), 1);
-
-s.pop();
-EXPECT_TRUE(s.empty());
-EXPECT_EQ(s.size(), 0);
-}
-
-// Test popping from empty stack throws
-TEST_F(StackTest, PopOnEmptyThrows) {
-EXPECT_THROW(s.pop(), std::runtime_error);
-}
-
-// Test top on empty stack throws
-TEST_F(StackTest, TopOnEmptyThrows) {
-EXPECT_THROW(s.top(), std::runtime_error);
-}
-
-// Test multiple push/pop
-TEST_F(StackTest, PushPopSequence) {
-for (int i = 0; i < 5; ++i) {
-s.push(i * 10);
-EXPECT_EQ(s.top(), i * 10);
-}
-
-for (int i = 4; i >= 0; --i) {
-EXPECT_EQ(s.top(), i * 10);
-s.pop();
-}
-
-EXPECT_TRUE(s.empty());
+    EXPECT_THROW(service->isAvailbleSeat(999), std::out_of_range);
 }
 

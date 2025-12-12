@@ -2,7 +2,7 @@ import os
 
 # Configuration
 EXTENSIONS = {'.h', '.hpp', '.cpp', '.c', '.cc'}
-IGNORE_DIRS = {'cmake-build-debug', '.git', '.vscode', 'build', 'bin' , "cmake-build-debug-event-trace","cmake-build-debug" }
+IGNORE_DIRS = {'cmake-build-debug', '.git', '.vscode', 'build', 'bin' , "cmake-build-debug-event-trace","cmake-build-debug", "test" }
 OUTPUT_FILE = 'codebase.txt'
 
 def pack_files():

@@ -52,7 +52,6 @@ int SeatAllocator::allocateSeat(int passengerId)
         // smallest seat in the set
         seatNumber = *availableSeats.begin();
         availableSeats.erase(availableSeats.begin());
-        std::cout << "seat : " << seatNumber;
     }
 
     allocatedSeats[seatNumber] = passengerId;
@@ -284,12 +283,12 @@ int SeatAllocator::processWaitingList(int seatsToAdd, std::function<void(int)> b
                 bookCallback(passengerId);
                 seatsToAdd--;
                 processed++;
-                continue;                      // do NOT add to new list
+                continue; // do NOT add to new list
             }
             catch (const std::exception &e)
             {
-                std::cout << "Failed to book ticket for waiting passenger "
-                          << passengerId << ": " << e.what() << "\n";
+                std::cerr << "\033[31m" << "Failed to book ticket for waiting passenger "
+                          << passengerId << ": " << e.what() << "\033[0m" << "\n";
                 // Booking failed , keep in waiting list
             }
         }
@@ -300,7 +299,7 @@ int SeatAllocator::processWaitingList(int seatsToAdd, std::function<void(int)> b
     }
 
     waitingList = std::move(newWaitingList); //  update the existing waiting list
-    waitingSet = std::move(newWaitingset); //  update the existing waiting set
+    waitingSet = std::move(newWaitingset);   //  update the existing waiting set
 
     return processed;
 }

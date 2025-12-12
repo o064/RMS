@@ -74,8 +74,16 @@ bool isValidName(const std::string &name)
 {
 
     static const std::regex pattern("^[A-Za-z0-9]+([' -][A-Za-z0-9]+)*$"); // a-z - '
-    // Do NOT trim here: tests expect names with leading/trailing whitespace
-    // to be considered invalid. Validation should be applied to the raw input.
+    // Disallow empty strings and leading/trailing whitespace explicitly
+    if (name.empty())
+        return false;
+    if (std::isspace(static_cast<unsigned char>(name.front())))
+        return false;
+    if (std::isspace(static_cast<unsigned char>(name.back())))
+        return false;
+
+    // Now match the raw input (no trimming) so that names with internal spaces
+    // like "John Doe" are allowed but leading/trailing spaces are rejected.
     return std::regex_match(name, pattern);
 }
 

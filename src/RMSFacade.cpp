@@ -46,7 +46,7 @@ Passenger RMSFacade::getPassenger(int passengerId)
     return passengerService->getPassenger(passengerId);
 }
 
-Passenger RMSFacade::addPassenger(const std::string& name)
+Passenger RMSFacade::addPassenger(const std::string &name)
 {
     std::string trimmedName = trim(name);
     if (!isValidName(trimmedName))
@@ -58,6 +58,11 @@ Passenger RMSFacade::addPassenger(const std::string& name)
 vector<Ticket> RMSFacade::listTickets()
 {
     return ticketService->getAllTickets();
+}
+
+Ticket RMSFacade::getTicket(int ticketId)
+{
+    return ticketService->getTicket(ticketId);
 }
 
 vector<Passenger> RMSFacade::listPassengers()
@@ -76,10 +81,8 @@ std::optional<Ticket> RMSFacade::bookTicket(int trainId, const std::string &pass
     if (!isValidName(trimmedName))
         throw std::invalid_argument("Passenger name cannot be empty");
 
-
     Passenger ps = passengerService->find_or_create_passenger(trimmedName);
     return ticketService->bookTicket(trainId, ps.getId());
-
 }
 
 void RMSFacade::cancelTicket(int ticketId)
@@ -90,22 +93,23 @@ void RMSFacade::cancelTicket(int ticketId)
         throw std::invalid_argument("Ticket ID must be greater than 0");
 
     ticketService->cancelTicket(ticketId);
-
-
 }
 
 bool RMSFacade::getTrainAvailability(int trainId)
 {
-    return  trainService->isAvailbleSeat(trainId);
-
+    return trainService->isAvailbleSeat(trainId);
 }
 
-Train RMSFacade::updateTrain(int trainId, const std::string& name, int seats) {
+Train RMSFacade::updateTrain(int trainId, const std::string &name, int seats)
+{
     // validation
-    if (trainId <= 0) throw std::invalid_argument("Train ID must be > 0");
+    if (trainId <= 0)
+        throw std::invalid_argument("Train ID must be > 0");
     std::string trimmedName = trim(name);
-    if (!isValidName(trimmedName)) throw std::invalid_argument("Train name cannot be empty");
-    if (seats < 0) throw std::invalid_argument("Seats cannot be negative");
+    if (!isValidName(trimmedName))
+        throw std::invalid_argument("Train name cannot be empty");
+    if (seats < 0)
+        throw std::invalid_argument("Seats cannot be negative");
 
     // current Train
     auto currentTrain = trainService->getTrain(trainId);
@@ -117,12 +121,13 @@ Train RMSFacade::updateTrain(int trainId, const std::string& name, int seats) {
 
     // process waiting
     int seatsAdded = seats - currentSeats;
-    if (seatsAdded > 0) {
-        auto cb =[this,&updatedTrain ,trainId](int passengerId){ // access to this object& trainId + passengerId as argument
+    if (seatsAdded > 0)
+    {
+        auto cb = [this, &updatedTrain, trainId](int passengerId) { // access to this object& trainId + passengerId as argument
             trainService->save(updatedTrain);
             ticketService->bookTicket(trainId, passengerId);
         };
-        updatedTrain.getSeatAllocator()->processWaitingList(seatsAdded,cb);
+        updatedTrain.getSeatAllocator()->processWaitingList(seatsAdded, cb);
 
         // Save updated train after processing waiting list
         trainService->save(updatedTrain);
@@ -163,16 +168,19 @@ Passenger RMSFacade::updatePassenger(int passengerId, const std::string &name)
 
 void RMSFacade::deleteTrain(int trainId)
 {
-    if (trainId <= 0) throw std::invalid_argument("Train ID must be > 0");
+    if (trainId <= 0)
+        throw std::invalid_argument("Train ID must be > 0");
     trainService->deleteTrain(trainId);
 }
 
 void RMSFacade::deletePassenger(int passengerId)
 {
-    if (passengerId <= 0) throw std::invalid_argument("Passenger ID must be > 0");
+    if (passengerId <= 0)
+        throw std::invalid_argument("Passenger ID must be > 0");
     passengerService->deletePassenger(passengerId);
 }
 
-void RMSFacade::trainStatus(int trainId) {
+void RMSFacade::trainStatus(int trainId)
+{
     trainService->printStatus(trainId);
 }

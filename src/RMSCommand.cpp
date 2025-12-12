@@ -3,63 +3,69 @@
 //
 #include "RMSCommand.h"
 
-RMSCommand::MainCmd RMSCommand::getMainCmd(const string &cmd){
+RMSCommand::MainCmd RMSCommand::getMainCmd(const string &cmd)
+{
     static const unordered_map<string, MainCmd> table = {
-            {"train", MainCmd::TRAIN},
-            {"passenger", MainCmd::PASSENGER},
-            {"ticket", MainCmd::TICKET},
-            {"help", MainCmd::SYSTEM},
-            {"h", MainCmd::SYSTEM},
-            {"?", MainCmd::SYSTEM},
-            {"exit", MainCmd::SYSTEM},
-            {"quit", MainCmd::SYSTEM},
-            {"q", MainCmd::SYSTEM},
-            {"clear", MainCmd::SYSTEM},
-
+        {"train", MainCmd::TRAIN},
+        {"passenger", MainCmd::PASSENGER},
+        {"ticket", MainCmd::TICKET},
+        {"help", MainCmd::SYSTEM},
+        {"h", MainCmd::SYSTEM},
+        {"?", MainCmd::SYSTEM},
+        {"exit", MainCmd::SYSTEM},
+        {"quit", MainCmd::SYSTEM},
+        {"q", MainCmd::SYSTEM},
+        {"clear", MainCmd::SYSTEM},
 
     };
     auto it = table.find(cmd);
     return (it != table.end()) ? (*it).second : MainCmd::UNKNOWN;
 }
 
-RMSCommand::TrainCmd RMSCommand::getTrainCmd(const string &sub) {
-    static const unordered_map<string, TrainCmd> table = { // static map to initializing only once
-            {"list", TrainCmd::LIST},
-            {"add", TrainCmd::ADD},
-            {"delete", TrainCmd::DELETE},
-            {"update", TrainCmd::UPDATE},
-            {"seats", TrainCmd::SEATS_ADD},
-            {"availability", TrainCmd::AVAILABILITY},
-            {"status" , TrainCmd::STATUS}
-    };
+RMSCommand::TrainCmd RMSCommand::getTrainCmd(const string &sub)
+{
+    static const unordered_map<string, TrainCmd> table = {// static map to initializing only once
+                                                          {"list", TrainCmd::LIST},
+                                                          {"add", TrainCmd::ADD},
+                                                          {"delete", TrainCmd::DELETE},
+                                                          {"update", TrainCmd::UPDATE},
+                                                          {"seats", TrainCmd::SEATS_ADD},
+                                                          {"availability", TrainCmd::AVAILABILITY},
+                                                          {"status", TrainCmd::STATUS},
+                                                          {"get", TrainCmd::GET}};
     auto it = table.find(sub);
     return (it != table.end()) ? (*it).second : TrainCmd::UNKNOWN;
 }
-RMSCommand::PassengerCmd RMSCommand::getPassengerCmd(const string &sub)  {
+RMSCommand::PassengerCmd RMSCommand::getPassengerCmd(const string &sub)
+{
     static const unordered_map<string, PassengerCmd> table = {
-            {"list", PassengerCmd::LIST},
-            {"add", PassengerCmd::ADD},
-            {"delete", PassengerCmd::DELETE},
-            {"update", PassengerCmd::UPDATE}
-    };
+        {"list", PassengerCmd::LIST},
+        {"add", PassengerCmd::ADD},
+        {"delete", PassengerCmd::DELETE},
+        {"update", PassengerCmd::UPDATE},
+        {"get", PassengerCmd::GET}};
     auto it = table.find(sub);
     return (it != table.end()) ? (*it).second : PassengerCmd::UNKNOWN;
 }
-RMSCommand::TicketCmd RMSCommand::getTicketCmd(const string &sub) {
+RMSCommand::TicketCmd RMSCommand::getTicketCmd(const string &sub)
+{
     static const unordered_map<string, TicketCmd> table = {
-            {"list", TicketCmd::LIST},
-            {"book", TicketCmd::BOOK},
-            {"cancel", TicketCmd::CANCEL}
-    };
+        {"list", TicketCmd::LIST},
+        {"book", TicketCmd::BOOK},
+        {"cancel", TicketCmd::CANCEL},
+        {"get", TicketCmd::GET}};
     auto it = table.find(sub);
     return (it != table.end()) ? (*it).second : TicketCmd::UNKNOWN;
 }
 
-
-RMSCommand::SystemCmd RMSCommand::getSystemCmd(const string &cmd) {
-    if(cmd == "help" || cmd == "h" || cmd == "?") return SystemCmd::HELP;
-    if(cmd == "exit" || cmd == "quit" || cmd == "q") return SystemCmd::EXIT;
-    if(cmd == "clear") return SystemCmd::CLEAR;
+RMSCommand::SystemCmd RMSCommand::getSystemCmd(const string &cmd)
+{
+    if (cmd == "help" || cmd == "h" || cmd == "?")
+        return SystemCmd::HELP;
+    if (cmd == "exit" || cmd == "quit" || cmd == "q")
+        return SystemCmd::EXIT;
+    if (cmd == "clear")
+        return SystemCmd::CLEAR;
 
     return SystemCmd::UNKNOWN;
 }
