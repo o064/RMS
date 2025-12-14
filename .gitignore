@@ -21,7 +21,7 @@
 # IDE-specific files (e.g., Visual Studio, CLion)
 vscode/
 .idea/
-
+.cache/*
 *.sln
 *.vcxproj*
 # CMake generated files
