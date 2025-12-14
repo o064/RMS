@@ -193,7 +193,7 @@ void SeatAllocator::printStatus() const
     }
     else
     {
-        std::queue<int> temp = waitingList;
+        queue<int> temp = waitingList;
         while (!temp.empty())
         {
             std::cout << temp.front() << " ";
@@ -248,7 +248,7 @@ int SeatAllocator::getAllocatedSeatCount() const
     return allocatedSeats.size();
 }
 
-std::queue<int> SeatAllocator::getWaitingList() const
+queue<int> SeatAllocator::getWaitingList() const
 {
     return waitingList;
 }
@@ -267,7 +267,7 @@ int SeatAllocator::processWaitingList(int seatsToAdd, std::function<void(int)> b
 {
     int processed = 0;
 
-    std::queue<int> newWaitingList;
+    queue<int> newWaitingList;
     std::set<int> newWaitingset;
 
     while (!waitingList.empty())

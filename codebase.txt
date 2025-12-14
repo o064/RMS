@@ -14,50 +14,51 @@ FILE PATH: .\include\CLIController.h
 #include <string>
 #include <iostream>
 #include "./structures/vector.h"
-using  std::string;
+using std::string;
 
-
-class CLIController {
+class CLIController
+{
 private:
-    RMSFacade* facade;
+    RMSFacade *facade;
 
 public:
-    CLIController(RMSFacade* facade);
-    //helpers to manipulate text
-    static vector<string> tokenize(const string &args) ;
+    CLIController(RMSFacade *facade);
+    // helpers to manipulate text
+    static vector<string> tokenize(const string &args);
     static string readLine();
-    static  void waitUser();
+    static void waitUser();
     // run
-     void run();
-     static void clear();
-     // help
-     static void show_help();
+    void run();
+    static void clear();
+    // help
+    static void show_help();
 
     // train commands
     void list_trains();
-    void add_train(const vector<string>& args);
-    void get_train_availability(const vector<string>& args);
-    void update_train(const vector<string>& args);
-    void add_seats(const vector<string>& args);
-    void delete_train(const vector<string>& args);
-    void get_train_status(const vector<string>& args);
+    void add_train(const vector<string> &args);
+    void get_train_availability(const vector<string> &args);
+    void get_train(const vector<string> &args);
+    void update_train(const vector<string> &args);
+    void add_seats(const vector<string> &args);
+    void delete_train(const vector<string> &args);
+    void get_train_status(const vector<string> &args);
 
     // passenger commands
 
-    void add_passenger(const vector<string>& args);
-    void update_passenger(const vector<string>& args);
-    void delete_passenger(const vector<string>& args);
+    void add_passenger(const vector<string> &args);
+    void update_passenger(const vector<string> &args);
+    void delete_passenger(const vector<string> &args);
     void list_passengers();
+    void get_passenger(const vector<string> &args);
 
     // ticket commands
     void list_tickets();
+    void get_ticket(const vector<string> &args);
 
-    void cancel_ticket(const vector<string>& args);
-    void book_ticket(const vector<string>& args);
-
-
+    void cancel_ticket(const vector<string> &args);
+    void book_ticket(const vector<string> &args);
 };
-#endif //RMS_CLICONTROLLER_H
+#endif // RMS_CLICONTROLLER_H
 
 
 ==================================================
@@ -97,32 +98,68 @@ FILE PATH: .\include\RMSCommand.h
 #include <string>
 #include "structures/unordered_map.h"
 
-using   std::string;
-    class RMSCommand {
-    public:
-        // enums to select the needed command
-        enum class MainCmd { TRAIN, PASSENGER, TICKET, SYSTEM, UNKNOWN };
-        enum class TrainCmd { LIST, ADD, DELETE, UPDATE, SEATS_ADD,STATUS, AVAILABILITY, UNKNOWN };
-        enum class PassengerCmd { LIST, ADD, DELETE, UPDATE, UNKNOWN };
-        enum class TicketCmd { LIST, BOOK, CANCEL, UNKNOWN };
-        enum class SystemCmd { HELP, EXIT ,CLEAR, UNKNOWN };
-        // lookup trees - static to use it without making objects
-        static MainCmd getMainCmd(const string& cmd) ;
-
-        static TrainCmd getTrainCmd(const string& sub) ;
-
-        static PassengerCmd getPassengerCmd(const string& sub) ;
-
-        static TicketCmd getTicketCmd(const string& sub) ;
-
-        static SystemCmd getSystemCmd(const string& cmd) ;
+using std::string;
+class RMSCommand
+{
+public:
+    // enums to select the needed command
+    enum class MainCmd
+    {
+        TRAIN,
+        PASSENGER,
+        TICKET,
+        SYSTEM,
+        UNKNOWN
     };
+    enum class TrainCmd
+    {
+        LIST,
+        ADD,
+        DELETE,
+        UPDATE,
+        SEATS_ADD,
+        STATUS,
+        AVAILABILITY,
+        GET,
+        UNKNOWN
+    };
+    enum class PassengerCmd
+    {
+        LIST,
+        ADD,
+        DELETE,
+        UPDATE,
+        GET,
+        UNKNOWN
+    };
+    enum class TicketCmd
+    {
+        LIST,
+        BOOK,
+        CANCEL,
+        GET,
+        UNKNOWN
+    };
+    enum class SystemCmd
+    {
+        HELP,
+        EXIT,
+        CLEAR,
+        UNKNOWN
+    };
+    // lookup trees - static to use it without making objects
+    static MainCmd getMainCmd(const string &cmd);
 
+    static TrainCmd getTrainCmd(const string &sub);
 
+    static PassengerCmd getPassengerCmd(const string &sub);
 
+    static TicketCmd getTicketCmd(const string &sub);
 
+    static SystemCmd getSystemCmd(const string &cmd);
+};
 
-#endif //RMS_RMSCOMMAND_H
+#endif // RMS_RMSCOMMAND_H
 
 
 ==================================================
@@ -154,29 +191,27 @@ public:
 
     // train features
     vector<Train> listTrains();
-    Train addTrain(std::string name,  int totalSeats);
+    Train addTrain(std::string name, int totalSeats);
     Train getTrain(int trainId);
     bool getTrainAvailability(int trainId);
-    Train updateTrain(int trainId, const std::string& name  ,int seats=0);
-    Train addSeats(int trainId,int seats=0);
-    Train addSeats(const std::string& name,int seats=0);
+    Train updateTrain(int trainId, const std::string &name, int seats = 0);
+    Train addSeats(int trainId, int seats = 0);
+    Train addSeats(const std::string &name, int seats = 0);
     void deleteTrain(int trainId);
     void trainStatus(int trainId);
 
     // passenger features
     vector<Passenger> listPassengers();
-    Passenger getPassenger(int totalSeats);
-    Passenger addPassenger( const std::string& name);
+    Passenger getPassenger(int passengerId);
+    Passenger addPassenger(const std::string &name);
     Passenger updatePassenger(int passengerId, const std::string &name);
     void deletePassenger(int passengerId);
 
-
     // ticket features
     vector<Ticket> listTickets();
-    std::optional<Ticket> bookTicket(int trainId, const std::string& passengerName);
+    Ticket getTicket(int ticketId);
+    std::optional<Ticket> bookTicket(int trainId, const std::string &passengerName);
     void cancelTicket(int ticketId);
-
-
 };
 #endif // RMS_RMSFACADE_H
 
@@ -253,18 +288,17 @@ FILE PATH: .\include\models\SeatAllocator.h
 #ifndef RMS_SEATALLOCATOR_H
 #define RMS_SEATALLOCATOR_H
 
-#include <queue>
 #include <set>
 #include "../structures/stack.h"
+#include "../structures/queue.h"
 #include "../structures/unordered_map.h"
-
 #include <string>
 #include<memory>
 #include <functional>
 
 class SeatAllocator{
     std::set<int> availableSeats;
-    std::queue<int> waitingList;
+    queue<int> waitingList;
     std::set<int> waitingSet;              // prevent duplicate waiting entries
     unordered_map<int, int> allocatedSeats;
     stack<int> cancelledSeats;
@@ -290,7 +324,7 @@ public:
     int getTotalSeats() const;
     int getWaitingListSize()const;
 
-    std::queue<int> getWaitingList()const;
+    queue<int> getWaitingList()const;
 
     bool hasAvailableSeats() const;
 
@@ -1644,6 +1678,209 @@ public:
 
 
 ==================================================
+FILE PATH: .\include\structures\queue.h
+==================================================
+
+//
+// Created by Omar on 12/14/2025.
+//
+
+#ifndef RMS_QUEUE_H
+#define RMS_QUEUE_H
+
+template <class T>
+class queue {
+    struct Node {
+        T value;
+        Node* next;
+        Node(const T& v);
+    };
+
+    Node* frontPtr;
+    Node* backPtr;
+    int sz;
+
+    void clear();
+    void copy(const queue& q);
+
+public:
+    queue();
+    ~queue();
+
+    queue(const queue& q);
+    queue& operator=(const queue& q);
+
+    void push(const T& x);
+    void pop();
+    T& front();
+    bool empty() const;
+    int size() const;
+
+    class iterator {
+        Node* ptr;
+    public:
+        iterator(Node* p = nullptr);
+        T& operator*();
+        iterator& operator++();
+        bool operator!=(const iterator& it) const;
+    };
+
+    class const_iterator {
+        const Node* ptr;
+    public:
+        const_iterator(const Node* p = nullptr);
+        const T& operator*() const;
+        const_iterator& operator++();
+        bool operator!=(const const_iterator& it) const;
+    };
+
+    iterator begin();
+    iterator end();
+    const_iterator begin() const;
+    const_iterator end() const;
+};
+
+template <class T>
+queue<T>::Node::Node(const T& v) : value(v), next(nullptr) {}
+
+template <class T>
+queue<T>::queue() : frontPtr(nullptr), backPtr(nullptr), sz(0) {}
+
+template <class T>
+queue<T>::~queue() {
+    clear();
+}
+
+template <class T>
+queue<T>::queue(const queue& q) : frontPtr(nullptr), backPtr(nullptr), sz(0) {
+    copy(q);
+}
+
+template <class T>
+queue<T>& queue<T>::operator=(const queue& q) {
+    if (this != &q) {
+        clear();
+        copy(q);
+    }
+    return *this;
+}
+
+template <class T>
+void queue<T>::clear() {
+    while (!empty())
+        pop();
+}
+
+template <class T>
+void queue<T>::copy(const queue& q) {
+    Node* cur = q.frontPtr;
+    while (cur) {
+        push(cur->value);
+        cur = cur->next;
+    }
+}
+
+template <class T>
+void queue<T>::push(const T& x) {
+    Node* n = new Node(x);
+    if (empty())
+        frontPtr = backPtr = n;
+    else {
+        backPtr->next = n;
+        backPtr = n;
+    }
+    sz++;
+}
+
+template <class T>
+void queue<T>::pop() {
+    if (empty()) return;
+    Node* temp = frontPtr;
+    frontPtr = frontPtr->next;
+    delete temp;
+    sz--;
+    if (empty())
+        backPtr = nullptr;
+}
+
+template <class T>
+T& queue<T>::front() {
+    return frontPtr->value;
+}
+
+template <class T>
+bool queue<T>::empty() const {
+    return sz == 0;
+}
+
+template <class T>
+int queue<T>::size() const {
+    return sz;
+}
+
+template <class T>
+queue<T>::iterator::iterator(Node* p) : ptr(p) {}
+
+template <class T>
+T& queue<T>::iterator::operator*() {
+    return ptr->value;
+}
+
+template <class T>
+typename queue<T>::iterator& queue<T>::iterator::operator++() {
+    ptr = ptr->next;
+    return *this;
+}
+
+template <class T>
+bool queue<T>::iterator::operator!=(const iterator& it) const {
+    return ptr != it.ptr;
+}
+
+template <class T>
+queue<T>::const_iterator::const_iterator(const Node* p) : ptr(p) {}
+
+template <class T>
+const T& queue<T>::const_iterator::operator*() const {
+    return ptr->value;
+}
+
+template <class T>
+typename queue<T>::const_iterator& queue<T>::const_iterator::operator++() {
+    ptr = ptr->next;
+    return *this;
+}
+
+template <class T>
+bool queue<T>::const_iterator::operator!=(const const_iterator& it) const {
+    return ptr != it.ptr;
+}
+
+template <class T>
+typename queue<T>::iterator queue<T>::begin() {
+    return iterator(frontPtr);
+}
+
+template <class T>
+typename queue<T>::iterator queue<T>::end() {
+    return iterator(nullptr);
+}
+
+template <class T>
+typename queue<T>::const_iterator queue<T>::begin() const {
+    return const_iterator(frontPtr);
+}
+
+template <class T>
+typename queue<T>::const_iterator queue<T>::end() const {
+    return const_iterator(nullptr);
+}
+
+
+#endif //RMS_QUEUE_H
+
+
+==================================================
 FILE PATH: .\include\structures\stack.h
 ==================================================
 
@@ -2415,22 +2652,22 @@ FILE PATH: .\src\CLIController.cpp
 
 #include <sstream>
 #include <iomanip> // required for setw()
-#include <limits> // for numeric_limits
+#include <limits>  // for numeric_limits
 #include <cstdlib> // Required for system()
 
 #include "CLIController.h"
 #include "utils/helpers.h" // parseInt , trim
 #include "RMSCommand.h"
-using std::cout ;
-using std::endl;
-using std::string;
 using std::cin;
-using  std::stringstream;
-using  std::left;
-using  std::setw;
-using  std::exception;
+using std::cout;
+using std::endl;
+using std::exception;
+using std::left;
+using std::setw;
+using std::string;
+using std::stringstream;
 
-//enums [MainCmd instead of RMSCommand::MainCmd
+// enums [MainCmd instead of RMSCommand::MainCmd
 using MainCmd = RMSCommand::MainCmd;
 using TrainCmd = RMSCommand::TrainCmd;
 using PassengerCmd = RMSCommand::PassengerCmd;
@@ -2438,34 +2675,38 @@ using TicketCmd = RMSCommand::TicketCmd;
 using SystemCmd = RMSCommand::SystemCmd;
 // getters
 // pointer fo functions
-auto getMainCmd =  RMSCommand::getMainCmd;
-auto getTrainCmd =  RMSCommand::getTrainCmd;
-auto getPassengerCmd=  RMSCommand::getPassengerCmd;
+auto getMainCmd = RMSCommand::getMainCmd;
+auto getTrainCmd = RMSCommand::getTrainCmd;
+auto getPassengerCmd = RMSCommand::getPassengerCmd;
 auto getTicketCmd = RMSCommand::getTicketCmd;
-auto getSystemCmd =RMSCommand::getSystemCmd;
+auto getSystemCmd = RMSCommand::getSystemCmd;
 
-
-vector<string> CLIController::tokenize(const string &args) { // split the sentence to args
+vector<string> CLIController::tokenize(const string &args)
+{ // split the sentence to args
     stringstream ss(args);
-    vector<string> tokens ;
+    vector<string> tokens;
     string token;
-    while(ss >> token){
+    while (ss >> token)
+    {
         tokens.push_back(token);
     }
     return tokens;
 }
-void CLIController::waitUser(){
-//    cin.ignore(numeric_limits<streamsize>::max(), '\n'); //  clear buffer to ingnore '\n'
+void CLIController::waitUser()
+{
+    //    cin.ignore(numeric_limits<streamsize>::max(), '\n'); //  clear buffer to ingnore '\n'
     cout << "Press Enter to exit...";
     cin.get(); // wait for Enter
 }
-string CLIController::readLine() {
+string CLIController::readLine()
+{
     string line;
-    getline(cin ,line);
+    getline(cin, line);
     return line;
 }
 
-void CLIController::show_help() {
+void CLIController::show_help()
+{
     cout << "\n=================================================\n";
     cout << "        RMS - Railway Management System          \n";
     cout << "=================================================\n\n";
@@ -2474,7 +2715,6 @@ void CLIController::show_help() {
 
     cout << "---------------------- Commands ----------------------\n\n";
 
-
     // ======================== TRAIN ========================
     cout << "train:\n";
     cout << "   train list                                     - Show all trains\n";
@@ -2482,7 +2722,8 @@ void CLIController::show_help() {
     cout << "   train delete <id>                              - Remove a train\n";
     cout << "   train update <id> <seats> <name>               - Update a train\n";
     cout << "   train seats add <id> <count>                   - Increase seat count\n";
-    cout << "   train availability <id>                        - Show seat status\n\n";
+    cout << "   train availability <id>                        - Show seat status\n";
+    cout << "   train get <id>                                 - Show train details\n\n";
     cout << "   train status <id>                              - Show full train status\n\n";
 
     // ====================== PASSENGER ======================
@@ -2490,13 +2731,15 @@ void CLIController::show_help() {
     cout << "   passenger list                                 - Show all passengers\n";
     cout << "   passenger add <name>                           - Add a passenger\n";
     cout << "   passenger delete <id>                          - Remove a passenger\n";
-    cout << "   passenger update <id> <newName>                - Rename passenger\n\n";
+    cout << "   passenger update <id> <newName>                - Rename passenger\n";
+    cout << "   passenger get <id>                             - Show passenger details\n\n";
 
     // ======================== TICKET ========================
     cout << "ticket:\n";
     cout << "   ticket list                                    - Show all tickets\n";
-    cout << "   ticket book <trainId> <passengerId|name>       - Book a ticket\n";
-    cout << "   ticket cancel <ticketId>                       - Cancel a ticket\n\n";
+    cout << "   ticket book <trainId> <passengerName>          - Book a ticket\n";
+    cout << "   ticket cancel <ticketId>                       - Cancel a ticket\n";
+    cout << "   ticket get <ticketId>                          - Show ticket details\n\n";
 
     // ========================= SYSTEM ========================
     cout << "system:\n";
@@ -2507,11 +2750,10 @@ void CLIController::show_help() {
     cout << "--------------------------------------------------------\n\n";
 }
 
-
-
-void CLIController::list_trains() {
+void CLIController::list_trains()
+{
     const auto trains = facade->listTrains();
-    if(trains.empty())
+    if (trains.empty())
         cout << "No trains avialble \n";
     cout << "\n======== Trains ==========\n";
     cout << left << setw(6) << "ID"
@@ -2519,45 +2761,48 @@ void CLIController::list_trains() {
          << left << setw(20) << "Status"
          << "\n";
 
-    for (auto &train : trains) {
+    for (auto &train : trains)
+    {
 
         int seats = train.getSeatAllocator()->getAvailableSeatCount();
 
         string status = (seats == 0)
-                        ? "Full"
-                        : std::to_string(seats) + " seats available";
+                            ? "Full"
+                            : std::to_string(seats) + " seats available";
 
-        cout << left << setw(6)  << train.getTrainId()
+        cout << left << setw(6) << train.getTrainId()
              << left << setw(20) << train.getTrainName()
              << left << setw(20) << status
              << "\n";
     }
-
 }
 
-void CLIController::list_passengers() {
+void CLIController::list_passengers()
+{
     const auto passengers = facade->listPassengers();
-    if(passengers.empty())
+    if (passengers.empty())
         cout << "No passengers avialble \n";
     cout << "\n======== Passengers ==========\n\n";
     cout << left << setw(6) << "ID"
          << left << setw(20) << "Name" << "\n";
 
-    for (auto &passenger : passengers) {
+    for (auto &passenger : passengers)
+    {
         cout << left << setw(6) << passenger.getId()
              << left << setw(20) << passenger.getName()
              << "\n";
     }
 }
 
-void CLIController::list_tickets() {
+void CLIController::list_tickets()
+{
     const auto tickets = facade->listTickets();
-    if(tickets.empty())
+    if (tickets.empty())
         cout << "No tickets available \n";
     cout << "\n====================================== Tickets =======================================\n";
 
     cout << left
-         << setw(8)  << "id"
+         << setw(8) << "id"
          << setw(12) << "trainId"
          << setw(15) << "ticket_seat"
          << setw(15) << "passengerId"
@@ -2565,9 +2810,10 @@ void CLIController::list_tickets() {
          << setw(15) << "status"
          << endl;
 
-    for (auto &ticket : tickets) {
+    for (auto &ticket : tickets)
+    {
         cout << left
-             << setw(8)  << ticket.getId()
+             << setw(8) << ticket.getId()
              << setw(12) << ticket.getTrainId()
              << setw(15) << ticket.getSeat()
              << setw(15) << ticket.getPassenger().getId()
@@ -2577,14 +2823,11 @@ void CLIController::list_tickets() {
     }
 }
 
-
-
-
-
-CLIController::CLIController(RMSFacade *facade) :facade(facade){
-
+CLIController::CLIController(RMSFacade *facade) : facade(facade)
+{
 }
-void sayWelcome(){
+void sayWelcome()
+{
     cout << "===============================================\n";
     cout << "  Welcome to the Railway Reservation System  \n";
     cout << "===============================================\n";
@@ -2592,342 +2835,551 @@ void sayWelcome(){
     cout << "-----------------------------------------------\n";
     printCurrentDate();
     cout << "-----------------------------------------------\n";
-    cout << "Author : Dangerous Team .\n";
+    cout << "\033[31m";
+    cout << "Author : Danger Team .\n";
+    cout << "\033[0m";
+    cout << "-----------------------------------------------\n";
+    cout << "\033[32m"; // green
     cout << "Under the supervision of Dr.Iman and Eng/Mariem Abdelrahman.\n\n";
+    cout << "\033[0m";
+
 }
-void CLIController::run() {
+void CLIController::run()
+{
     clear();
     sayWelcome();
-//lambad function
-    auto printUsage = [](MainCmd cmd) {
-        switch(cmd) {
-            case MainCmd::TRAIN:      cout << "Usage: train <list|add|delete|update|seats|availability>\n"; break;
-            case MainCmd::PASSENGER:  cout << "Usage: passenger <list|add|delete|update>\n"; break;
-            case MainCmd::TICKET:     cout << "Usage: ticket <list|book|cancel>\n"; break;
-            default:                  cout << "Unknown command. Type 'help' for available commands.\n";
+    // lambad function
+    auto printUsage = [](MainCmd cmd)
+    {
+        switch (cmd)
+        {
+        case MainCmd::TRAIN:
+            cout << "Usage: train <list|get|add|delete|update|seats|availability|status>\n";
+            break;
+        case MainCmd::PASSENGER:
+            cout << "Usage: passenger <list|get|add|delete|update>\n";
+            break;
+        case MainCmd::TICKET:
+            cout << "Usage: ticket <list|get|book|cancel>\n";
+            break;
+        default:
+            cout << "Unknown command. Type 'help' for available commands.\n";
         }
     };
 
-    while (true) {
+    while (true)
+    {
         cout << "\ncmd > ";
         string line = readLine();
         vector<string> args = tokenize(line);
 
-        if (args.empty()) {
+        if (args.empty())
+        {
             cout << "Please enter a command. Type 'help' for available commands.\n";
             continue;
         }
 
         MainCmd mainCmd = getMainCmd(args[0]);
 
-        switch (mainCmd) {
+        switch (mainCmd)
+        {
 
-            // ===================== TRAIN =====================
-            case MainCmd::TRAIN: {
-                if (args.size() < 2) { printUsage(mainCmd); break; }
-                TrainCmd tCmd = getTrainCmd(args[1]);
-                switch (tCmd) {
-                    case TrainCmd::LIST:         list_trains(); break;
-                    case TrainCmd::ADD:          add_train(args); break;
-                    case TrainCmd::DELETE:       delete_train(args); break;
-                    case TrainCmd::UPDATE:       update_train(args); break;
-                    case TrainCmd::SEATS_ADD:    add_seats(args); break;
-                    case TrainCmd::AVAILABILITY: get_train_availability(args); break;
-                    case TrainCmd::STATUS: get_train_status(args); break;
-
-                    default: cout << "Invalid train command.\n";
-                }
+        // ===================== TRAIN =====================
+        case MainCmd::TRAIN:
+        {
+            if (args.size() < 2)
+            {
+                printUsage(mainCmd);
                 break;
             }
-
-                // ===================== PASSENGER =====================
-            case MainCmd::PASSENGER: {
-                if (args.size() < 2) { printUsage(mainCmd); break; }
-                PassengerCmd pCmd = getPassengerCmd(args[1]);
-                switch (pCmd) {
-                    case PassengerCmd::LIST:   list_passengers(); break;
-                    case PassengerCmd::ADD:    add_passenger(args); break;
-                    case PassengerCmd::DELETE: delete_passenger(args); break;
-                    case PassengerCmd::UPDATE: update_passenger(args); break;
-                    default: cout << "Invalid passenger command.\n";
-                }
+            TrainCmd tCmd = getTrainCmd(args[1]);
+            switch (tCmd)
+            {
+            case TrainCmd::GET:
+                get_train(args);
                 break;
-            }
-
-                // ===================== TICKET =====================
-            case MainCmd::TICKET: {
-                if (args.size() < 2) { printUsage(mainCmd); break; }
-                TicketCmd tkCmd = getTicketCmd(args[1]);
-                switch (tkCmd) {
-                    case TicketCmd::LIST:   list_tickets(); break;
-                    case TicketCmd::BOOK:   book_ticket(args); break;
-                    case TicketCmd::CANCEL: cancel_ticket(args); break;
-                    default: cout << "Invalid ticket command.\n";
-                }
+            case TrainCmd::LIST:
+                list_trains();
                 break;
-            }
-
-                // ===================== SYSTEM =====================
-            case MainCmd::SYSTEM: {
-                SystemCmd sCmd = getSystemCmd(args[0]);
-                switch (sCmd) {
-                    case SystemCmd::HELP: show_help(); break;
-                    case SystemCmd::CLEAR :
-                        clear();
-                        sayWelcome();
-                        break;
-                    case SystemCmd::EXIT:
-                        cout << "Goodbye!\n";
-                        waitUser();
-                        return;
-                    default: cout << "Invalid system command.\n";
-                }
+            case TrainCmd::ADD:
+                add_train(args);
                 break;
-            }
+            case TrainCmd::DELETE:
+                delete_train(args);
+                break;
+            case TrainCmd::UPDATE:
+                update_train(args);
+                break;
+            case TrainCmd::SEATS_ADD:
+                add_seats(args);
+                break;
+            case TrainCmd::AVAILABILITY:
+                get_train_availability(args);
+                break;
+            case TrainCmd::STATUS:
+                get_train_status(args);
+                break;
 
-                // ===================== UNKNOWN =====================
             default:
-                cout << "Unknown command. Type 'help' for available commands.\n";
+                cout << "Invalid train command.\n";
+            }
+            break;
+        }
+
+            // ===================== PASSENGER =====================
+        case MainCmd::PASSENGER:
+        {
+            if (args.size() < 2)
+            {
+                printUsage(mainCmd);
+                break;
+            }
+            PassengerCmd pCmd = getPassengerCmd(args[1]);
+            switch (pCmd)
+            {
+            case PassengerCmd::GET:
+                get_passenger(args);
+                break;
+            case PassengerCmd::LIST:
+                list_passengers();
+                break;
+            case PassengerCmd::ADD:
+                add_passenger(args);
+                break;
+            case PassengerCmd::DELETE:
+                delete_passenger(args);
+                break;
+            case PassengerCmd::UPDATE:
+                update_passenger(args);
+                break;
+            default:
+                cout << "Invalid passenger command.\n";
+            }
+            break;
+        }
+
+            // ===================== TICKET =====================
+        case MainCmd::TICKET:
+        {
+            if (args.size() < 2)
+            {
+                printUsage(mainCmd);
+                break;
+            }
+            TicketCmd tkCmd = getTicketCmd(args[1]);
+            switch (tkCmd)
+            {
+            case TicketCmd::GET:
+                get_ticket(args);
+                break;
+            case TicketCmd::LIST:
+                list_tickets();
+                break;
+            case TicketCmd::BOOK:
+                book_ticket(args);
+                break;
+            case TicketCmd::CANCEL:
+                cancel_ticket(args);
+                break;
+            default:
+                cout << "Invalid ticket command.\n";
+            }
+            break;
+        }
+
+            // ===================== SYSTEM =====================
+        case MainCmd::SYSTEM:
+        {
+            SystemCmd sCmd = getSystemCmd(args[0]);
+            switch (sCmd)
+            {
+            case SystemCmd::HELP:
+                show_help();
+                break;
+            case SystemCmd::CLEAR:
+                clear();
+                sayWelcome();
+                break;
+            case SystemCmd::EXIT:
+                cout << "Goodbye!\n";
+                waitUser();
+                return;
+            default:
+                cout << "Invalid system command.\n";
+            }
+            break;
+        }
+
+            // ===================== UNKNOWN =====================
+        default:
+            cout << "Unknown command. Type 'help' for available commands.\n";
         }
     }
 }
 
-void CLIController::add_passenger(const vector<string> &args) {
-//add passenger <name>
-    if(args.size() < 3) {
+void CLIController::add_passenger(const vector<string> &args)
+{
+    // add passenger <name>
+    if (args.size() < 3)
+    {
         cout << "Usage: passenger add  <name>\n";
 
         return;
     }
-     string name;
-    try{
-        name = combineString(args,2);
+    string name;
+    try
+    {
+        name = combineString(args, 2);
         auto p = facade->addPassenger(name);
+        cout << "\033[32m"; // green
         p.print("--- Passenger Added Successfully ---\n");
-
-    } catch(const exception& e) {
-        cout << "ERROR: Could not add passenger " << name << ". " << "\n";
-        cout << "Details: " << e.what() << "\n";
-
+        cout << "\033[0m";
+    }
+    catch (const exception &e)
+    {
+        std::cerr << "\033[31m" << "ERROR: Could not add passenger " << name << "." << "\n";
+        std::cerr << "Details: " << e.what() << "\033[0m" << "\n";
     }
 }
 
-void CLIController::get_train_availability(const vector<string> &args) {
-//    train availability <train_id>
-    if(args.size() < 3) {
+void CLIController::get_train_availability(const vector<string> &args)
+{
+    //    train availability <train_id>
+    if (args.size() < 3)
+    {
         cout << "Usage: train availability <train_id>\n";
         return;
     }
-    int id ;
-    try{
-        id = parseInt(args[2],"id");
+    int id;
+    try
+    {
+        id = parseInt(args[2], "id");
         bool isAvailable = facade->getTrainAvailability(id);
-        if(!isAvailable)
+        if (!isAvailable)
             cout << "This train is full \n";
         else
             cout << "This train is available \n";
-
-    }catch(const exception& e){
-        cout << "Error while get_train_availability : " << e.what() << endl;
+    }
+    catch (const exception &e)
+    {
+        std::cerr << "\033[31m" << "Error while get_train_availability : " << e.what() << "\033[0m" << endl;
         return;
     }
-
-
-
 }
-void CLIController::clear(){
+void CLIController::clear()
+{
     system("cls");
 }
 
-void CLIController::add_train(const vector<string> &args) {
-    if(args.size() < 4) {
+void CLIController::add_train(const vector<string> &args)
+{
+    if (args.size() < 4)
+    {
         cout << "Usage: train add  <name> <seats> \n";
         return;
     }
-    const string& seatArgs = args[args.size()-1];
+    const string &seatArgs = args[args.size() - 1];
     string name;
-    try {
-        const int &seats = parseInt(seatArgs,"seats");
-        name = combineString(args,2,-1);
-        cout << name << " ";
-        auto t = facade->addTrain(name,seats);
+    try
+    {
+        const int &seats = parseInt(seatArgs, "seats");
+        name = combineString(args, 2, -1);
+        auto t = facade->addTrain(name, seats);
+        cout << "\033[32m"; // green
         t.print("--- Train Added Successfully ---\n");
-
+        cout << "\033[0m";
     }
-    catch (const exception& e) {
-        cout << "ERROR: Could not add train " << name << ". " << e.what() << "\n";
+    catch (const exception &e)
+    {
+        std::cerr << "\033[31m" << "ERROR: Could not add train " << name << ". " << e.what() << "\033[0m" << "\n";
     }
 }
-void CLIController::book_ticket(const vector<string> &args) {
-    if(args.size() < 4) { // book ticket <train_id> <passenger_name>
+void CLIController::book_ticket(const vector<string> &args)
+{
+    if (args.size() < 4)
+    { // book ticket <train_id> <passenger_name>
         cout << "Usage: ticket book  <train_id> <passenger_name>\n";
         return;
     }
 
-    const string& trainIdArg = args[2];
-     string passengerName ;
+    const string &trainIdArg = args[2];
+    string passengerName;
 
-    try {
+    try
+    {
         int trainId = parseInt(trainIdArg, "train ID");
-        passengerName = combineString(args,3);
+        passengerName = combineString(args, 3);
 
         auto t = facade->bookTicket(trainId, passengerName);
-        if(t.has_value())
+        if (t.has_value())
+        {
+            cout << "\033[32m"; // green
             t->print("--- Ticket Booked Successfully ---\n");
+            cout << "\033[0m";
+        }
         else
             cout << "train is full so the passenger added to the waiting list \n";
-
-    } catch (const exception& e) {
-        cout << "ERROR: Could not book ticket for " << passengerName << " on Train ID " << trainIdArg << ".\n";
-        cout << "Details: " << e.what() << "\n";
+    }
+    catch (const exception &e)
+    {
+        std::cerr << "\033[31m" << "ERROR: Could not book ticket for " << passengerName << " on Train ID " << trainIdArg << "." << "\n";
+        std::cerr << "Details: " << e.what() << "\033[0m" << "\n";
     }
 }
 
-void CLIController::cancel_ticket(const vector<string> &args) {
-    if(args.size() < 3) { // cancel ticket <ticket_id>
+void CLIController::cancel_ticket(const vector<string> &args)
+{
+    if (args.size() < 3)
+    { // cancel ticket <ticket_id>
         cout << "Usage: ticket cancel  <ticket_id>\n";
         return;
     }
 
-    const string& ticketIdArg = args[2];
+    const string &ticketIdArg = args[2];
 
-    try {
+    try
+    {
         int ticketId = parseInt(ticketIdArg, "ticket ID");
         facade->cancelTicket(ticketId);
 
+        cout << "\033[32m"; // green
         cout << "--- Ticket Cancelled Successfully ---\n";
         cout << "Ticket ID: " << ticketId << " has been cancelled.\n";
         cout << "-------------------------------------\n";
-
-    } catch (const exception& e) {
+        cout << "\033[0m";
+    }
+    catch (const exception &e)
+    {
         // Error Message
-        cout << "ERROR: Could not cancel ticket " << ticketIdArg << ".\n";
-        cout << "Details: " << e.what() << "\n";
+        std::cerr << "\033[31m" << "ERROR: Could not cancel ticket " << ticketIdArg << "." << "\n";
+        std::cerr << "Details: " << e.what() << "\033[0m" << "\n";
     }
 }
 
-void CLIController::update_train(const vector<string> &args) {
+void CLIController::update_train(const vector<string> &args)
+{
 
-    if(args.size() < 5) {
+    if (args.size() < 5)
+    {
         cout << "Usage: train update  <train_id> <name> <seats>\n";
         return;
     }
 
-    const string& tarinIdArg = args[2];
-    const string& seatArg = args[args.size()-1];;
-    try {
-        int trainId = parseInt(tarinIdArg , "train id");
+    const string &tarinIdArg = args[2];
+    const string &seatArg = args[args.size() - 1];
+    ;
+    try
+    {
+        int trainId = parseInt(tarinIdArg, "train id");
         int seats = parseInt(seatArg, "seat number");
-        string name = combineString(args,3,-1);
-        auto t =facade->updateTrain(trainId , name , seats);
-
-        t.print( "------ Train updated successfully ------ \n");
-
-
-    } catch (const exception& e) {
-        cout << "ERROR: Could not updateTrain " << tarinIdArg << ".\n";
-        cout << "Details: " << e.what() << "\n";
+        string name = combineString(args, 3, -1);
+        auto t = facade->updateTrain(trainId, name, seats);
+        cout << "\033[32m"; // green
+        t.print("------ Train updated successfully ------ \n");
+        cout << "\033[0m";
+    }
+    catch (const exception &e)
+    {
+        std::cerr << "\033[31m" << "ERROR: Could not updateTrain " << tarinIdArg << "." << "\n";
+        std::cerr << "Details: " << e.what() << "\033[0m" << "\n";
     }
 }
 
-void CLIController::add_seats(const vector<string> &args) {
-    if(args.size() < 5) {
+void CLIController::add_seats(const vector<string> &args)
+{
+    if (args.size() < 5)
+    {
         cout << "Usage: train seats  <trainId|trainName> <seats>\n";
         return;
     }
 
-    const string& trainArg = args[2];
-    const string& seatArg = args[3];
-    try {
+    const string &trainArg = args[2];
+    const string &seatArg = args[3];
+    try
+    {
         int seats = parseInt(seatArg, "seat number");
         // add seats trainId
-        if(isInteger(trainArg)){
-            int trainId = parseInt(trainArg , "train id");
+        if (isInteger(trainArg))
+        {
+            int trainId = parseInt(trainArg, "train id");
             const auto &t = facade->addSeats(trainId, seats);
-            t.print( "--- Train updated successfully. --- \n");
-
-        }else{  // add seats trainName
-            string name = combineString(args,2,-1); // until last field
-            const auto &t =facade->addSeats(name, seats);
-            t.print( "Train updated successfully.\n");
-
+            cout << "\033[32m"; // green
+            t.print("--- Train updated successfully. --- \n");
+            cout << "\033[0m";
         }
-
-
-
-    } catch (const exception& e) {
-        cout << "ERROR: Could not update Train " << trainArg << ".\n";
-        cout << "Details: " << e.what() << "\n";
+        else
+        {                                             // add seats trainName
+            string name = combineString(args, 2, -1); // until last field
+            const auto &t = facade->addSeats(name, seats);
+            cout << "\033[32m"; // green
+            t.print("Train updated successfully.\n");
+            cout << "\033[0m";
+        }
+    }
+    catch (const exception &e)
+    {
+        std::cerr << "\033[31m" << "ERROR: Could not update Train " << trainArg << "." << "\n";
+        std::cerr << "Details: " << e.what() << "\033[0m" << "\n";
     }
 }
 
-void CLIController::update_passenger(const vector<string> &args) {
-    if(args.size() < 5) {
+void CLIController::update_passenger(const vector<string> &args)
+{
+    if (args.size() < 5)
+    {
         cout << "Usage: passenger update <passengerId> <newName>\n";
         return;
     }
 
-    const string& passengerArg = args[2];
-    try {
-        int passengerId = parseInt(passengerArg , "passenger Id");
-        string name = combineString(args,3);
+    const string &passengerArg = args[2];
+    try
+    {
+        int passengerId = parseInt(passengerArg, "passenger Id");
+        string name = combineString(args, 3);
         auto p = facade->updatePassenger(passengerId, name);
-        p.print( "------ Passenger updated successfully ------ \n");
-
-    } catch (const exception& e) {
-        cout << "ERROR: Could not update passenger " << passengerArg<< ".\n";
-        cout << "Details: " << e.what() << "\n";
+        cout << "\033[32m"; // green
+        p.print("------ Passenger updated successfully ------ \n");
+        cout << "\033[0m";
+    }
+    catch (const exception &e)
+    {
+        std::cerr << "\033[31m" << "ERROR: Could not update passenger " << passengerArg << "." << "\n";
+        std::cerr << "Details: " << e.what() << "\033[0m" << "\n";
     }
 }
 
-void CLIController::delete_train(const vector<string> &args) {
-    if(args.size() < 3) {
+void CLIController::delete_train(const vector<string> &args)
+{
+    if (args.size() < 3)
+    {
         cout << "Usage: train delete  <trainId>\n";
         return;
     }
-    const string& trainArg = args[2];
-    try {
-        int trainId = parseInt(trainArg,"train Id");
+    const string &trainArg = args[2];
+    try
+    {
+        int trainId = parseInt(trainArg, "train Id");
         facade->deleteTrain(trainId);
-        cout << "train with id " << trainId << " deleted successfully \n";
-    }catch (const exception& e) {
-        cout << "ERROR: Could not delete train" << ".\n";
-        cout << "Details: " << e.what() << "\n";
+        cout << "\033[32m" << "train with id " << trainId << " deleted successfully \n"
+             << "\033[0m";
+    }
+    catch (const exception &e)
+    {
+        std::cerr << "\033[31m" << "ERROR: Could not delete train" << "." << "\n";
+        std::cerr << "Details: " << e.what() << "\033[0m" << "\n";
     }
 }
 
-void CLIController::delete_passenger(const vector<string> &args) {
-    if(args.size() < 3) {
+void CLIController::delete_passenger(const vector<string> &args)
+{
+    if (args.size() < 3)
+    {
         cout << "Usage: passenger delete  <passengerId>\n";
         return;
     }
-    const string& passengerArg = args[2];
-    try {
-        int passengerId = parseInt(passengerArg,"train Id");
+    const string &passengerArg = args[2];
+    try
+    {
+        int passengerId = parseInt(passengerArg, "train Id");
         facade->deletePassenger(passengerId);
-        cout << "passenger with id " << passengerId << " deleted successfully \n";
-    }catch (const exception& e) {
-        cout << "ERROR: Could not delete passenger" << ".\n";
-        cout << "Details: " << e.what() << "\n";
+        cout << "\033[32m" << "passenger with id " << passengerId << " deleted successfully \n"
+             << "\033[0m";
+    }
+    catch (const exception &e)
+    {
+        std::cerr << "\033[31m" << "ERROR: Could not delete passenger" << "." << "\n";
+        std::cerr << "Details: " << e.what() << "\033[0m" << "\n";
     }
 }
 
-void CLIController::get_train_status(const vector<string> &args) {
-    if(args.size() < 3) {
+void CLIController::get_train_status(const vector<string> &args)
+{
+    if (args.size() < 3)
+    {
         cout << "Usage: train status  <trainId>\n";
         return;
     }
-    const string& trainArg = args[2];
-    try {
-        int trainId = parseInt(trainArg,"train Id");
+    const string &trainArg = args[2];
+    try
+    {
+        int trainId = parseInt(trainArg, "train Id");
         facade->trainStatus(trainId);
-    }catch (const exception& e) {
-        cout << "ERROR: could not print train data with id : " << trainArg << ".\n";
-        cout << "Details: " << e.what() << "\n";
+    }
+    catch (const exception &e)
+    {
+        std::cerr << "\033[31m" << "ERROR: could not print train data with id : " << trainArg << "." << "\n";
+        std::cerr << "Details: " << e.what() << "\033[0m" << "\n";
     }
 }
 
+void CLIController::get_train(const vector<string> &args)
+{
+    if (args.size() < 3)
+    {
+        cout << "Usage: train get <trainId>\n";
+        return;
+    }
+    const string &trainArg = args[2];
+    try
+    {
+        int trainId = parseInt(trainArg, "train Id");
+        auto t = facade->getTrain(trainId);
+        cout << "\033[32m";
+        t.print("--- Train Details ---\n");
+        cout << "\033[0m";
+    }
+    catch (const exception &e)
+    {
+        std::cerr << "\033[31m" << "ERROR: Could not fetch train " << trainArg << "." << "\n";
+        std::cerr << "Details: " << e.what() << "\033[0m" << "\n";
+    }
+}
 
+void CLIController::get_passenger(const vector<string> &args)
+{
+    if (args.size() < 3)
+    {
+        cout << "Usage: passenger get <passengerId>\n";
+        return;
+    }
+    const string &passengerArg = args[2];
+    try
+    {
+        int passengerId = parseInt(passengerArg, "passenger Id");
+        auto p = facade->getPassenger(passengerId);
+        cout << "\033[32m";
+        p.print("--- Passenger Details ---\n");
+        cout << "\033[0m";
+    }
+    catch (const exception &e)
+    {
+        std::cerr << "\033[31m" << "ERROR: Could not get passenger " << passengerArg << "." << "\n";
+        std::cerr << "Details: " << e.what() << "\033[0m" << "\n";
+    }
+}
+
+void CLIController::get_ticket(const vector<string> &args)
+{
+    if (args.size() < 3)
+    {
+        cout << "Usage: ticket get <ticketId>\n";
+        return;
+    }
+    const string &ticketArg = args[2];
+    try
+    {
+        int ticketId = parseInt(ticketArg, "ticket Id");
+        auto t = facade->getTicket(ticketId);
+        cout << "\033[32m";
+        t.print("--- Ticket Details ---\n");
+        cout << "\033[0m";
+    }
+    catch (const exception &e)
+    {
+        std::cerr << "\033[31m" << "ERROR: Could not get ticket " << ticketArg << "." << "\n";
+        std::cerr << "Details: " << e.what() << "\033[0m" << "\n";
+    }
+}
 
 
 ==================================================
@@ -2979,63 +3431,69 @@ FILE PATH: .\src\RMSCommand.cpp
 //
 #include "RMSCommand.h"
 
-RMSCommand::MainCmd RMSCommand::getMainCmd(const string &cmd){
+RMSCommand::MainCmd RMSCommand::getMainCmd(const string &cmd)
+{
     static const unordered_map<string, MainCmd> table = {
-            {"train", MainCmd::TRAIN},
-            {"passenger", MainCmd::PASSENGER},
-            {"ticket", MainCmd::TICKET},
-            {"help", MainCmd::SYSTEM},
-            {"h", MainCmd::SYSTEM},
-            {"?", MainCmd::SYSTEM},
-            {"exit", MainCmd::SYSTEM},
-            {"quit", MainCmd::SYSTEM},
-            {"q", MainCmd::SYSTEM},
-            {"clear", MainCmd::SYSTEM},
-
+        {"train", MainCmd::TRAIN},
+        {"passenger", MainCmd::PASSENGER},
+        {"ticket", MainCmd::TICKET},
+        {"help", MainCmd::SYSTEM},
+        {"h", MainCmd::SYSTEM},
+        {"?", MainCmd::SYSTEM},
+        {"exit", MainCmd::SYSTEM},
+        {"quit", MainCmd::SYSTEM},
+        {"q", MainCmd::SYSTEM},
+        {"clear", MainCmd::SYSTEM},
 
     };
     auto it = table.find(cmd);
     return (it != table.end()) ? (*it).second : MainCmd::UNKNOWN;
 }
 
-RMSCommand::TrainCmd RMSCommand::getTrainCmd(const string &sub) {
-    static const unordered_map<string, TrainCmd> table = { // static map to initializing only once
-            {"list", TrainCmd::LIST},
-            {"add", TrainCmd::ADD},
-            {"delete", TrainCmd::DELETE},
-            {"update", TrainCmd::UPDATE},
-            {"seats", TrainCmd::SEATS_ADD},
-            {"availability", TrainCmd::AVAILABILITY},
-            {"status" , TrainCmd::STATUS}
-    };
+RMSCommand::TrainCmd RMSCommand::getTrainCmd(const string &sub)
+{
+    static const unordered_map<string, TrainCmd> table = {// static map to initializing only once
+                                                          {"list", TrainCmd::LIST},
+                                                          {"add", TrainCmd::ADD},
+                                                          {"delete", TrainCmd::DELETE},
+                                                          {"update", TrainCmd::UPDATE},
+                                                          {"seats", TrainCmd::SEATS_ADD},
+                                                          {"availability", TrainCmd::AVAILABILITY},
+                                                          {"status", TrainCmd::STATUS},
+                                                          {"get", TrainCmd::GET}};
     auto it = table.find(sub);
     return (it != table.end()) ? (*it).second : TrainCmd::UNKNOWN;
 }
-RMSCommand::PassengerCmd RMSCommand::getPassengerCmd(const string &sub)  {
+RMSCommand::PassengerCmd RMSCommand::getPassengerCmd(const string &sub)
+{
     static const unordered_map<string, PassengerCmd> table = {
-            {"list", PassengerCmd::LIST},
-            {"add", PassengerCmd::ADD},
-            {"delete", PassengerCmd::DELETE},
-            {"update", PassengerCmd::UPDATE}
-    };
+        {"list", PassengerCmd::LIST},
+        {"add", PassengerCmd::ADD},
+        {"delete", PassengerCmd::DELETE},
+        {"update", PassengerCmd::UPDATE},
+        {"get", PassengerCmd::GET}};
     auto it = table.find(sub);
     return (it != table.end()) ? (*it).second : PassengerCmd::UNKNOWN;
 }
-RMSCommand::TicketCmd RMSCommand::getTicketCmd(const string &sub) {
+RMSCommand::TicketCmd RMSCommand::getTicketCmd(const string &sub)
+{
     static const unordered_map<string, TicketCmd> table = {
-            {"list", TicketCmd::LIST},
-            {"book", TicketCmd::BOOK},
-            {"cancel", TicketCmd::CANCEL}
-    };
+        {"list", TicketCmd::LIST},
+        {"book", TicketCmd::BOOK},
+        {"cancel", TicketCmd::CANCEL},
+        {"get", TicketCmd::GET}};
     auto it = table.find(sub);
     return (it != table.end()) ? (*it).second : TicketCmd::UNKNOWN;
 }
 
-
-RMSCommand::SystemCmd RMSCommand::getSystemCmd(const string &cmd) {
-    if(cmd == "help" || cmd == "h" || cmd == "?") return SystemCmd::HELP;
-    if(cmd == "exit" || cmd == "quit" || cmd == "q") return SystemCmd::EXIT;
-    if(cmd == "clear") return SystemCmd::CLEAR;
+RMSCommand::SystemCmd RMSCommand::getSystemCmd(const string &cmd)
+{
+    if (cmd == "help" || cmd == "h" || cmd == "?")
+        return SystemCmd::HELP;
+    if (cmd == "exit" || cmd == "quit" || cmd == "q")
+        return SystemCmd::EXIT;
+    if (cmd == "clear")
+        return SystemCmd::CLEAR;
 
     return SystemCmd::UNKNOWN;
 }
@@ -3093,7 +3551,7 @@ Passenger RMSFacade::getPassenger(int passengerId)
     return passengerService->getPassenger(passengerId);
 }
 
-Passenger RMSFacade::addPassenger(const std::string& name)
+Passenger RMSFacade::addPassenger(const std::string &name)
 {
     std::string trimmedName = trim(name);
     if (!isValidName(trimmedName))
@@ -3105,6 +3563,11 @@ Passenger RMSFacade::addPassenger(const std::string& name)
 vector<Ticket> RMSFacade::listTickets()
 {
     return ticketService->getAllTickets();
+}
+
+Ticket RMSFacade::getTicket(int ticketId)
+{
+    return ticketService->getTicket(ticketId);
 }
 
 vector<Passenger> RMSFacade::listPassengers()
@@ -3123,10 +3586,8 @@ std::optional<Ticket> RMSFacade::bookTicket(int trainId, const std::string &pass
     if (!isValidName(trimmedName))
         throw std::invalid_argument("Passenger name cannot be empty");
 
-
     Passenger ps = passengerService->find_or_create_passenger(trimmedName);
     return ticketService->bookTicket(trainId, ps.getId());
-
 }
 
 void RMSFacade::cancelTicket(int ticketId)
@@ -3137,22 +3598,23 @@ void RMSFacade::cancelTicket(int ticketId)
         throw std::invalid_argument("Ticket ID must be greater than 0");
 
     ticketService->cancelTicket(ticketId);
-
-
 }
 
 bool RMSFacade::getTrainAvailability(int trainId)
 {
-    return  trainService->isAvailbleSeat(trainId);
-
+    return trainService->isAvailbleSeat(trainId);
 }
 
-Train RMSFacade::updateTrain(int trainId, const std::string& name, int seats) {
+Train RMSFacade::updateTrain(int trainId, const std::string &name, int seats)
+{
     // validation
-    if (trainId <= 0) throw std::invalid_argument("Train ID must be > 0");
+    if (trainId <= 0)
+        throw std::invalid_argument("Train ID must be > 0");
     std::string trimmedName = trim(name);
-    if (!isValidName(trimmedName)) throw std::invalid_argument("Train name cannot be empty");
-    if (seats < 0) throw std::invalid_argument("Seats cannot be negative");
+    if (!isValidName(trimmedName))
+        throw std::invalid_argument("Train name cannot be empty");
+    if (seats < 0)
+        throw std::invalid_argument("Seats cannot be negative");
 
     // current Train
     auto currentTrain = trainService->getTrain(trainId);
@@ -3164,12 +3626,13 @@ Train RMSFacade::updateTrain(int trainId, const std::string& name, int seats) {
 
     // process waiting
     int seatsAdded = seats - currentSeats;
-    if (seatsAdded > 0) {
-        auto cb =[this,&updatedTrain ,trainId](int passengerId){ // access to this object& trainId + passengerId as argument
+    if (seatsAdded > 0)
+    {
+        auto cb = [this, &updatedTrain, trainId](int passengerId) { // access to this object& trainId + passengerId as argument
             trainService->save(updatedTrain);
             ticketService->bookTicket(trainId, passengerId);
         };
-        updatedTrain.getSeatAllocator()->processWaitingList(seatsAdded,cb);
+        updatedTrain.getSeatAllocator()->processWaitingList(seatsAdded, cb);
 
         // Save updated train after processing waiting list
         trainService->save(updatedTrain);
@@ -3210,17 +3673,20 @@ Passenger RMSFacade::updatePassenger(int passengerId, const std::string &name)
 
 void RMSFacade::deleteTrain(int trainId)
 {
-    if (trainId <= 0) throw std::invalid_argument("Train ID must be > 0");
+    if (trainId <= 0)
+        throw std::invalid_argument("Train ID must be > 0");
     trainService->deleteTrain(trainId);
 }
 
 void RMSFacade::deletePassenger(int passengerId)
 {
-    if (passengerId <= 0) throw std::invalid_argument("Passenger ID must be > 0");
+    if (passengerId <= 0)
+        throw std::invalid_argument("Passenger ID must be > 0");
     passengerService->deletePassenger(passengerId);
 }
 
-void RMSFacade::trainStatus(int trainId) {
+void RMSFacade::trainStatus(int trainId)
+{
     trainService->printStatus(trainId);
 }
 
@@ -3408,7 +3874,6 @@ int SeatAllocator::allocateSeat(int passengerId)
         // smallest seat in the set
         seatNumber = *availableSeats.begin();
         availableSeats.erase(availableSeats.begin());
-        std::cout << "seat : " << seatNumber;
     }
 
     allocatedSeats[seatNumber] = passengerId;
@@ -3550,7 +4015,7 @@ void SeatAllocator::printStatus() const
     }
     else
     {
-        std::queue<int> temp = waitingList;
+        queue<int> temp = waitingList;
         while (!temp.empty())
         {
             std::cout << temp.front() << " ";
@@ -3605,7 +4070,7 @@ int SeatAllocator::getAllocatedSeatCount() const
     return allocatedSeats.size();
 }
 
-std::queue<int> SeatAllocator::getWaitingList() const
+queue<int> SeatAllocator::getWaitingList() const
 {
     return waitingList;
 }
@@ -3624,7 +4089,7 @@ int SeatAllocator::processWaitingList(int seatsToAdd, std::function<void(int)> b
 {
     int processed = 0;
 
-    std::queue<int> newWaitingList;
+    queue<int> newWaitingList;
     std::set<int> newWaitingset;
 
     while (!waitingList.empty())
@@ -3640,12 +4105,12 @@ int SeatAllocator::processWaitingList(int seatsToAdd, std::function<void(int)> b
                 bookCallback(passengerId);
                 seatsToAdd--;
                 processed++;
-                continue;                      // do NOT add to new list
+                continue; // do NOT add to new list
             }
             catch (const std::exception &e)
             {
-                std::cout << "Failed to book ticket for waiting passenger "
-                          << passengerId << ": " << e.what() << "\n";
+                std::cerr << "\033[31m" << "Failed to book ticket for waiting passenger "
+                          << passengerId << ": " << e.what() << "\033[0m" << "\n";
                 // Booking failed , keep in waiting list
             }
         }
@@ -3656,7 +4121,7 @@ int SeatAllocator::processWaitingList(int seatsToAdd, std::function<void(int)> b
     }
 
     waitingList = std::move(newWaitingList); //  update the existing waiting list
-    waitingSet = std::move(newWaitingset); //  update the existing waiting set
+    waitingSet = std::move(newWaitingset);   //  update the existing waiting set
 
     return processed;
 }
@@ -3993,7 +4458,7 @@ std::optional<Ticket> InMemoryTicketRepository::getTicketById(int ticketId)
     {
         return it->second;
     }
-    throw std::runtime_error("Ticket not found");
+    return std::nullopt; // not found
 }
 
 void InMemoryTicketRepository::clear()
@@ -4407,8 +4872,16 @@ bool isValidName(const std::string &name)
 {
 
     static const std::regex pattern("^[A-Za-z0-9]+([' -][A-Za-z0-9]+)*$"); // a-z - '
-    // Do NOT trim here: tests expect names with leading/trailing whitespace
-    // to be considered invalid. Validation should be applied to the raw input.
+    // Disallow empty strings and leading/trailing whitespace explicitly
+    if (name.empty())
+        return false;
+    if (std::isspace(static_cast<unsigned char>(name.front())))
+        return false;
+    if (std::isspace(static_cast<unsigned char>(name.back())))
+        return false;
+
+    // Now match the raw input (no trimming) so that names with internal spaces
+    // like "John Doe" are allowed but leading/trailing spaces are rejected.
     return std::regex_match(name, pattern);
 }
 
@@ -4488,32 +4961,37 @@ FILE PATH: .\tests\test_cliController.cpp
 #include "StartupManager.h"
 #include <sstream>
 
-class CLIControllerTest : public ::testing::Test {
+class CLIControllerTest : public ::testing::Test
+{
 protected:
     std::unique_ptr<StartupManager> startupManager;
-    RMSFacade* facade;
+    RMSFacade *facade;
     std::unique_ptr<CLIController> controller;
 
-    void SetUp() override {
+    void SetUp() override
+    {
         startupManager = std::make_unique<StartupManager>();
         facade = startupManager->buildFacade();
         controller = std::make_unique<CLIController>(facade);
     }
 
-    void TearDown() override {
+    void TearDown() override
+    {
         // Cleanup handled by unique_ptr
     }
 };
 
 // ===================== Tokenize Tests =====================
 
-TEST_F(CLIControllerTest, Tokenize_SingleWord) {
+TEST_F(CLIControllerTest, Tokenize_SingleWord)
+{
     auto tokens = CLIController::tokenize("help");
     ASSERT_EQ(tokens.size(), 1);
     EXPECT_EQ(tokens[0], "help");
 }
 
-TEST_F(CLIControllerTest, Tokenize_MultipleWords) {
+TEST_F(CLIControllerTest, Tokenize_MultipleWords)
+{
     auto tokens = CLIController::tokenize("train add Express 20");
     ASSERT_EQ(tokens.size(), 4);
     EXPECT_EQ(tokens[0], "train");
@@ -4522,24 +5000,28 @@ TEST_F(CLIControllerTest, Tokenize_MultipleWords) {
     EXPECT_EQ(tokens[3], "20");
 }
 
-TEST_F(CLIControllerTest, Tokenize_ExtraSpaces) {
+TEST_F(CLIControllerTest, Tokenize_ExtraSpaces)
+{
     auto tokens = CLIController::tokenize("  train   list  ");
     ASSERT_EQ(tokens.size(), 2);
     EXPECT_EQ(tokens[0], "train");
     EXPECT_EQ(tokens[1], "list");
 }
 
-TEST_F(CLIControllerTest, Tokenize_EmptyString) {
+TEST_F(CLIControllerTest, Tokenize_EmptyString)
+{
     auto tokens = CLIController::tokenize("");
     EXPECT_TRUE(tokens.empty());
 }
 
-TEST_F(CLIControllerTest, Tokenize_OnlySpaces) {
+TEST_F(CLIControllerTest, Tokenize_OnlySpaces)
+{
     auto tokens = CLIController::tokenize("     ");
     EXPECT_TRUE(tokens.empty());
 }
 
-TEST_F(CLIControllerTest, Tokenize_WithNumbers) {
+TEST_F(CLIControllerTest, Tokenize_WithNumbers)
+{
     auto tokens = CLIController::tokenize("ticket book 1 John");
     ASSERT_EQ(tokens.size(), 4);
     EXPECT_EQ(tokens[0], "ticket");
@@ -4548,7 +5030,8 @@ TEST_F(CLIControllerTest, Tokenize_WithNumbers) {
     EXPECT_EQ(tokens[3], "John");
 }
 
-TEST_F(CLIControllerTest, Tokenize_CommandWithName) {
+TEST_F(CLIControllerTest, Tokenize_CommandWithName)
+{
     auto tokens = CLIController::tokenize("passenger add John Doe");
     ASSERT_EQ(tokens.size(), 4);
     EXPECT_EQ(tokens[0], "passenger");
@@ -4559,10 +5042,11 @@ TEST_F(CLIControllerTest, Tokenize_CommandWithName) {
 
 // ===================== Train Command Tests =====================
 
-TEST_F(CLIControllerTest, ListTrains_InitialState) {
+TEST_F(CLIControllerTest, ListTrains_InitialState)
+{
     // Should list the 5 mock trains loaded by StartupManager
     std::ostringstream output;
-    std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
+    std::streambuf *oldCout = std::cout.rdbuf(output.rdbuf());
 
     controller->list_trains();
 
@@ -4572,7 +5056,8 @@ TEST_F(CLIControllerTest, ListTrains_InitialState) {
     EXPECT_NE(result.find("Trains"), std::string::npos);
 }
 
-TEST_F(CLIControllerTest, AddTrain_ValidInput) {
+TEST_F(CLIControllerTest, AddTrain_ValidInput)
+{
     vector<std::string> args = {"train", "add", "TestTrain", "25"};
 
     EXPECT_NO_THROW(controller->add_train(args));
@@ -4581,11 +5066,12 @@ TEST_F(CLIControllerTest, AddTrain_ValidInput) {
     EXPECT_EQ(trains.size(), 6); // 5 mock + 1 new
 }
 
-TEST_F(CLIControllerTest, AddTrain_InsufficientArgs) {
+TEST_F(CLIControllerTest, AddTrain_InsufficientArgs)
+{
     vector<std::string> args = {"train", "add", "TestTrain"};
 
     std::ostringstream output;
-    std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
+    std::streambuf *oldCout = std::cout.rdbuf(output.rdbuf());
 
     controller->add_train(args);
 
@@ -4595,29 +5081,33 @@ TEST_F(CLIControllerTest, AddTrain_InsufficientArgs) {
     EXPECT_NE(result.find("Usage"), std::string::npos);
 }
 
-TEST_F(CLIControllerTest, AddTrain_InvalidSeats) {
+TEST_F(CLIControllerTest, AddTrain_InvalidSeats)
+{
     vector<std::string> args = {"train", "add", "TestTrain", "invalid"};
 
     std::ostringstream output;
-    std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
+    std::streambuf *oldCerr = std::cerr.rdbuf(output.rdbuf());
 
     controller->add_train(args);
 
-    std::cout.rdbuf(oldCout);
+    std::cerr.rdbuf(oldCerr);
 
     std::string result = output.str();
     EXPECT_NE(result.find("ERROR"), std::string::npos);
 }
 
-TEST_F(CLIControllerTest, AddTrain_MultiWordName) {
+TEST_F(CLIControllerTest, AddTrain_MultiWordName)
+{
     vector<std::string> args = {"train", "add", "Super", "Express", "Train", "25"};
 
     EXPECT_NO_THROW(controller->add_train(args));
 
     auto trains = facade->listTrains();
     bool found = false;
-    for (const auto& train : trains) {
-        if (train.getTrainName() == "Super Express Train") {
+    for (const auto &train : trains)
+    {
+        if (train.getTrainName() == "Super Express Train")
+        {
             found = true;
             break;
         }
@@ -4625,13 +5115,13 @@ TEST_F(CLIControllerTest, AddTrain_MultiWordName) {
     EXPECT_TRUE(found);
 }
 
-TEST_F(CLIControllerTest, DeleteTrain_ValidId) {
+TEST_F(CLIControllerTest, DeleteTrain_ValidId)
+{
     auto trains = facade->listTrains();
     ASSERT_FALSE(trains.empty());
 
     vector<std::string> args = {
-            "train", "delete", std::to_string(trains[0].getTrainId())
-    };
+        "train", "delete", std::to_string(trains[0].getTrainId())};
 
     EXPECT_NO_THROW(controller->delete_train(args));
 
@@ -4639,11 +5129,12 @@ TEST_F(CLIControllerTest, DeleteTrain_ValidId) {
     EXPECT_EQ(updatedTrains.size(), trains.size() - 1);
 }
 
-TEST_F(CLIControllerTest, DeleteTrain_InsufficientArgs) {
+TEST_F(CLIControllerTest, DeleteTrain_InsufficientArgs)
+{
     vector<std::string> args = {"train", "delete"};
 
     std::ostringstream output;
-    std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
+    std::streambuf *oldCout = std::cout.rdbuf(output.rdbuf());
 
     controller->delete_train(args);
 
@@ -4653,39 +5144,39 @@ TEST_F(CLIControllerTest, DeleteTrain_InsufficientArgs) {
     EXPECT_NE(result.find("Usage"), std::string::npos);
 }
 
-TEST_F(CLIControllerTest, UpdateTrain_ValidInput) {
+TEST_F(CLIControllerTest, UpdateTrain_ValidInput)
+{
     auto trains = facade->listTrains();
     ASSERT_FALSE(trains.empty());
 
     vector<std::string> args = {
-            "train", "update", std::to_string(trains[0].getTrainId()),
-            "UpdatedName", "30"
-    };
+        "train", "update", std::to_string(trains[0].getTrainId()),
+        "UpdatedName", "30"};
 
     EXPECT_NO_THROW(controller->update_train(args));
 }
 
-TEST_F(CLIControllerTest, AddSeats_ValidInput) {
+TEST_F(CLIControllerTest, AddSeats_ValidInput)
+{
     auto trains = facade->listTrains();
     ASSERT_FALSE(trains.empty());
 
     vector<std::string> args = {
-            "train", "seats", std::to_string(trains[0].getTrainId()), "10"
-    };
+        "train", "seats", std::to_string(trains[0].getTrainId()), "10"};
 
     EXPECT_NO_THROW(controller->add_seats(args));
 }
 
-TEST_F(CLIControllerTest, GetTrainAvailability_Available) {
+TEST_F(CLIControllerTest, GetTrainAvailability_Available)
+{
     auto trains = facade->listTrains();
     ASSERT_FALSE(trains.empty());
 
     vector<std::string> args = {
-            "train", "availability", std::to_string(trains[0].getTrainId())
-    };
+        "train", "availability", std::to_string(trains[0].getTrainId())};
 
     std::ostringstream output;
-    std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
+    std::streambuf *oldCout = std::cout.rdbuf(output.rdbuf());
 
     controller->get_train_availability(args);
 
@@ -4695,22 +5186,23 @@ TEST_F(CLIControllerTest, GetTrainAvailability_Available) {
     EXPECT_NE(result.find("available"), std::string::npos);
 }
 
-TEST_F(CLIControllerTest, GetTrainStatus_ValidId) {
+TEST_F(CLIControllerTest, GetTrainStatus_ValidId)
+{
     auto trains = facade->listTrains();
     ASSERT_FALSE(trains.empty());
 
     vector<std::string> args = {
-            "train", "status", std::to_string(trains[0].getTrainId())
-    };
+        "train", "status", std::to_string(trains[0].getTrainId())};
 
     EXPECT_NO_THROW(controller->get_train_status(args));
 }
 
 // ===================== Passenger Command Tests =====================
 
-TEST_F(CLIControllerTest, ListPassengers_InitialState) {
+TEST_F(CLIControllerTest, ListPassengers_InitialState)
+{
     std::ostringstream output;
-    std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
+    std::streambuf *oldCout = std::cout.rdbuf(output.rdbuf());
 
     controller->list_passengers();
 
@@ -4720,7 +5212,8 @@ TEST_F(CLIControllerTest, ListPassengers_InitialState) {
     EXPECT_NE(result.find("Passengers"), std::string::npos);
 }
 
-TEST_F(CLIControllerTest, AddPassenger_ValidInput) {
+TEST_F(CLIControllerTest, AddPassenger_ValidInput)
+{
     vector<std::string> args = {"passenger", "add", "TestPassenger"};
 
     EXPECT_NO_THROW(controller->add_passenger(args));
@@ -4729,15 +5222,18 @@ TEST_F(CLIControllerTest, AddPassenger_ValidInput) {
     EXPECT_EQ(passengers.size(), 11); // 10 mock + 1 new
 }
 
-TEST_F(CLIControllerTest, AddPassenger_MultiWordName) {
+TEST_F(CLIControllerTest, AddPassenger_MultiWordName)
+{
     vector<std::string> args = {"passenger", "add", "John", "Doe"};
 
     EXPECT_NO_THROW(controller->add_passenger(args));
 
     auto passengers = facade->listPassengers();
     bool found = false;
-    for (const auto& p : passengers) {
-        if (p.getName() == "John Doe") {
+    for (const auto &p : passengers)
+    {
+        if (p.getName() == "John Doe")
+        {
             found = true;
             break;
         }
@@ -4745,11 +5241,12 @@ TEST_F(CLIControllerTest, AddPassenger_MultiWordName) {
     EXPECT_TRUE(found);
 }
 
-TEST_F(CLIControllerTest, AddPassenger_InsufficientArgs) {
+TEST_F(CLIControllerTest, AddPassenger_InsufficientArgs)
+{
     vector<std::string> args = {"passenger", "add"};
 
     std::ostringstream output;
-    std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
+    std::streambuf *oldCout = std::cout.rdbuf(output.rdbuf());
 
     controller->add_passenger(args);
 
@@ -4759,33 +5256,34 @@ TEST_F(CLIControllerTest, AddPassenger_InsufficientArgs) {
     EXPECT_NE(result.find("Usage"), std::string::npos);
 }
 
-TEST_F(CLIControllerTest, UpdatePassenger_ValidInput) {
+TEST_F(CLIControllerTest, UpdatePassenger_ValidInput)
+{
     auto passengers = facade->listPassengers();
     ASSERT_FALSE(passengers.empty());
 
     vector<std::string> args = {
-            "passenger", "update", std::to_string(passengers[0].getId()),
-            "UpdatedName"
-    };
+        "passenger", "update", std::to_string(passengers[0].getId()),
+        "UpdatedName"};
 
     EXPECT_NO_THROW(controller->update_passenger(args));
 }
 
-TEST_F(CLIControllerTest, DeletePassenger_ValidId) {
+TEST_F(CLIControllerTest, DeletePassenger_ValidId)
+{
     Passenger temp = facade->addPassenger("TempPassenger");
 
     vector<std::string> args = {
-            "passenger", "delete", std::to_string(temp.getId())
-    };
+        "passenger", "delete", std::to_string(temp.getId())};
 
     EXPECT_NO_THROW(controller->delete_passenger(args));
 }
 
 // ===================== Ticket Command Tests =====================
 
-TEST_F(CLIControllerTest, ListTickets_InitialState) {
+TEST_F(CLIControllerTest, ListTickets_InitialState)
+{
     std::ostringstream output;
-    std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
+    std::streambuf *oldCout = std::cout.rdbuf(output.rdbuf());
 
     controller->list_tickets();
 
@@ -4795,23 +5293,24 @@ TEST_F(CLIControllerTest, ListTickets_InitialState) {
     EXPECT_NE(result.find("Tickets"), std::string::npos);
 }
 
-TEST_F(CLIControllerTest, BookTicket_ValidInput) {
+TEST_F(CLIControllerTest, BookTicket_ValidInput)
+{
     auto trains = facade->listTrains();
     ASSERT_FALSE(trains.empty());
 
     vector<std::string> args = {
-            "ticket", "book", std::to_string(trains[0].getTrainId()),
-            "NewPassenger"
-    };
+        "ticket", "book", std::to_string(trains[0].getTrainId()),
+        "NewPassenger"};
 
     EXPECT_NO_THROW(controller->book_ticket(args));
 }
 
-TEST_F(CLIControllerTest, BookTicket_InsufficientArgs) {
+TEST_F(CLIControllerTest, BookTicket_InsufficientArgs)
+{
     vector<std::string> args = {"ticket", "book", "1"};
 
     std::ostringstream output;
-    std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
+    std::streambuf *oldCout = std::cout.rdbuf(output.rdbuf());
 
     controller->book_ticket(args);
 
@@ -4821,36 +5320,38 @@ TEST_F(CLIControllerTest, BookTicket_InsufficientArgs) {
     EXPECT_NE(result.find("Usage"), std::string::npos);
 }
 
-TEST_F(CLIControllerTest, BookTicket_InvalidTrainId) {
+TEST_F(CLIControllerTest, BookTicket_InvalidTrainId)
+{
     vector<std::string> args = {"ticket", "book", "invalid", "John"};
 
     std::ostringstream output;
-    std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
+    std::streambuf *oldCerr = std::cerr.rdbuf(output.rdbuf());
 
     controller->book_ticket(args);
 
-    std::cout.rdbuf(oldCout);
+    std::cerr.rdbuf(oldCerr);
 
     std::string result = output.str();
     EXPECT_NE(result.find("ERROR"), std::string::npos);
 }
 
-TEST_F(CLIControllerTest, CancelTicket_ValidId) {
+TEST_F(CLIControllerTest, CancelTicket_ValidId)
+{
     auto tickets = facade->listTickets();
     ASSERT_FALSE(tickets.empty());
 
     vector<std::string> args = {
-            "ticket", "cancel", std::to_string(tickets[0].getId())
-    };
+        "ticket", "cancel", std::to_string(tickets[0].getId())};
 
     EXPECT_NO_THROW(controller->cancel_ticket(args));
 }
 
-TEST_F(CLIControllerTest, CancelTicket_InsufficientArgs) {
+TEST_F(CLIControllerTest, CancelTicket_InsufficientArgs)
+{
     vector<std::string> args = {"ticket", "cancel"};
 
     std::ostringstream output;
-    std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
+    std::streambuf *oldCout = std::cout.rdbuf(output.rdbuf());
 
     controller->cancel_ticket(args);
 
@@ -4862,10 +5363,11 @@ TEST_F(CLIControllerTest, CancelTicket_InsufficientArgs) {
 
 // ===================== Helper Function Tests =====================
 
-TEST_F(CLIControllerTest, ReadLine_ReturnsString) {
+TEST_F(CLIControllerTest, ReadLine_ReturnsString)
+{
     // Simulate stdin
     std::istringstream input("test input\n");
-    std::streambuf* oldCin = std::cin.rdbuf(input.rdbuf());
+    std::streambuf *oldCin = std::cin.rdbuf(input.rdbuf());
 
     std::string result = CLIController::readLine();
 
@@ -4876,7 +5378,8 @@ TEST_F(CLIControllerTest, ReadLine_ReturnsString) {
 
 // ===================== Edge Cases =====================
 
-TEST_F(CLIControllerTest, HandleEmptyCommand) {
+TEST_F(CLIControllerTest, HandleEmptyCommand)
+{
     vector<std::string> args = {};
 
     // Commands with empty args should handle gracefully
@@ -4885,29 +5388,31 @@ TEST_F(CLIControllerTest, HandleEmptyCommand) {
     EXPECT_NO_THROW(controller->book_ticket(args));
 }
 
-TEST_F(CLIControllerTest, HandleInvalidNumbers) {
+TEST_F(CLIControllerTest, HandleInvalidNumbers)
+{
     vector<std::string> args = {"train", "add", "Test", "abc"};
 
     std::ostringstream output;
-    std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
+    std::streambuf *oldCerr = std::cerr.rdbuf(output.rdbuf());
 
     controller->add_train(args);
 
-    std::cout.rdbuf(oldCout);
+    std::cerr.rdbuf(oldCerr);
 
     std::string result = output.str();
     EXPECT_NE(result.find("ERROR"), std::string::npos);
 }
 
-TEST_F(CLIControllerTest, HandleNegativeNumbers) {
+TEST_F(CLIControllerTest, HandleNegativeNumbers)
+{
     vector<std::string> args = {"train", "add", "Test", "-5"};
 
     std::ostringstream output;
-    std::streambuf* oldCout = std::cout.rdbuf(output.rdbuf());
+    std::streambuf *oldCerr = std::cerr.rdbuf(output.rdbuf());
 
     controller->add_train(args);
 
-    std::cout.rdbuf(oldCout);
+    std::cerr.rdbuf(oldCerr);
 
     std::string result = output.str();
     EXPECT_NE(result.find("ERROR"), std::string::npos);
@@ -4915,7 +5420,8 @@ TEST_F(CLIControllerTest, HandleNegativeNumbers) {
 
 // ===================== Integration Tests =====================
 
-TEST_F(CLIControllerTest, CompleteWorkflow) {
+TEST_F(CLIControllerTest, CompleteWorkflow)
+{
     // Add train
     vector<std::string> trainArgs = {"train", "add", "WorkflowTrain", "10"};
     controller->add_train(trainArgs);
@@ -4927,8 +5433,10 @@ TEST_F(CLIControllerTest, CompleteWorkflow) {
     // Get the train ID
     auto trains = facade->listTrains();
     int trainId = -1;
-    for (const auto& train : trains) {
-        if (train.getTrainName() == "WorkflowTrain") {
+    for (const auto &train : trains)
+    {
+        if (train.getTrainName() == "WorkflowTrain")
+        {
             trainId = train.getTrainId();
             break;
         }
@@ -4937,16 +5445,17 @@ TEST_F(CLIControllerTest, CompleteWorkflow) {
 
     // Book ticket
     vector<std::string> ticketArgs = {
-            "ticket", "book", std::to_string(trainId), "WorkflowPassenger"
-    };
+        "ticket", "book", std::to_string(trainId), "WorkflowPassenger"};
     controller->book_ticket(ticketArgs);
 
     // Verify
     auto tickets = facade->listTickets();
     bool found = false;
-    for (const auto& ticket : tickets) {
+    for (const auto &ticket : tickets)
+    {
         if (ticket.getTrainId() == trainId &&
-            ticket.getPassenger().getName() == "WorkflowPassenger") {
+            ticket.getPassenger().getName() == "WorkflowPassenger")
+        {
             found = true;
             break;
         }
@@ -6822,7 +7331,8 @@ TEST_F(TicketRepositoryTest, GetTicketById_Success) {
 
 TEST_F(TicketRepositoryTest, GetTicketById_ThrowsWhenNotFound) {
     // Your implementation explicitly throws runtime_error for ID lookup failures
-    EXPECT_THROW(repo.getTicketById(999), std::runtime_error);
+    auto result =repo.getTicketById(999);
+    EXPECT_FALSE(result.has_value());
 }
 
 TEST_F(TicketRepositoryTest, GetTicketByTrainAndPassenger_Success) {
@@ -6850,8 +7360,8 @@ TEST_F(TicketRepositoryTest, DeleteTicket_Success) {
 
     bool deleted = repo.deleteTicket(id);
     EXPECT_TRUE(deleted);
-
-    EXPECT_THROW(repo.getTicketById(id), std::runtime_error);
+    auto result =repo.getTicketById(id);
+    EXPECT_FALSE(result.has_value());
 }
 
 TEST_F(TicketRepositoryTest, GetAllTickets) {

@@ -187,15 +187,21 @@ void sayWelcome()
     cout << "-----------------------------------------------\n";
     printCurrentDate();
     cout << "-----------------------------------------------\n";
-    cout << "Author : Dangerous Team .\n";
+    cout << "\033[31m";
+    cout << "Author : Danger Team .\n";
+    cout << "\033[0m";
+    cout << "-----------------------------------------------\n";
+    cout << "\033[32m"; // green
     cout << "Under the supervision of Dr.Iman and Eng/Mariem Abdelrahman.\n\n";
+    cout << "\033[0m";
+
 }
 void CLIController::run()
 {
     clear();
     sayWelcome();
     // lambad function
-    auto printUsage = [](MainCmd cmd)
+    static auto printUsage = [](MainCmd cmd)
     {
         switch (cmd)
         {
