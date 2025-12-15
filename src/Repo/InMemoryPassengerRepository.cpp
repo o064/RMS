@@ -33,9 +33,10 @@ void InMemoryPassengerRepository::save(Passenger &passenger) {
     auto res = passengers.emplace(id,passenger);
 
     // If the key is found it's already updated
-    // if(!res.second){ //update
-    //     res.first->second = passenger;
-    // }
+
+     if(!res.second){ //update
+         res.first->second = passenger;
+     }
 
 
 }

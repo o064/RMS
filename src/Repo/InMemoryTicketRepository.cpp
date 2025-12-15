@@ -39,6 +39,7 @@ void InMemoryTicketRepository::save( Ticket& ticket)
     }
 
     int id = ticket.getId();
+
     auto result = tickets.emplace(id, ticket);
     if (!result.second)
     {

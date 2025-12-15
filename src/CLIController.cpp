@@ -188,7 +188,7 @@ void sayWelcome()
     printCurrentDate();
     cout << "-----------------------------------------------\n";
     cout << "\033[31m";
-    cout << "Author : Danger Team .\n";
+    cout << "Author : Any Smart Team .\n";
     cout << "\033[0m";
     cout << "-----------------------------------------------\n";
     cout << "\033[32m"; // green
