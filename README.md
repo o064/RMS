@@ -265,5 +265,6 @@ make
 ## 10. Contributors
 
 - **Omar Mohamed** — Project Creator & Lead Developer
-  GitHub: [https://github.com/o064](https://github.com/o064)
+  GitHub: [https://github.com/omar-shahieen](https://github.com/omar-shahieen)
+
 
